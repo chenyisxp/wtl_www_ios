@@ -1,0 +1,11 @@
+.ivu-modal-body{padding-top: 40px;}
+.vertical-center-modal{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+ 
+} 
+.vertical-center-moda .ivu-modal{
+  top: 0;
+}
