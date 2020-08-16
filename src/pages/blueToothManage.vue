@@ -1,13 +1,13 @@
 <template>
   <div class="blueToothManage">
-      
+       {{rstMsg}}
        <div class="blockHig">
            <span class="scanning" @click="handleCameraScan"></span>
            <!-- <span class="rBtn" v-if="reBackFlag">ReBack</span> -->
        </div>
        <div class="t-contain">
             <div v-show="!scaningFlag" class="scan">
-                <img src="../assets/images/ble_scan.png"  @click="scan"> 
+                <img src="../assets/images/ble_scan.png"  @click="handleScan"> 
             </div>
             <div v-show="scaningFlag" class="radar"></div>
        </div>
@@ -20,7 +20,7 @@
         <div class="btList" v-if="lastConnectList.length>0 && showOrder==0">
           <div class="ceq">Last connected equipment</div>
           <ul >
-                <li class="b-li"  v-for="(item,index) in lastConnectList" @click="setBleConnect(item.address,item.bleName)">
+                <li class="b-li"  v-for="(item,index) in lastConnectList" @click="setBleConnect(item.address,item.bleName)" :key="index">
                         <div class="d title">Name</div>
                         <div class="d name">{{item.bleName}}</div>
                         <div class="d connect">Connect ></div>
@@ -45,7 +45,7 @@
         <div class="btList" v-if="orderList1.length>0 && showOrder!=0">
             <div class="ceq">Connectible equipment</div>
             <ul>
-                <li class="b-li"  v-for="(item,index) in orderList1" @click="setBleConnect(item.address,item.bleName)">
+                <li class="b-li"  v-for="(item,index) in orderList1" @click="setBleConnect(item.address,item.bleName)" :key="index">
                         <div class="d title">Name</div>
                         <div class="d name">{{item.bleName}}</div>
                         <div class="d connect">Connect ></div>
@@ -57,7 +57,7 @@
        <div class="btList" v-if="orderList2.length>0 && showOrder==2 && !moreFlag">
             <div class="ceq">othter equipment</div>
             <ul>
-                <li class="b-li"  v-for="(item,index) in orderList2" @click="setBleConnect(item.address,item.bleName)">
+                <li class="b-li"  v-for="(item,index) in orderList2" @click="setBleConnect(item.address,item.bleName)" :key="index">
                         <div class="d title">Name</div>
                         <div class="d name">{{item.bleName}}</div>
                         <div class="d connect">Connect ></div>
@@ -99,6 +99,7 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
+import { BASE_CONFIG } from '../lib/config/config'
 export default {
   name: '',
   components: {
@@ -130,7 +131,11 @@ export default {
         orderList1:[],
         orderList2:[],
         importantkey:'WELD',//关键字key
-        moreFlag:false
+        moreFlag:false,
+        rstMsg:'',
+        stopScanTimer:{},
+        ios_bleList:'',
+        updateBlelistDB:[]//备注连接过的json数据
 
      } 
   },
@@ -235,7 +240,32 @@ export default {
                     self.reBackFlag =true;//开启返回首页按钮显示
                 }else if(self.$store.state.getConnectStatus =='connected'){
                     self.isLoading =false;
-                    window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
+                    if(self.envType=='env_ios'){
+                        let bleInfo ={
+                            address:self.$store.state.nowConnectAddress,
+                            remarkInfo:self.$store.state.nowConnectMachine,
+                            realAddress:self.$store.state.nowConnectAddress,
+                            type:1
+                        }
+                        let step = 0;
+                        self.updateBlelistDB.forEach(element => {
+                            
+                            if(element.address == bleInfo.address){
+                                step=1;
+                                element.type=1;
+                            }else{
+                                element.type=0;
+                            }
+                        });
+                        if(step==0){
+                            self.updateBlelistDB.push(bleInfo);
+                        }
+                        // self.globalSendMsgToIos("handSaveWrite","lastBleInfo",bleInfo);
+                        self.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(self.updateBlelistDB));
+                    }else{
+                        // String address,String remarkInfo,String realAddress,String type
+                        window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
+                    }
                     self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine}});
                 }
         }, 8000);
@@ -297,10 +327,121 @@ export default {
     go(url){
         this.$router.push(url);
     },
-    scan(){
-         
+    openStopScanTimer(){
+        this.stopScanTimer = setTimeout(() => {
+            //停止扫描
+            if(this.envType=='env_ios'){
+                this.globalSendMsgToIos("handleStopScan","","");
+            }else{
+                //TODO 安卓
+            }
+        }, BASE_CONFIG.scaningDuring);
+    },
+    handleScan(){
+        if(this.envType=='env_ios'){
+            this.scan_ios();
+        }else{
+            this.scan();
+        }
+    },
+    scan_ios(){
         let self =this;
-        
+        var scanStatus =true;
+        self.scaningFlag=true;
+        self.showOrder =1;//扫描中
+        //开启及扫描
+        try {
+            self.globalSendMsgToIos("handleStartScan","","");
+        } catch (error) {
+            scanStatus =false;
+        } 
+        self.timeInterval1 = setInterval(() => {
+            self.globalSendMsgToIos("handleGetBleState","","");
+        },800);
+        //！！！！剩余逻辑在window['handBleListToHtml5']中
+        return;
+        if(scanStatus){
+            var rstLLIST=[];
+            setTimeout(() => {
+               var tempI=0;
+               var rstString ='';
+                self.timeInterval1 = setInterval(() => {
+                    //扫描中
+                   try {
+                       let scanStatus ='';
+                        if(self.envType=='env_ios'){
+                            scanStatus =self.globalSendMsgToIos("handleGetBleState","","");
+                        }else{
+                            scanStatus = window.android.getScanBtnText();
+                        }
+                        self.openStopScanTimer();
+                       if('scaning'==scanStatus){
+                             self.scaningFlag=true;
+                        }else{
+                            if(self.orderList2.length>0){//是否有more的
+                                     self.moreFlag=true;
+                            }
+                             clearInterval(self.timeInterval1);
+                             self.scaningFlag=false;
+                             self.showOrder =2;//扫描结束
+                           
+                        }
+                        //结果处理
+                          try {
+                               rstString =window.android.getBleList();
+                               rstLLIST = JSON.parse(rstString);
+                            } catch (error) {
+                                rstLLIST=[];
+                                Toast({
+                                        message: 'FBTM:Data parsing exception returned!',
+                                        position: 'middle',
+                                        iconClass: 'icon icon-success',
+                                        duration: 1500
+                                });
+                            }
+                            //赋值
+                            self.rstList =rstLLIST;
+                            tempI =0;
+                            self.orderList1=[];
+                            self.orderList2=[];
+                            self.rstList.forEach(element => {
+                                tempI =0;
+                                self.newFilterList.forEach(fiElement => {
+                                    //且应该是我们自己的蓝牙才能放到order1中
+                                    if(element.address==fiElement.realAddress ){
+                                        if(element.bleName.indexOf(self.importantkey)>-1){
+                                            element.bleName=fiElement.bleName;
+                                            self.orderList1.push(element);
+                                        }else{
+                                            element.bleName=fiElement.bleName;
+                                            self.orderList2.push(element);
+                                        }
+                                       tempI =1;//外层判断需不要加
+                                       return false;
+                                    }
+                                });
+                                if(tempI==0){
+                                    //是我们要的开头
+                                   if(element.bleName.indexOf(self.importantkey)>-1){
+                                        self.orderList1.push(element);
+                                   }else{
+                                        self.orderList2.push(element);
+                                   }
+                                }
+                            });
+                           
+                            self.wtlLog('blueToothManage','rstString='+rstString);
+                           
+                   } catch (error) {
+                       self.scanStatus =false;
+                       clearInterval(self.timeInterval1);
+                   }
+                }, 800); 
+           }, 500);
+        }
+    },
+    scan(){
+        let self =this;
         if(!self.ifOpenBlueTooth(self)){
             return;
         }
@@ -430,52 +571,104 @@ export default {
       return;
     },
     handleCameraScan(){
-        window.android.openCameraScan();
+        Toast({
+                message: this.envType,
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 2500
+        });
+        //ios
+        if(this.envType=='env_ios'){
+            // let message = {"method":"handleStartScan","":""}
+           
+            try {
+                this.globalSendMsgToIos("handleOpenIosScan","","");//打开二维码扫描
+            } catch (error) {
+                Toast({
+                        message: error,
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 2500
+                }); 
+            }
+        }else{
+            window.android.openCameraScan();
+        }
+        
+    },
+    init_ios(){
+        //1、获取最后连接的蓝牙
+            let self=this;
+            self.isLoading=false;
+            // self.modal6 = false;//关闭
+            //00、获取最后连接的蓝牙
+            var lastBle ='';
+            if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
+                lastBle = '11221||本地开发模拟的数据';
+            }else{
+                //第一步
+                self.globalSendMsgToIos("handSaveReadByFuction","updateBlelistDB","");//请求最后连接蓝牙名字
+                //第二步 在mounted中处理 //2、获取被重命名过的数据
+                // window['updateBlelistDB']
+            }
+            if (window.history && window.history.pushState) {
+                history.pushState(null, null, document.URL);
+                window.addEventListener('popstate', this.goBack, false);
+            } 
+        
+
+    },
+    init_android(){
+        let self=this;
+            self.isLoading=false;
+            // self.modal6 = false;//关闭
+            //00、获取最后连接的蓝牙
+            var lastBle ='';
+            if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
+                lastBle = '11221||本地开发模拟的数据';
+            }else{
+                lastBle = window.android.getLastConnectBleAddress();
+            }
+            //  alert(lastBle)
+            if(lastBle){
+                var arr = lastBle.split("||||");
+                var conbean={};
+                conbean.address =arr[0];
+                conbean.bleName =arr[1];
+                self.lastConnectList.push(conbean);
+            }
+            //11、数据过滤用名字
+            var rsst ='';
+            if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
+                rsst = '';
+            }else{
+                rsst = window.android.getBleEditNames();
+            }
+        
+            self.wtlLog('blueToothManage','TESTFLAG='+self.GLOBAL_CONFIG.TESTFLAG+',lastBle='+lastBle+',rsst='+rsst);
+            var newArr =rsst.split('||||');
+            var temp={};
+            var tempArr=[];
+            for(var i=0;i<newArr.length;i++){
+                temp={};
+                tempArr = newArr[i].split('|||');
+                temp.address=tempArr[0];
+                temp.realAddress=tempArr[1];//真实的蓝牙地址
+                temp.bleName=tempArr[2]; 
+                self.newFilterList.push(temp);
+            }
+        if (window.history && window.history.pushState) {
+            history.pushState(null, null, document.URL);
+            window.addEventListener('popstate', this.goBack, false);
+        } 
     }
   },
   mounted: function () {
-        let self=this;
-        self.isLoading=false;
-        // self.modal6 = false;//关闭
-        //00、获取最后连接的蓝牙
-        var lastBle ='';
-        if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
-            lastBle = '11221||本地开发模拟的数据';
+        if(this.envType=='env_ios'){
+            this.init_ios();
         }else{
-            lastBle = window.android.getLastConnectBleAddress();
+            this.init_android();
         }
-    //  alert(lastBle)
-      if(lastBle){
-        var arr = lastBle.split("||||");
-        var conbean={};
-        conbean.address =arr[0];
-        conbean.bleName =arr[1];
-        self.lastConnectList.push(conbean);
-      }
-        //11、数据过滤用名字
-        var rsst ='';
-        if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
-            rsst = '';
-        }else{
-            rsst = window.android.getBleEditNames();
-        }
-      
-        self.wtlLog('blueToothManage','TESTFLAG='+self.GLOBAL_CONFIG.TESTFLAG+',lastBle='+lastBle+',rsst='+rsst);
-        var newArr =rsst.split('||||');
-        var temp={};
-        var tempArr=[];
-        for(var i=0;i<newArr.length;i++){
-            temp={};
-            tempArr = newArr[i].split('|||');
-            temp.address=tempArr[0];
-            temp.realAddress=tempArr[1];//真实的蓝牙地址
-            temp.bleName=tempArr[2]; 
-            self.newFilterList.push(temp);
-        }
-      if (window.history && window.history.pushState) {
-        history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', this.goBack, false);
-      } 
   },
   created () {
         
@@ -508,6 +701,95 @@ export default {
             }
            
         }
+        //获取ble蓝牙状态
+        window['sendToHtmlBleState']= (scanStatus) => {
+            if('scaning'==scanStatus){
+                self.scaningFlag=true;
+            }else{
+                clearInterval(self.timeInterval1);
+                self.scaningFlag=false;
+                self.showOrder =2;//扫描结束
+            }
+        }
+        
+        window['handBleListToHtml5']= (data) => {
+            //栗子：QJB2,0,5A1AE6BB-1188-4CB8-4193-9DB06B4222A1|||HC-08,0,663E99B6-39F0-CD53-CF0C-BEB6CA13B875|||
+            //扫描中回应
+            if(data){
+                let bleList= data.split("|||");//切割
+                let bleArr =[];
+                let bleInfo ={};
+                let rstLLIST=[];
+                bleList.forEach(element => {
+                    bleArr = element.split(',');
+                    bleInfo['bleName']=bleArr[0];
+                    bleInfo['address']=bleArr[1];
+                    rstLLIST.push(bleInfo);
+                });
+                //ios独立的逻辑处理
+                //赋值
+                self.rstList =rstLLIST;
+                tempI =0;
+                self.orderList1=[];
+                self.orderList2=[];
+                self.rstList.forEach(element => {
+                    tempI =0;
+                    self.newFilterList.forEach(fiElement => {
+                        //且应该是我们自己的蓝牙才能放到order1中
+                        if(element.address==fiElement.realAddress ){
+                            if(element.bleName.indexOf(self.importantkey)>-1){
+                                element.bleName=fiElement.bleName;
+                                self.orderList1.push(element);
+                            }else{
+                                element.bleName=fiElement.bleName;
+                                self.orderList2.push(element);
+                            }
+                            tempI =1;//外层判断需不要加
+                            return false;
+                        }
+                    });
+                    if(tempI==0){
+                        //是我们要的开头
+                        if(element.bleName.indexOf(self.importantkey)>-1){
+                            self.orderList1.push(element);
+                        }else{
+                            self.orderList2.push(element);
+                        }
+                    }
+                });
+                
+            }
+        }
+        
+        window['updateBlelistDB']= (bleLists) => {
+            //
+            //  alert(lastBle)
+            if(bleLists){
+                let tempList =JSON.parse(bleLists);
+                self.updateBlelistDB = tempList;
+                tempList.forEach(element => {
+                    if(element.type==1){
+                         self.lastConnectList.push(element);
+                    }
+                });
+                // var arr = bleLists.split("||||");
+                // var conbean={};
+                // conbean.address =arr[0];
+                // conbean.bleName =arr[1];
+                // self.lastConnectList.push(conbean);
+
+                
+                if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
+                    self.newFilterList=[];
+                }else{
+                    self.newFilterList = tempList;
+                }
+            
+               
+            }
+            
+        }
+
   },
   destroyed(){
       let self =this;
@@ -522,6 +804,10 @@ export default {
         getConnectStatus () {
             return this.$store.state.getConnectStatus;　　//需要监听的数据
         },
+        envType(){
+            return this.$store.state.envType;
+        }
+        
   },watch:{
       //不灵？？？
      getConnectStatus(val, oldVal){

@@ -45,7 +45,8 @@ const state = {
         'wxUuid':'',
         'headImage':''
     },
-    purchasList:[]
+    purchasList:[],
+    envType:''//当前环境
 }
 
 const mutations = {

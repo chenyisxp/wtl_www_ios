@@ -12,6 +12,7 @@ let BASE_CONFIG = {
    TESTFLAG : false,//测试开关
    TESTDEEPTH:0,//深度
    autoRouterTime:5000,//自动前往焊接中页面的时间：ms
+   scaningDuring:15000,//扫描时间
    DirectStart:'DA',
    callWeldTypeData:{//注意utils中有独立crccode注意一起改
        migsyn:{data:'100000',crcCode:'0570',name:'MIG SYN',modelKey:'MIGSYN',url:'/weld_common?type=MIGSYN',newIndex:0},

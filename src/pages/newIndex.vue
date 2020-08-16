@@ -699,7 +699,12 @@ export default {
           clearInterval(that.$store.state.globalGetConnectStatus);
           return;
         }
-          that.$store.state.getConnectStatus =  window.android.getConStatus();
+          if(that.envType=='env_ios'){
+            that.globalSendMsgToIos("handleGetBleStateByIndex","","");
+          }else{
+            that.$store.state.getConnectStatus =  window.android.getConStatus();
+            that.nowConnectStatus =that.$store.state.getConnectStatus;
+          }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
             Toast({
                 message: '连接状态：：'+that.$store.state.getConnectStatus,
@@ -708,7 +713,7 @@ export default {
                 duration: 1000
             });
           }
-        that.nowConnectStatus =that.$store.state.getConnectStatus;
+       
       }, 1000);
      }else{
        that.$store.state.getConnectStatus='connected';
@@ -792,20 +797,25 @@ export default {
       // window.addEventListener("popstate", function(e) {
       //   window.history.pushState(null, null, "#");
       // })
-      this.$nextTick(() => {
-        this.initTouch();
+      that.$nextTick(() => {
+        that.initTouch();
       })
       if (window.history && window.history.pushState) {
         history.pushState(null, null, document.URL);
-        window.addEventListener('popstate', this.goBack, false);
+        window.addEventListener('popstate', that.goBack, false);
       } 
+      window['sendToIndexBleState']=(data)=>{
+        that.nowConnectStatus=data;
+      }
   },
   created () {
       this.pageHeight=window.innerHeight+'px';
     
   },
   computed:{
-       
+      envType(){
+        return this.$store.state.envType;　　//需要监听的数据
+      }
   },destroyed(){
     console.log('1111111:'+this.nowMainIndex)
     clearInterval(this.timeInterval1);

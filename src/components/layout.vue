@@ -203,6 +203,23 @@ export default {
       }
   },
   mounted () {
+    console.log('layout=====')
+    var userAgent = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod|apple|webkit/.test(userAgent )) {
+      Toast({
+            message: "Ios客户端",
+            position: 'middle',
+            iconClass: 'icon icon-success',
+            duration: 2000
+      });
+        // alert("Ios客户端");
+       this.$store.state.envType = 'env_ios'
+    } else if (/android/.test(userAgent )) {
+        // alert("Android客户端");
+        this.$store.state.envType = 'env_android'
+    }else{
+        this.$store.state.envType = 'env_pc'
+    }
     // history.pushState(null, null, document.URL); 
     // window.addEventListener('popstate', function() { 
     // history.pushState(null, null, document.URL); 
@@ -213,13 +230,18 @@ export default {
     }else{
       //测试模式不该开启
       // alert(this.GLOBAL_CONFIG.TESTFLAG)
+      console.log(this.envType)
       if(!this.GLOBAL_CONFIG.TESTFLAG){
           this.$store.state.globalGetConnectStatus = setInterval(() => {
             if(this.GLOBAL_CONFIG.TESTFLAG){
               clearInterval(this.$store.state.globalGetConnectStatus);
               return;
             }
-            this.$store.state.getConnectStatus =  window.android.getConStatus();
+            if(this.envType=='env_ios'){
+              this.globalSendMsgToIos("handleGetBleStateByLayout","","");
+            }else{
+              this.$store.state.getConnectStatus =  window.android.getConStatus();
+            }
             if(this.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
                Toast({
                   message: '连接状态：：'+this.$store.state.getConnectStatus,
@@ -235,6 +257,9 @@ export default {
         this.$store.state.getConnectStatus ='connected';//本地开发环境
       }
     }
+    window['sendToLayloutBleState']= (scanStatus) => {
+        this.$store.state.getConnectStatus=scanStatus;
+    }
   },
   destroyed: function () {
      clearTimeout(this.autoTimeoutFlag);
@@ -244,6 +269,9 @@ export default {
   computed: {
       isConnectStatus () {
         return this.$store.state.getConnectStatus;　　//需要监听的数据
+      },
+      envType(){
+        return this.$store.state.envType;　　//需要监听的数据
       }
     },
   watch: {
