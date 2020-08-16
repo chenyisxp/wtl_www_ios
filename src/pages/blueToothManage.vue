@@ -130,11 +130,12 @@ export default {
         newFilterList:[],
         orderList1:[],
         orderList2:[],
-        importantkey:'WELD',//关键字key
+        importantkey:'',//关键字key
         moreFlag:false,
         rstMsg:'',
         stopScanTimer:{},
         ios_bleList:'',
+        timeDelayer:{},
         updateBlelistDB:[]//备注连接过的json数据
 
      } 
@@ -204,9 +205,27 @@ export default {
         });
     },
     setBleConnect(address,bleName){
+        if(this.envType=='env_ios'){
+            this.setBleConnect_ios(address,bleName);
+        }else{
+            this.setBleConnect_android(address,bleName);
+        }
+    },
+    setBleConnect_ios(address,bleName){
+        if(this.$store.state.nowConnectAddress == address && this.$store.state.getConnectStatus=='connected'){
+            this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
+        }else{
+            //提前记录名字把 
+            this.$store.state.nowConnectMachine=bleName;//全局存储机器名字
+            this.$store.state.nowConnectAddress =address;
+            this.globalSendMsgToIos("handleConnect",address,"")
+        } 
+    },
+    setBleConnect_android(address,bleName){
         let self =this;
         self.$store.state.routerOprete=1;
         self.isLoading =true;
+        
         // alert(self.ifOpenBlueTooth(self));
         if(!self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
             if(!self.ifOpenBlueTooth(self)){
@@ -241,27 +260,28 @@ export default {
                 }else if(self.$store.state.getConnectStatus =='connected'){
                     self.isLoading =false;
                     if(self.envType=='env_ios'){
-                        let bleInfo ={
-                            address:self.$store.state.nowConnectAddress,
-                            remarkInfo:self.$store.state.nowConnectMachine,
-                            realAddress:self.$store.state.nowConnectAddress,
-                            type:1
-                        }
-                        let step = 0;
-                        self.updateBlelistDB.forEach(element => {
+                        self.bleInfoHistory();
+                        // let bleInfo ={
+                        //     address:self.$store.state.nowConnectAddress,
+                        //     remarkInfo:self.$store.state.nowConnectMachine,
+                        //     realAddress:self.$store.state.nowConnectAddress,
+                        //     type:1
+                        // }
+                        // let step = 0;
+                        // self.updateBlelistDB.forEach(element => {
                             
-                            if(element.address == bleInfo.address){
-                                step=1;
-                                element.type=1;
-                            }else{
-                                element.type=0;
-                            }
-                        });
-                        if(step==0){
-                            self.updateBlelistDB.push(bleInfo);
-                        }
-                        // self.globalSendMsgToIos("handSaveWrite","lastBleInfo",bleInfo);
-                        self.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(self.updateBlelistDB));
+                        //     if(element.address == bleInfo.address){
+                        //         step=1;
+                        //         element.type=1;
+                        //     }else{
+                        //         element.type=0;
+                        //     }
+                        // });
+                        // if(step==0){
+                        //     self.updateBlelistDB.push(bleInfo);
+                        // }
+                        // // self.globalSendMsgToIos("handSaveWrite","lastBleInfo",bleInfo);
+                        // self.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(self.updateBlelistDB));
                     }else{
                         // String address,String remarkInfo,String realAddress,String type
                         window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
@@ -274,7 +294,12 @@ export default {
           if(!self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
                //TODO 1、应该先关闭（是否可以判断是否连接着） 2、重新连接新的
                //window.android.closeBleConnect();
-               window.android.setBleConnect(address);
+               if(self.envType=='env_ios'){
+                    this.globalSendMsgToIos("handleConnect",address,"")
+               }else{
+                    window.android.setBleConnect(address);
+               }
+               
           }
           
           self.$store.state.nowConnectMachine=bleName;//全局存储机器名字
@@ -292,6 +317,31 @@ export default {
             return;
           }
          
+    },
+    bleInfoHistory(){
+        let self =this;
+       let bleInfo ={
+            address:self.$store.state.nowConnectAddress,
+            bleName:self.$store.state.nowConnectMachine,
+            remarkInfo:self.$store.state.nowConnectMachine,
+            realAddress:self.$store.state.nowConnectAddress,
+            type:1
+        }
+        let step = 0;
+        self.updateBlelistDB.forEach(element => {
+            
+            if(element.address == bleInfo.address){
+                step=1;
+                element.type=1;
+            }else{
+                element.type=0;
+            }
+        });
+        if(step==0){
+            self.updateBlelistDB.push(bleInfo);
+        }
+        // self.globalSendMsgToIos("handSaveWrite","lastBleInfo",bleInfo);
+        self.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(self.updateBlelistDB)); 
     },
     updateHtmlBleList(){
         /**
@@ -332,6 +382,9 @@ export default {
             //停止扫描
             if(this.envType=='env_ios'){
                 this.globalSendMsgToIos("handleStopScan","","");
+                this.scaningFlag=false;
+                this.showOrder =2;//扫描结束
+                clearInterval(this.timeInterval1)
             }else{
                 //TODO 安卓
             }
@@ -358,87 +411,9 @@ export default {
         self.timeInterval1 = setInterval(() => {
             self.globalSendMsgToIos("handleGetBleState","","");
         },800);
+        self.openStopScanTimer();
         //！！！！剩余逻辑在window['handBleListToHtml5']中
-        return;
-        if(scanStatus){
-            var rstLLIST=[];
-            setTimeout(() => {
-               var tempI=0;
-               var rstString ='';
-                self.timeInterval1 = setInterval(() => {
-                    //扫描中
-                   try {
-                       let scanStatus ='';
-                        if(self.envType=='env_ios'){
-                            scanStatus =self.globalSendMsgToIos("handleGetBleState","","");
-                        }else{
-                            scanStatus = window.android.getScanBtnText();
-                        }
-                        self.openStopScanTimer();
-                       if('scaning'==scanStatus){
-                             self.scaningFlag=true;
-                        }else{
-                            if(self.orderList2.length>0){//是否有more的
-                                     self.moreFlag=true;
-                            }
-                             clearInterval(self.timeInterval1);
-                             self.scaningFlag=false;
-                             self.showOrder =2;//扫描结束
-                           
-                        }
-                        //结果处理
-                          try {
-                               rstString =window.android.getBleList();
-                               rstLLIST = JSON.parse(rstString);
-                            } catch (error) {
-                                rstLLIST=[];
-                                Toast({
-                                        message: 'FBTM:Data parsing exception returned!',
-                                        position: 'middle',
-                                        iconClass: 'icon icon-success',
-                                        duration: 1500
-                                });
-                            }
-                            //赋值
-                            self.rstList =rstLLIST;
-                            tempI =0;
-                            self.orderList1=[];
-                            self.orderList2=[];
-                            self.rstList.forEach(element => {
-                                tempI =0;
-                                self.newFilterList.forEach(fiElement => {
-                                    //且应该是我们自己的蓝牙才能放到order1中
-                                    if(element.address==fiElement.realAddress ){
-                                        if(element.bleName.indexOf(self.importantkey)>-1){
-                                            element.bleName=fiElement.bleName;
-                                            self.orderList1.push(element);
-                                        }else{
-                                            element.bleName=fiElement.bleName;
-                                            self.orderList2.push(element);
-                                        }
-                                       tempI =1;//外层判断需不要加
-                                       return false;
-                                    }
-                                });
-                                if(tempI==0){
-                                    //是我们要的开头
-                                   if(element.bleName.indexOf(self.importantkey)>-1){
-                                        self.orderList1.push(element);
-                                   }else{
-                                        self.orderList2.push(element);
-                                   }
-                                }
-                            });
-                           
-                            self.wtlLog('blueToothManage','rstString='+rstString);
-                           
-                   } catch (error) {
-                       self.scanStatus =false;
-                       clearInterval(self.timeInterval1);
-                   }
-                }, 800); 
-           }, 500);
-        }
+
     },
     scan(){
         let self =this;
@@ -664,10 +639,11 @@ export default {
     }
   },
   mounted: function () {
-        if(this.envType=='env_ios'){
-            this.init_ios();
+        let self =this;
+        if(self.envType=='env_ios'){
+            self.init_ios();
         }else{
-            this.init_android();
+            self.init_android();
         }
   },
   created () {
@@ -710,11 +686,17 @@ export default {
                 self.scaningFlag=false;
                 self.showOrder =2;//扫描结束
             }
+            if('connected'==scanStatus){
+
+            }
+
+
         }
-        
+        //ios蓝牙扫描结果
         window['handBleListToHtml5']= (data) => {
             //栗子：QJB2,0,5A1AE6BB-1188-4CB8-4193-9DB06B4222A1|||HC-08,0,663E99B6-39F0-CD53-CF0C-BEB6CA13B875|||
             //扫描中回应
+            let tempI =0;
             if(data){
                 let bleList= data.split("|||");//切割
                 let bleArr =[];
@@ -815,8 +797,12 @@ export default {
             if(val =='connected'){
                 // alert(val)
                 self.isLoading =false;
-                //记录最新的蓝牙连接
-                window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
+                if(self.envType=='env_ios'){
+                    self.bleInfoHistory();
+                }else{
+                    //记录最新的蓝牙连接
+                    window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
+                }
                 clearTimeout(self.connectFailedInfo);
                 self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
                
