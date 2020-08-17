@@ -136,7 +136,9 @@ export default {
         stopScanTimer:{},
         ios_bleList:'',
         timeDelayer:{},
-        updateBlelistDB:[]//备注连接过的json数据
+        updateBlelistDB:[],//备注连接过的json数据
+        lastBleConnectTimer:{},
+        havedScanClick:true//是否点击处理蓝牙后台自动扫描问题
 
      } 
   },
@@ -392,6 +394,9 @@ export default {
     },
     handleScan(){
         if(this.envType=='env_ios'){
+            this.globalSendMsgToIos("handleStopScan","","");
+            this.havedScanClick=false;
+            // clearTimeout(this.lastBleConnectTimer);
             this.scan_ios();
         }else{
             this.scan();
@@ -572,8 +577,13 @@ export default {
         
     },
     init_ios(){
-        //1、获取最后连接的蓝牙
             let self=this;
+            //0、默认开启蓝牙扫描 为了可以连接上次记忆的蓝牙
+            // self.globalSendMsgToIos("handleStartScan","","");
+            // self.lastBleConnectTimer =setTimeout(() => {
+            //     self.globalSendMsgToIos("handleStopScan","","");
+            // }, 100000);
+            //1、获取最后连接的蓝牙
             self.isLoading=false;
             // self.modal6 = false;//关闭
             //00、获取最后连接的蓝牙
@@ -694,6 +704,10 @@ export default {
         }
         //ios蓝牙扫描结果
         window['handBleListToHtml5']= (data) => {
+            if(self.havedScanClick){
+                //规避后台扫描的
+                return;
+            }
             //栗子：QJB2,0,5A1AE6BB-1188-4CB8-4193-9DB06B4222A1|||HC-08,0,663E99B6-39F0-CD53-CF0C-BEB6CA13B875|||
             //扫描中回应
             let tempI =0;

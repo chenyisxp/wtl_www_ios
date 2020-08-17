@@ -225,7 +225,6 @@ new Vue({
       }
    },
    mounted () {
-    
     //禁止使用返回键
       // window.history.pushState(null, null, "#");
       // window.addEventListener("popstate", function(e) {

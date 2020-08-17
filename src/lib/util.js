@@ -1213,12 +1213,100 @@ Array.prototype.in_array = function (element) {
                         }
                 }
             } 
-            //公共 ：安卓蓝牙交互出入口
+            //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
                 console.log(sendData)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
+               
                 if(!this.GLOBAL_CONFIG.TESTFLAG){
-                    window.android.callSendDataToBle(pageFrom,sendData,crc);
+                    Toast({
+                        message: this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 2500
+                      });
+                    if(true){
+                        //ios 逻辑需借鉴后端的
+                        // let directive =sendData.substring(2,4);
+                        //0、初始化 开始定时器
+                        // if(!"FF".equals(directive)){//响应不需要开启定时器
+                            // MainActivity.requestFromHtmlInit(pageFrom, data, crcCode);
+                            // checkPage.put(crcCode, pageFrom);//页面来源
+                            // checkStatus.put(crcCode, false);//默认请求还未成功
+                            // checkData.put(crcCode, data);//要发送的数据
+                            // checkTime.put(crcCode, new Date().getTime());//时间戳
+                            // checkSendTimes.put(crcCode, 1);
+                        // }
+                        Toast({
+                            message: '111',
+                            position: 'middle',
+                            iconClass: 'icon icon-success',
+                            duration: 1500
+                          });
+                        //1、改写直接 发字符串
+                        // String regex = "(.{2})";
+                        // data = data.replaceAll (regex, "$1 ");
+                        // target_chara.setValue(HexCommandtoByte(data.getBytes()));
+                        // mBluetoothLeService.writeCharacteristic(target_chara);
+                        // if(!"FF".equals(directive)){//响应不需要开启定时器
+                            // initTimer();
+                            // private static void initTimer(){
+                            //     task = new TimerTask() { 
+                            //         @Override 
+                            //         public void run() {
+                            //             Boolean shutDownFlag =false;//终止的标识
+                            //             //检查是否需要重发
+                            //             for(String crcCode :checkStatus.keySet()){
+                            //                 if(!checkStatus.get(crcCode)){
+                            //                     shutDownFlag =true;
+                            //                     //是否超出总的重发次数
+                            //                     if(checkSendTimes.get(crcCode)<=limitTimes){
+                            //                         //是否大于四百ms
+                            //                         if((new Date().getTime() -checkTime.get(crcCode))>sechelTime){
+                            //                             //更新时间戳
+                            //                             checkTime.put(crcCode,new Date().getTime());
+                            //                             //更新重发次数
+                            //                             checkSendTimes.put(crcCode,checkSendTimes.get(crcCode)+1);
+                            //                             //重发给蓝牙消息
+                            //                             String regex = "(.{2})";
+                            //                             String data = checkData.get(crcCode).replaceAll (regex, "$1 ");
+                            //                             target_chara.setValue(HexCommandtoByte(data.getBytes()));
+                            //                             mBluetoothLeService.writeCharacteristic(target_chara);
+                            //                         }
+                            //                     }
+                            //                 }
+                            //             }
+                            //             if(!shutDownFlag){
+                            //                 //没有未完成的任务 停止
+                            //                 task.cancel();
+                            //             }
+                            //         } 
+                            //     }; 
+                            //     timer =new Timer();
+                            //     timer.schedule(task, sechelTime, sechelTime);
+                            // }
+                        // }
+                        Toast({
+                            message: '888转被发售',
+                            position: 'middle',
+                            iconClass: 'icon icon-success',
+                            duration: 1500
+                          });
+                        try {
+                            var message = {"method":"handleSendData","sendDt":sendData}
+                            window.webkit.messageHandlers.interOp.postMessage(message) 
+                        } catch (error) {
+                            Toast({
+                                message: error,
+                                position: 'middle',
+                                iconClass: 'icon icon-success',
+                                duration: 1500
+                              });
+                        }
+                    }else{
+                        window.android.callSendDataToBle(pageFrom,sendData,crc);
+                    }
+                    
                 }
             } 
             //公共 ：10机制数转成 高低位按规则变动的 16进制数

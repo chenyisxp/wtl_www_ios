@@ -214,6 +214,7 @@ export default {
       });
         // alert("Ios客户端");
        this.$store.state.envType = 'env_ios'
+       this.globalSendMsgToIos("handleStartScan","","");
     } else if (/android/.test(userAgent )) {
         // alert("Android客户端");
         this.$store.state.envType = 'env_android'

@@ -251,6 +251,12 @@ export default {
                 ,200)
     },
     newIndexToAndroid(data,crcCode){
+        // Toast({
+        //   message: 'callSendDataToBleUtil',
+        //   position: 'middle',
+        //   iconClass: 'icon icon-success',
+        //   duration: 2500
+        // });
        console.log(crcCode);
        //测试模式that
        if(this.GLOBAL_CONFIG.TESTFLAG){
@@ -302,7 +308,6 @@ export default {
                 }
               }
           }else{
-           
             this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
           }
           
@@ -337,6 +342,12 @@ export default {
               //不是来自按钮点击 是单片机自动上发的话 不做跳转 告诉收到
                 //  alert('来了');
                   var invalue =data.substring(data.length-4,data.length);
+                   Toast({
+                    message: '111',
+                    position: 'middle',
+                    iconClass: 'icon icon-success',
+                    duration: 2500
+                  });
                   that.callSendDataToBleUtil('newIndex','DAFF'+invalue+that.crcModelBusClacQuery('FF'+invalue, true),invalue);
                   return;
             }
@@ -345,6 +356,12 @@ export default {
                 //发送确认收到的指令给安卓
                 var invalue =data.substring(data.length-4,data.length);
                 //新规则: 指令ff+crc+检验crc   测试模式不发送
+                Toast({
+                    message: '222',
+                    position: 'middle',
+                    iconClass: 'icon icon-success',
+                    duration: 2500
+                  });
                 that.callSendDataToBleUtil('newIndex','DAFF'+invalue+that.crcModelBusClacQuery('FF'+invalue, true),invalue);
                 that.isLoading =false;
                 clearTimeout(that.loadingTimer);
