@@ -708,7 +708,6 @@ export default {
   },
   mounted: function () {
      let that = this;
-     
      if(!that.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
       clearInterval(that.$store.state.globalGetConnectStatus);
       that.$store.state.globalGetConnectStatus = setInterval(() => {

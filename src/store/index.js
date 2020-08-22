@@ -46,7 +46,8 @@ const state = {
         'headImage':''
     },
     purchasList:[],
-    envType:''//当前环境
+    envType:'',//当前环境
+    nowPageFrom:''
 }
 
 const mutations = {

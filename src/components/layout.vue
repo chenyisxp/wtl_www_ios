@@ -38,8 +38,9 @@ export default {
       isShowFooter:true,
       transitionName:'',
       autoTimeoutFlag:{},
-      weldingTimer:{}
+      weldingTimer:{},
       // globalGetConnectStatus:{}
+      
     }
   },
   methods: {
@@ -261,6 +262,7 @@ export default {
     window['sendToLayloutBleState']= (scanStatus) => {
         this.$store.state.getConnectStatus=scanStatus;
     }
+    
   },
   destroyed: function () {
      clearTimeout(this.autoTimeoutFlag);
@@ -358,7 +360,7 @@ export default {
         this.$router.push(data);
     }
     window['broastFromAndroid'] = (data) => {
-      // alert("main1"+data); 
+       
     //  alert(this.$store.state.AdroidNewMsg+'||||'+this.$store.state.AdroidOldMsg);
       //全局都要 改造一起返回
       if(this.$store.state.AdroidOldMsg){
@@ -399,6 +401,7 @@ export default {
       //   this.buildWeldingData(data);
       // }, 2000);
     }
+    
     // console.log('mainjs.$store.state.weldingCur'+this.$store.state.weldingCur)
   }
 }
