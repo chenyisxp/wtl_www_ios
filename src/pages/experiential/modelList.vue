@@ -81,9 +81,13 @@ export default {
         if(data.length!=16){
           return;
         }else if(oldCrc!=this.crcModelBusClacQuery(data.substring(2,data.length-4), true)){//crc校验
-              // console.log('data.substring(data.length-4,data.length+1)::'+this.crcModelBusClacQuery(data.substring(2,data.length-4), true))
-          window.android.callSendDataToBle('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
-          return;
+            // console.log('data.substring(data.length-4,data.length+1)::'+this.crcModelBusClacQuery(data.substring(2,data.length-4), true))
+            if(this.envType=='env_ios'){
+              this.callSendDataToBleUtil('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
+            }else{
+              window.android.callSendDataToBle('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
+            }
+            return;
         }
         //发送确认秦请求
         
@@ -153,7 +157,9 @@ export default {
    
   },
   computed:{
-       
+       envType(){
+         return this.$store.state.envType;
+       }
   }
 }
 </script>

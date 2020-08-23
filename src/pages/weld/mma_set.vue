@@ -2,7 +2,7 @@
   <div class="mmaSet">
     <div class="header"><Icon type="ios-arrow-back" @click="go('/weldManage')"/>MMA SET UP</div>
     <div class="setlist">
-        <div v-for="(item,index) in setlist" class="li">
+        <div v-for="(item,index) in setlist" class="li" :key="index">
             <div class="left"> 
                 {{item.key}}
             </div>

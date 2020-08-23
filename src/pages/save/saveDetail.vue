@@ -44,18 +44,18 @@
                     
                 </div>
                 <ul class="params">
-                    <li v-for="(item,index) in nowTypeList"  :class="item.typeName=='GAS'&& MIG_MATERIAL !=0?'eleUnShow':''">
+                    <li v-for="(item,index) in nowTypeList"  :class="item.typeName=='GAS'&& MIG_MATERIAL !=0?'eleUnShow':''" :key="'p_'+index">
                         <div class="p-l-l">{{changeStrShowName(item.typeName)}}</div>
                         <div class="p-l-r">
-                             <span v-for="(temp,newIdx) in item.comList" v-if="UnitFlag==0 && item.chooseKey==temp.id">
+                             <span v-for="(temp,newIdx) in item.comList" v-if="UnitFlag==0 && item.chooseKey==temp.id" :key="'c_'+newIdx">
                             {{temp.value}}
                             </span>
-                            <span v-for="(temp,newIdx) in item.inchComList" v-if="UnitFlag==1 && item.chooseKey==temp.id">
+                            <span v-for="(temp,newIdx) in item.inchComList" v-if="UnitFlag==1 && item.chooseKey==temp.id" :key="'g_'+newIdx">
                             {{temp.value}}
                             </span>
                         </div>
                     </li>
-                    <li v-for="(item,index) in  suppllytments" v-if="name=='TIG MAN'">
+                    <li v-for="(item,index) in  suppllytments" v-if="name=='TIG MAN'" :key="'d_'+index">
                         <div class="p-l-l">{{item.typeName}}</div>
                         <div class="p-l-r">
                              <span>

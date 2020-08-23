@@ -472,7 +472,7 @@ export default {
                     myWidth=0;
                 }
                 // this.nowPosionX=Math.round(this.block*(Math.round(myWidth)/100));//四舍五入取舍
-                console.log('mywidth'+myWidth);//63.70370370370371
+                // console.log('mywidth'+myWidth);//63.70370370370371
                 // this.nowPosionX=Math.round(this.block*(Math.round(myWidth)/100))+this.min;//电流没有小数点
                 this.nowPosionX=Math.round(this.block*(Math.round(myWidth)/100)*(1/this.paramIncreaseDistance))/(1/this.paramIncreaseDistance)+this.min;//四舍五入保留一位小数
                 console.log('nowposionx:'+this.nowPosionX)

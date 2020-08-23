@@ -1957,9 +1957,12 @@ export default {
     this.witdhParam = window.innerWidth;
   },
   computed: {
-     getAndriodNewMsg () {
+      getAndriodNewMsg () {
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
-        }
+      },
+      envType(){
+        return this.$store.state.envType;　　//需要监听的数据
+      }
   },
   watch: {
         getAndriodNewMsg(val, oldVal){
@@ -2013,10 +2016,13 @@ export default {
         window.removeEventListener('popstate', this.goBack, false);
        clearTimeout(this.autoTimeoutFlag);
       //  window.removeEventListener('popstate', this.go('/newIndex'), false);
-      //记录最后一次修改的字段
+      //记录最后一次修改的字段20200823 没用了吗
       if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
-        window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
-        
+       if(this.envType=='env_ios'){
+         this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
+       }else{
+         window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
+       }
       }
   }
 };

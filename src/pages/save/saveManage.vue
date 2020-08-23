@@ -17,6 +17,7 @@
 <script>
 import { CellSwipe ,Indicator,Toast} from "mint-ui";
 import Loading from "@/components/base/Loading";
+import index from '../../store';
 export default {
   name: "",
   components: {Loading},
@@ -163,7 +164,12 @@ export default {
               //新规则: 指令ff+crc+检验crc
           
               if(!openTestFlag){
-                  window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
+                  if(this.envType=='env_ios'){
+                    this.callSendDataToBleUtil('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue)
+                  }else{
+                      window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
+                  }
+                  
               }
                 // alert(JSON.stringify(this.$store.state.rstInfo))
               this.$router.push({path:'/saveDetail',query:{
@@ -266,18 +272,34 @@ export default {
       // newString ="test_m_1||||test_m_2||||test_m_3||||test_m_41||||test_m_5||||test_m_6||||test_m_7||||test_m_8||||test_m_9";
       newString="";
     }else{
-      newString =  window.android.callMemoryRemarks();
+      if(envType=='env_ios'){
+        this.callMemoryRemarks.forEach((element,i) => {
+          if(i<9){
+             this.mList[i].remarksTtile=element.remarkInfo || '';
+          }
+        });
+      }else{
+        newString =  window.android.callMemoryRemarks();
+        var remarksList =(newString+'').split('||||');
+        for(var i=0;i<9;i++){
+          this.mList[i].remarksTtile=remarksList[i] || '';
+        }
+      }
     }
-    var remarksList =(newString+'').split('||||');
-    for(var i=0;i<9;i++){
-      this.mList[i].remarksTtile=remarksList[i] || '';
-    }
+   
   },
   created() {
     //模拟请求安卓完成 九个通道别名的获取
    
   },
-  computed: {},
+  computed: {
+    envType(){
+      return this.$store.state.envType;
+    },
+    callMemoryRemarks(){
+      return this.$store.state.callMemoryRemarks
+    }
+  },
   destroyed(){
     this.isLoading=false;
     clearTimeout(this.LoadingTimer);

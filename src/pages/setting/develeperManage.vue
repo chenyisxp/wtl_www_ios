@@ -179,7 +179,11 @@ export default {
         }
         //发送确认秦请求
         if(!this.GLOBAL_CONFIG.TESTFLAG){
-            window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+            if(this.envType=='env_ios'){
+                this.callSendDataToBleUtil('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc)
+            }else{
+                window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+            }
         } 
         //有空的情况
         this.$store.state.getWeldingInfoTimes = this.$store.state.getWeldingInfoTimes?this.$store.state.getWeldingInfoTimes:0+1;
@@ -233,7 +237,9 @@ export default {
   },
   created() {},
   computed: {
-       
+    envType(){
+        return this.$store.state.envType;　　//需要监听的数据
+    }
   },
   watch: {
     secdTime(){

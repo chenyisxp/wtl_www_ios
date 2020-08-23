@@ -99,14 +99,22 @@ export default {
           return;
         }else if(oldCrc!=this.crcModelBusClacQuery(data.substring(2,data.length-4), true)){//crc校验
               // console.log('data.substring(data.length-4,data.length+1)::'+this.crcModelBusClacQuery(data.substring(2,data.length-4), true))
-          window.android.callSendDataToBle('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
+          if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+            this.callSendDataToBleUtil('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
+          }else{
+            window.android.callSendDataToBle('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
+          }
           return;
         }
         //发送确认秦请求
         
         if(!this.GLOBAL_CONFIG.TESTFLAG){
           //  alert(111)
+          if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+            this.callSendDataToBleUtil('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+          }else{
             window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+          }
         } 
         //有空的情况
         // this.$store.state.getWeldingInfoTimes = this.$store.state.getWeldingInfoTimes?this.$store.state.getWeldingInfoTimes:0+1;
@@ -172,7 +180,11 @@ export default {
             var invalue =data.substring(data.length-4,data.length);
             //新规则: 指令ff+crc+检验crc   测试模式不发送
             if(!this.GLOBAL_CONFIG.TESTFLAG){
-              window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
+                if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                  this.callSendDataToBleUtil('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
+                }else{
+                  window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
+                }
             } 
             
         }      
@@ -262,7 +274,32 @@ export default {
     window['sendToLayloutBleState']= (scanStatus) => {
         this.$store.state.getConnectStatus=scanStatus;
     }
+    //提前获取keyId
+    this.globalSendMsgToIos("handSaveReadByFuction","tig_man_nowChooseLineKey","");//请求最后连接蓝牙名字
+    window['tig_man_nowChooseLineKey']= (tigManChooseLineKey) => {
+        this.$store.state.tigManChooseLineKey=tigManChooseLineKey;
+    }
+    //提前取
     
+    this.globalSendMsgToIos("handSaveReadByFuction","callMemoryRemarks","");//请求最后连接蓝牙名字
+    window['callMemoryRemarks']= (data) => {
+      if(data){
+        this.$store.state.callMemoryRemarks=JSON.parse(data);
+      }else{
+        //需要补充数据 类似安卓里的初次建表
+        let db =[];
+        let cv ={};
+        for(let i=1;i<10;i++){
+          cv ={};
+          cv[pupNum]=i;//通道
+          cv[remarkInfo]=NONE; //备注
+          db.push(cv);
+        }
+        this.$store.state.callMemoryRemarks=db;
+        //通知
+        this.globalSendMsgToIos("handSaveWrite","callMemoryRemarks",JSON.stringify(db));
+      }
+    }
   },
   destroyed: function () {
      clearTimeout(this.autoTimeoutFlag);
@@ -298,7 +335,11 @@ export default {
                //TODO 1、应该先关闭（是否可以判断是否连接着） 2、重新连接新的
                //window.android.closeBleConnect();
               setTimeout(() => {
-                 window.android.setBleConnect(this.$store.state.nowConnectAddress);
+                 if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                    this.globalSendMsgToIos("handleConnect",this.$store.state.nowConnectAddress,"")
+                 }else{
+                   window.android.setBleConnect(this.$store.state.nowConnectAddress);
+                 }
               }, 2000);
                
           }

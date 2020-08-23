@@ -47,7 +47,10 @@ const state = {
     },
     purchasList:[],
     envType:'',//当前环境
-    nowPageFrom:''
+    nowPageFrom:'',
+    updateBlelistDB:[],//蓝牙连接或则重命名的数据
+    tigManChooseLineKey:'',
+    callMemoryRemarks:[]
 }
 
 const mutations = {

@@ -1537,7 +1537,11 @@ export default {
       console.log(this.keyArr)
       console.log(this.nowChooseLineKey);
       //记录选中的 避免每次刷新后重置选项
-      window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
+      if(this.envType=='env_ios'){
+         this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
+      }else{
+         window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
+      }
       //1、画选中的那条线
       // this.drawCharMainContrl(this.nowModelTypeName);
       //11、改造为 图片替换成当前模式的图片即可 不画图了
@@ -1852,9 +1856,14 @@ export default {
         this.nowChooseLineKey = this.constant.weld_cur;//默认选中 电流且不能切换了
     }else{
         if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
-        
-          var result =window.android.queryKeyStorage('tig_man_nowChooseLineKey');
-          if(result!='empty'){
+          var result ='';
+          if(this.envType=='env_ios'){
+            result=this.tigManChooseLineKey;
+          }else{
+            result =window.android.queryKeyStorage('tig_man_nowChooseLineKey');
+          }
+          
+          if(result && result!='empty'){
             this.nowChooseLineKey=result;
           }else{
              this.nowChooseLineKey = this.constant.weld_cur;//默认选中
@@ -1899,9 +1908,15 @@ export default {
     this.witdhParam = window.innerWidth;
   },
   computed: {
-     getAndriodNewMsg () {
+      getAndriodNewMsg () {
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
-        }
+      },
+      envType(){
+        return this.$store.state.envType;　　//需要监听的数据
+      },
+      tigManChooseLineKey(){
+        return this.$store.state.tigManChooseLineKey;
+      }
   },
   watch: {
         getAndriodNewMsg(val, oldVal){
@@ -1956,8 +1971,11 @@ export default {
       //  window.removeEventListener('popstate', this.go('/newIndex'), false);
       //记录最后一次修改的字段
       if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
-        window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
-        
+        if(this.envType=='env_ios'){
+            this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
+        }else{
+            window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
+        }
       }
   }
 };

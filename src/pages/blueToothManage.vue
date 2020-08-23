@@ -186,7 +186,13 @@ export default {
                 }
             });
             //2、记录最后一次连接的设备
-            window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
+            if(self.envType=='env_ios'){
+                self.bleInfoHistory();
+            }else{
+                // String address,String remarkInfo,String realAddress,String type
+                window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
+            }
+            
         }
         self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine}});
         
@@ -263,27 +269,6 @@ export default {
                     self.isLoading =false;
                     if(self.envType=='env_ios'){
                         self.bleInfoHistory();
-                        // let bleInfo ={
-                        //     address:self.$store.state.nowConnectAddress,
-                        //     remarkInfo:self.$store.state.nowConnectMachine,
-                        //     realAddress:self.$store.state.nowConnectAddress,
-                        //     type:1
-                        // }
-                        // let step = 0;
-                        // self.updateBlelistDB.forEach(element => {
-                            
-                        //     if(element.address == bleInfo.address){
-                        //         step=1;
-                        //         element.type=1;
-                        //     }else{
-                        //         element.type=0;
-                        //     }
-                        // });
-                        // if(step==0){
-                        //     self.updateBlelistDB.push(bleInfo);
-                        // }
-                        // // self.globalSendMsgToIos("handSaveWrite","lastBleInfo",bleInfo);
-                        // self.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(self.updateBlelistDB));
                     }else{
                         // String address,String remarkInfo,String realAddress,String type
                         window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
@@ -322,10 +307,11 @@ export default {
     },
     bleInfoHistory(){
         let self =this;
-       let bleInfo ={
+        let bleInfo ={
             address:self.$store.state.nowConnectAddress,
             bleName:self.$store.state.nowConnectMachine,
             remarkInfo:self.$store.state.nowConnectMachine,
+            realBleName:self.$store.state.nowConnectMachine,
             realAddress:self.$store.state.nowConnectAddress,
             type:1
         }
@@ -345,6 +331,7 @@ export default {
         // self.globalSendMsgToIos("handSaveWrite","lastBleInfo",bleInfo);
         self.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(self.updateBlelistDB)); 
     },
+    //废弃
     updateHtmlBleList(){
         /**
          * 流程梳理
@@ -762,6 +749,7 @@ export default {
             //  alert(lastBle)
             if(bleLists){
                 let tempList =JSON.parse(bleLists);
+                self.$store.state.updateBlelistDB=tempList;
                 self.updateBlelistDB = tempList;
                 tempList.forEach(element => {
                     if(element.type==1){

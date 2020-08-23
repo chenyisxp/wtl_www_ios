@@ -152,11 +152,13 @@ export default {
               //发送确认收到的指令给安卓
               var invalue =data.substring(data.length-4,data.length);
               //新规则: 指令ff+crc+检验crc
-          
               if(!openTestFlag){
-                  window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
+                  if(this.envType=='env_ios'){
+                    this.callSendDataToBleUtil('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue)
+                  }else{
+                      window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
+                  }
               }
-              
               this.$router.push({path:'/memoryDetail',query:{modelCrc:tmpRstcrc.crcCode,name:tmpRstcrc.name,pupnum:index,remarksText:this.remarksText}});
           } 
     },
@@ -260,18 +262,33 @@ export default {
       // newString ="empty||||test_m_2||||test_m_3||||test_m_41||||test_m_5||||test_m_6||||test_m_7||||test_m_8||||test_m_9";
       newString="";
     }else{
-      newString =  window.android.callMemoryRemarks();
-    }
-    var remarksList =(newString+'').split('||||');
-    for(var i=0;i<9;i++){
-      this.mList[i].remarksTtile=remarksList[i] || '';
+      if(envType=='env_ios'){
+        this.callMemoryRemarks.forEach((element,i) => {
+          if(i<9){
+             this.mList[i].remarksTtile=element.remarkInfo || '';
+          }
+        });
+      }else{
+        newString =  window.android.callMemoryRemarks();
+        var remarksList =(newString+'').split('||||');
+        for(var i=0;i<9;i++){
+          this.mList[i].remarksTtile=remarksList[i] || '';
+        }
+      }
     }
   },
   created() {
     //模拟请求安卓完成 九个通道别名的获取
    
   },
-  computed: {},
+  computed: {
+    envType(){
+      return this.$store.state.envType;
+    },
+    callMemoryRemarks(){
+      return this.$store.state.callMemoryRemarks
+    }
+  },
   destroyed(){
     this.isLoading=false;
     clearTimeout(this.LoadingTimer);

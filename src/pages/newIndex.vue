@@ -61,8 +61,8 @@
                   <div class="info">You can input new name or reset. </div>
                   <input class="inner_input" v-model="inputBleName">
                   <div class="btns">
-                    <div class="bt first"  @click="changeBleName(0)"><span>reset</span></div>
-                    <div class="bt second" @click="changeBleName(1)"><span>confirm</span></div>
+                    <div class="bt first"  @click="changeBleNameNewFuc(0)"><span>reset</span></div>
+                    <div class="bt second" @click="changeBleNameNewFuc(1)"><span>confirm</span></div>
                   </div>
               </div>  
             </div>
@@ -131,6 +131,54 @@ export default {
       // }
       this.changeFuc(idx,type);
       console.log(this.nowMainIndex);
+    },
+    changeBleNameNewFuc(type){
+      if(this.envType=='env_ios'){
+        this.changeBleName_IOS(type)
+      }else{
+        this.changeBleName(type)
+      }
+    },
+    changeBleName_IOS(type){
+      let address =this.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, "");
+      if(type==0){//重置
+        for (let index = 0; index < this.updateBlelistDB.length; index++) {
+          const element = array[index];
+          if(address == element.address){
+            element.bleName=element.realBleName;
+            this.bleName = element.realBleName;
+            //通知
+            this.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(this.updateBlelistDB)); 
+            Toast({
+                message: 'Reset success!',
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 1000
+            });
+            this.closeModal();
+            break;
+          }
+        }
+      }else if(type==1){
+        for (let index = 0; index < this.updateBlelistDB.length; index++) {
+          const element = array[index];
+          if(address == element.address){
+            element.bleName=this.inputBleName;
+            this.bleName=this.inputBleName;
+            this.$store.state.nowConnectMachine=this.inputBleName;
+            //通知
+            this.globalSendMsgToIos("handSaveWrite","updateBlelistDB",JSON.stringify(this.updateBlelistDB)); 
+            Toast({
+                message: 'Saved success!',
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 1000
+            });
+            this.closeModal();
+            break;
+          }
+        }
+      }
     },
     changeBleName(type){
       if(type==0){
@@ -708,6 +756,7 @@ export default {
   },
   mounted: function () {
      let that = this;
+
      if(!that.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
       clearInterval(that.$store.state.globalGetConnectStatus);
       that.$store.state.globalGetConnectStatus = setInterval(() => {
@@ -831,6 +880,9 @@ export default {
   computed:{
       envType(){
         return this.$store.state.envType;　　//需要监听的数据
+      },
+      updateBlelistDB(){
+        return this.$store.state.updateBlelistDB;
       }
   },destroyed(){
     console.log('1111111:'+this.nowMainIndex)

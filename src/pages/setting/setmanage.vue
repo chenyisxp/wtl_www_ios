@@ -13,8 +13,8 @@
             </RadioGroup> -->
             <div class="company">Official website</div>
             <div class="company-link">
-              <a @click="openWeb">http://www.wtl.com.cn/</a>
-              <!-- <a @click="openWeb">http://www.grovers.ru/</a> -->
+              <a @click="openWeb('http://www.wtl.com.cn/')">http://www.wtl.com.cn/</a>
+              <!-- <a @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a> -->
             </div>
           <div class="help">Help Message</div>
           <div class="helpDetail">
@@ -69,8 +69,13 @@ export default {
     chooseIMG(type){
       this.chooseModel=type;
     },
-    openWeb(){
-      window.android.openWeb();
+    openWeb(url){
+      if(this.envType=='env_ios'){
+        this.globalSendMsgToIos('handOpenWeb',url,'')
+      }else{
+        window.android.openWeb();
+      }
+      
     },
     go(url) {
       this.$router.push(url);
@@ -108,6 +113,11 @@ export default {
   destroyed(){
     console.log('destoryed')
     window.removeEventListener('popstate', this.goBack, false);
+  },
+  computed: {
+      envType(){
+        return this.$store.state.envType;　　//需要监听的数据
+      }
   }
 };
 </script>
