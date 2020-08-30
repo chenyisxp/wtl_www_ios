@@ -18,9 +18,32 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { Toast } from 'mint-ui'
 import Loading from "@/components/base/Loading";
 import Connecting from "@/components/base/connectingPage";
+//安卓逻辑迁移 循环定时器 
+/**
+ * 1、校验数据的当前状态
+ * 2、正确性
+ * 3、页面来源
+ * 4、重发时用 时间戳
+ * 5、数据会太长的指令集合 配置项
+ */
+var checkData={};
+var checkPage={};
+var checkStatus={};
+var checkTime={};
+var checkSendTimes={};
+var mayTooLong={};
+var mayTooLongList=[
+    // {
+    // times:0,
+    // directive:'',
+    // value:''
+    // }
+];
+var TimerTask ={};
 export default {
   components: {
     Loading,
@@ -401,7 +424,13 @@ export default {
         this.$router.push(data);
     }
     window['broastFromAndroid'] = (data) => {
-       
+       console.log('lay_broastFromAndroid')
+        Toast({
+            message: 'layout'+data,
+            position: 'middle',
+            iconClass: 'icon icon-success',
+            duration: 2500
+          });
     //  alert(this.$store.state.AdroidNewMsg+'||||'+this.$store.state.AdroidOldMsg);
       //全局都要 改造一起返回
       if(this.$store.state.AdroidOldMsg){
@@ -444,6 +473,310 @@ export default {
     }
     
     // console.log('mainjs.$store.state.weldingCur'+this.$store.state.weldingCur)
+    //公共 ：安卓蓝牙交互出入口 + 苹果20200817
+      // let _this =this;
+      //   Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
+      //       console.log(sendData)
+      //       _this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
+            
+      //       if(!_this.GLOBAL_CONFIG.TESTFLAG){
+      //           // Toast({
+      //           //     message: _this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
+      //           //     position: 'middle',
+      //           //     iconClass: 'icon icon-success',
+      //           //     duration: 2500
+      //           //   });
+      //           if(_this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+      //               //ios 逻辑需借鉴后端的
+      //               let directive =sendData.substring(2,4);
+      //               //0、初始化 开始定时器
+      //               if("FF"!=directive){//不是响应的需要开启定时器
+      //                   // MainActivity.requestFromHtmlInit(pageFrom, data, crcCode);
+      //                   checkPage[crc]= pageFrom;//页面来源
+      //                   checkStatus[crc] =false;//默认请求还未成功
+      //                   checkData[crc] = sendData;//要发送的数据
+      //                   checkTime[crc] = new Date().getTime();//时间戳
+      //                   checkSendTimes[crc] =1;
+      //               }
+      //               //1、改写直接 发字符串
+      //               try {
+      //                   _this.$store.state.nowPageFrom=pageFrom;
+      //                   console.log(_this.$store.state.nowPageFrom+'==========')
+      //                   var message = {"method":"handleSendData","sendDt":sendData}
+      //                   window.webkit.messageHandlers.interOp.postMessage(message);
+      //                   if("FF"!=directive){//响应不需要开启定时器
+      //                       initTimer();
+      //                   }
+      //               } catch (error) {
+      //                   Toast({
+      //                       message: 'sendError:'+pageFrom+JSON.stringify(error),
+      //                       position: 'middle',
+      //                       iconClass: 'icon icon-success',
+      //                       duration: 11500
+      //                     });
+      //               }
+      //           }else{
+      //               _this.$store.state.nowPageFrom=pageFrom;
+      //               window.android.callSendDataToBle(pageFrom,sendData,crc);
+      //           }
+                
+      //       }
+      //   } 
+            //ios监听蓝牙返回数据 重要！！！
+            // window['iosBleDataLayoutFuc']= (bleReponseData) => {
+              
+            //         console.log(bleReponseData)
+            //         // Toast({
+            //         //     message: bleReponseData,
+            //         //     position: 'middle',
+            //         //     iconClass: 'icon icon-success',
+            //         //     duration: 11000
+            //         // });
+            //       try {
+            //         if(Array.isArray(bleReponseData)){
+            //             let data='';
+            //             //1、处理
+            //             // [218, 225, 0, 0, 0, 0, 2, 0, 60, 0, 61, 0, 180, 0, 200, 0, 2, 9, 46, 119]
+            //             let tempByte ='';
+            //             bleReponseData.forEach(element => {
+            //                 tempByte = parseInt(element,10).toString(16);
+            //                 data += tempByte.length==2?tempByte:'0'+tempByte;
+            //             });
+            //             console.log(data)
+            //             //2、crc校验(注意最长的)     console.log(this.crcModelBusClacQuery('100000', true))//0570
+            //             let len =data.length;
+            //             data =data.toUpperCase();//大写
+            //             //帧头+指令+crc校验daffaaaa aaaa
+            //             if(len>11 && data.indexOf('DA')==0){
+            //                 //da 10 00 00 0750
+                            
+            //                 // let value = data.substring(2,len-4);
+            //                 let crc = data.substring(len-4,len);
+            //                 if(data.indexOf("DAFF")==0){
+            //                     //规则变更:(ff+接收到数据)+crc
+            //                     if(data.length!=12){
+            //                         return;
+            //                     }else{
+            //                         let oldcrc = data.substring(4, 8)
+            //     //					data.substring(2, 8);//原来的crc
+            //     //					data.substring(8, 12);//现在的crc
+            //                         let  tempMidData ="FF"+oldCrc;
+            //                         let newCrc = _this.crcModelBusClacQuery(tempMidData, true);
+                                    
+            //                         if(crc == newCrc){
+            //                             delete(checkData[oldcrc]);
+            //                             delete(checkPage[oldcrc]);
+            //                             delete(checkStatus[oldcrc]);
+            //                             delete(checkTime[oldcrc]);
+            //                             delete(checkSendTimes[oldcrc]);
+            //                         }
+            //                     }
+            //                     return;
+            //                 //如果是返回焊接中的电流，电压
+            //                 }else if(data.indexOf("DAB")==0){
+            //                     window.tellVueWelding(data);
+            //                     // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
+            //                     return;
+            //                 //MEMORY
+            //                 }else if(data.indexOf("DAD")==0){
+            //                     window.broastMemoryFromAndroid(data);
+            //                     // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
+            //                     return;
+            //                 }
+            //             //history
+            //                 else if(data.indexOf("DAC")==0){
+            //                     window.broastHistoryFromAndroid(data);
+            //                     // mWebView.loadUrl("javascript:broastHistoryFromAndroid('" + data +"')");
+            //                     return;
+            //                 }//失败 重发
+            //                 else if(data.indexOf("DA00")==0){
+            //                     //重发
+            //                     checkTime[crc] = new Date().getTime();
+            //                     checkSendTimes[crc]=checkSendTimes[crc]+1;
+            //                     let reSendData = checkData[crc];
+            //                     var message = {"method":"handleSendData","sendDt":reSendData}
+            //                     window.webkit.messageHandlers.interOp.postMessage(message);
+            //                     return;
+            //                 }
+                            
+            //                 //不是响应信息走正常路线
+            //                 //1、截取数据进行切割校验   最后四位 作为crc校验值    查看是否正确
+            //                 let midData ="";
+            //                 if(data.length==8){
+            //                     //结束 没有数据字段
+            //                     midData="";
+            //                 }else{
+            //                     midData =data.substring(2, data.length-4);
+            //                 }
+            //                 //查不到走这里
+            //                 if(!checkData[crc] && midData){
+            //                     let newCrc = _this.crcModelBusClacQuery(midData, true);
+            //                     console.log(crc,newCrc)
+            //                     //取crc校验如果不一致则失败 发送crc校验失败的响应值
+            //                     if(crc!=newCrc){
+            //                         //可能数据太长造成的
+            //                         doDataTooLongHeader(data);
+            //                         return;
+            //                     }
+            //                     if(!checkData[newCrc]){
+            //                             //应该是蓝牙传输过过来的数据 需要区分去哪
+            //                             //1、正确关闭 定时器
+            //                             if(mayTooLongList.length>0){
+            //                                 // clearDate();
+            //                             }
+            //                             //2、发送
+            //                             console.log(data,checkPage[crc])
+            //                             Toast({
+            //                                 message: '准备',
+            //                                 position: 'middle',
+            //                                 iconClass: 'icon icon-success',
+            //                                 duration: 2000
+            //                             });
+            //                             window.broastFromAndroid(data,checkPage[crc]);
+            //                             delete(checkStatus[crc]);
+            //                             delete(checkData[crc]);
+            //                             delete(checkPage[crc]);
+            //                             delete(checkTime[crc]);
+            //                             delete(checkSendTimes[crc]);
+                                        
+            //                         }
+            //                 }
+                        
+            //             }else{
+            //                 //可能是数据太长的尾巴
+            //                 doDataTooLongLast(data);
+            //             }
+            
+            //         }
+            //     } catch (error) {
+            //         Toast({
+            //             message: error,
+            //             position: 'middle',
+            //             iconClass: 'icon icon-success',
+            //             duration: 12000
+            //         });
+            //     }
+                
+            // }
+            function initTimer(){
+               var shutDownFlag =false;//终止的标识
+               	//检查是否需要重发
+                for(let crcCode  in checkStatus){
+                    console.log(key + '---' + obj[key]);
+                    if(!obj[key]){
+                        //没有数据停止
+                        continue;
+                    }
+                    shutDownFlag =true;
+                    //是否超出总的重发次数 10次
+                    if(checkSendTimes[crcCode]<=10){
+                        //是否大于四百ms
+                        let nowTime =new Date().getTime();
+                        if((nowTime -checkTime[crcCode])>1500){
+                            //更新时间戳
+                            checkTime[crcCode]=nowTime;
+                            //更新重发次数
+                            checkSendTimes[crcCode] = checkSendTimes[crcCode]+1;
+                            //重发给蓝牙消息
+                            var sendData = checkData[crcCode];
+                            // target_chara.setValue(HexCommandtoByte(data.getBytes()));
+                            // mBluetoothLeService.writeCharacteristic(target_chara);
+                            var message = {"method":"handleSendData","sendDt":sendData}
+                            window.webkit.messageHandlers.interOp.postMessage(message);
+                        }
+                    }
+                }
+                if(shutDownFlag){
+		    		//有未完成的任务开启
+		    		TimerTask =setInterval(()=>{
+                        initTimer();
+                    },1500);
+		    	}else{
+                    clearInterval(TimerTask);
+                }
+            }
+            function doDataTooLongHeader(data) {
+                    //只存一个的目前
+                    if(mayTooLongList.length>0){
+                        //干掉旧的
+                        // clearDate();
+                    }
+                    let tmp ={            
+                        times:0,
+                        directive:data.substring(0,2),
+                        value:data
+                    }
+                    mayTooLongList.push(tmp);  
+            }
+            function clearDate(){
+                let value = mayTooLongList[0].value;
+                let crc =value.substring(value.length-4, value.length);
+                let newData1 = "DA00" + crc +_this.crcModelBusClacQuery("00" + crc, true)
+                var message = {"method":"handleSendData","sendDt":newData1}
+                window.webkit.messageHandlers.interOp.postMessage(message);
+                mayTooLongList =[];//清空
+            }
+            //数据太长造成的
+            function doDataTooLongLast(data){
+                let templist = [];
+                let midData ="";
+                for (let index = 0; index < mayTooLongList.length; index++) {
+                    const bean = mayTooLongList[index];
+                    let tempData = bean.value+data;//组合判断
+                    let crc = tempData.substring(tempData.length-4, tempData.length);
+                    //校验
+                    if(tempData.length==8){
+                        //结束 没有数据字段
+                        midData="";
+                    }else{
+                        midData =tempData.substring(2, tempData.length-4);
+                    }
+                    if (!checkData[crc]){
+                        // 异常 crc错了啊
+                        // return;
+                        // 2、把数据转成crc 校验是否能取到职值
+                        if (midData) {
+                            
+                            let tempMidData = midData;
+                            let newCrc = _this.crcModelBusClacQuery(tempMidData,true)
+                            // 取crc校验如果不一致则失败 发送crc校验失败的响应值
+                            if (newCrc!=crc) {
+                                // 错误 应答
+                                let newData1 = "DA00" + crc + _this.crcModelBusClacQuery("00" + crc,true)
+                                let message = {"method":"handleSendData","sendDt":newData1}
+                                window.webkit.messageHandlers.interOp.postMessage(message);
+                                return;
+                            }
+                            if (!checkData[newCrc]) {
+                                // 应该是蓝牙传输过过来的数据 需要区分去哪
+                                // 1、正确关闭 定时器
+                                // timer.cancel();
+                                // timer = null;
+                                // 2、发送
+                                window.broastFromAndroid(tempData,checkPage[crc]);
+                                delete(checkStatus[crc]);
+                                delete(checkData[crc]);
+                                delete(checkPage[crc]);
+                                delete(checkTime[crc]);
+                                delete(checkSendTimes[crc]);
+                              
+                            }else{
+                                // 错误 应答
+                                let newData1 = "DA00" + crc + _this.crcModelBusClacQuery("00" + crc,true)
+                                let message = {"method":"handleSendData","sendDt":newData1}
+                                window.webkit.messageHandlers.interOp.postMessage(message);
+                            }
+                        }
+                    }else{
+                        //通知错误
+                    
+                        
+                    }
+                    
+                }
+                //重新赋值
+                mayTooLongList =templist;
+            }
   }
 }
 </script>

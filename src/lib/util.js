@@ -27,6 +27,7 @@ Array.prototype.in_array = function (element) {
              * 5、数据会太长的指令集合 配置项
              */
             var checkData={};
+            var checkPage={};
             var checkStatus={};
             var checkTime={};
             var checkSendTimes={};
@@ -1015,166 +1016,174 @@ Array.prototype.in_array = function (element) {
                     
                 return bean;
             }
-            //crc16位数字处理
-            Vue.prototype.crcModelBusClacQuery = function(data) {      
-                    var CRC = {};
-                    CRC._auchCRCHi = [
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
-                        0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
-                        0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
-                        0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
-                        0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40,
-                        0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
-                        0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40,
-                        0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
-                        0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
-                        0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
-                        0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40,
-                        0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
-                        0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
-                        0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
-                        0x80, 0x41, 0x00, 0xC1, 0x81, 0x40
-                    ];
-                    CRC._auchCRCLo = [
-                        0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06,
-                        0x07, 0xC7, 0x05, 0xC5, 0xC4, 0x04, 0xCC, 0x0C, 0x0D, 0xCD,
-                        0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09,
-                        0x08, 0xC8, 0xD8, 0x18, 0x19, 0xD9, 0x1B, 0xDB, 0xDA, 0x1A,
-                        0x1E, 0xDE, 0xDF, 0x1F, 0xDD, 0x1D, 0x1C, 0xDC, 0x14, 0xD4,
-                        0xD5, 0x15, 0xD7, 0x17, 0x16, 0xD6, 0xD2, 0x12, 0x13, 0xD3,
-                        0x11, 0xD1, 0xD0, 0x10, 0xF0, 0x30, 0x31, 0xF1, 0x33, 0xF3,
-                        0xF2, 0x32, 0x36, 0xF6, 0xF7, 0x37, 0xF5, 0x35, 0x34, 0xF4,
-                        0x3C, 0xFC, 0xFD, 0x3D, 0xFF, 0x3F, 0x3E, 0xFE, 0xFA, 0x3A,
-                        0x3B, 0xFB, 0x39, 0xF9, 0xF8, 0x38, 0x28, 0xE8, 0xE9, 0x29,
-                        0xEB, 0x2B, 0x2A, 0xEA, 0xEE, 0x2E, 0x2F, 0xEF, 0x2D, 0xED,
-                        0xEC, 0x2C, 0xE4, 0x24, 0x25, 0xE5, 0x27, 0xE7, 0xE6, 0x26,
-                        0x22, 0xE2, 0xE3, 0x23, 0xE1, 0x21, 0x20, 0xE0, 0xA0, 0x60,
-                        0x61, 0xA1, 0x63, 0xA3, 0xA2, 0x62, 0x66, 0xA6, 0xA7, 0x67,
-                        0xA5, 0x65, 0x64, 0xA4, 0x6C, 0xAC, 0xAD, 0x6D, 0xAF, 0x6F,
-                        0x6E, 0xAE, 0xAA, 0x6A, 0x6B, 0xAB, 0x69, 0xA9, 0xA8, 0x68,
-                        0x78, 0xB8, 0xB9, 0x79, 0xBB, 0x7B, 0x7A, 0xBA, 0xBE, 0x7E,
-                        0x7F, 0xBF, 0x7D, 0xBD, 0xBC, 0x7C, 0xB4, 0x74, 0x75, 0xB5,
-                        0x77, 0xB7, 0xB6, 0x76, 0x72, 0xB2, 0xB3, 0x73, 0xB1, 0x71,
-                        0x70, 0xB0, 0x50, 0x90, 0x91, 0x51, 0x93, 0x53, 0x52, 0x92,
-                        0x96, 0x56, 0x57, 0x97, 0x55, 0x95, 0x94, 0x54, 0x9C, 0x5C,
-                        0x5D, 0x9D, 0x5F, 0x9F, 0x9E, 0x5E, 0x5A, 0x9A, 0x9B, 0x5B,
-                        0x99, 0x59, 0x58, 0x98, 0x88, 0x48, 0x49, 0x89, 0x4B, 0x8B,
-                        0x8A, 0x4A, 0x4E, 0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
-                        0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42,
-                        0x43, 0x83, 0x41, 0x81, 0x80, 0x40
-                    ];
-                    
-                    CRC.CRC16 = function (buffer) {
-                        var hi = 0xff;
-                        var lo = 0xff;
-                        for (var i = 0; i < buffer.length; i++) {
-                            var idx = hi ^ buffer[i];
-                            hi = (lo ^ CRC._auchCRCHi[idx]);
-                            lo = CRC._auchCRCLo[idx];
-                        }
-                        // 高低位的替换 只要修改lo和hi的位置即可
-                        var ccc =(lo << 8 | hi).toString(16).toUpperCase();
-                            // ccc=  ((lo & 0x00ff) << 8) | (hi & 0x00ff) & 0xffff;
-                        return CRC.padLeft(ccc, 4, '0');
-                    };
-                    
-                    CRC.isArray = function (arr) {
-                        return Object.prototype.toString.call(arr) === '[object Array]';
-                    };
-                    
-                    CRC.ToCRC16 = function (str) {
-                        return CRC.CRC16(CRC.isArray(str) ? str : CRC.strToByte(str));
-                    };
-                    
-                    CRC.ToModbusCRC16 = function (str) {
-                        return CRC.CRC16(CRC.isArray(str) ? str : CRC.strToHex(str));
-                    };
-                    
-                    CRC.strToByte = function (str) {
-                        var tmp = str.split(''), arr = [];
-                        for (var i = 0, c = tmp.length; i < c; i++) {
-                            var j = encodeURI(tmp[i]);
-                            if (j.length == 1) {
-                                arr.push(j.charCodeAt());
-                            } else {
-                                var b = j.split('%');
-                                for (var m = 1; m < b.length; m++) {
-                                    arr.push(parseInt('0x' + b[m]));
-                                }
-                            }
-                        }
-                        return arr;
-                    };
-                    
-                    CRC.convertChinese = function (str) {
-                        var tmp = str.split(''), arr = [];
-                        for (var i = 0, c = tmp.length; i < c; i++) {
-                            var s = tmp[i].charCodeAt();
-                            if (s <= 0 || s >= 127) {
-                                arr.push(s.toString(16));
-                            }
-                            else {
-                                arr.push(tmp[i]);
-                            }
-                        }
-                        return arr;
-                    };
-                    
-                    CRC.filterChinese = function (str) {
-                        var tmp = str.split(''), arr = [];
-                        for (var i = 0, c = tmp.length; i < c; i++) {
-                            var s = tmp[i].charCodeAt();
-                            if (s > 0 && s < 127) {
-                                arr.push(tmp[i]);
-                            }
-                        }
-                        return arr;
-                    };
-                    
-                    CRC.strToHex = function (hex, isFilterChinese) {
-                        hex = isFilterChinese ? CRC.filterChinese(hex).join('') : CRC.convertChinese(hex).join('');
-                    
-                        //清除所有空格
-                        hex = hex.replace(/\s/g, "");
-                        //若字符个数为奇数，补一个空格
-                        hex += hex.length % 2 != 0 ? " " : "";
-                    
-                        var c = hex.length / 2, arr = [];
-                        for (var i = 0; i < c; i++) {
-                            arr.push(parseInt(hex.substr(i * 2, 2), 16));
-                        }
-                        return arr;
-                    };
-                    
-                    CRC.padLeft = function (s, w, pc) {
-                        if (pc == undefined) {
-                            pc = '0';
-                        }
-                        for (var i = 0, c = w - s.length; i < c; i++) {
-                            s = pc + s;
-                        }
-                        return s;
-                    };
-                    
-                    // console.log(Date.parse(new Date()));
-                    // console.log(CRC.ToCRC16('12345678', true));
-                    // console.log(CRC.ToCRC16('12345678', false));
-                    // console.log(CRC.ToModbusCRC16('12345678', true));
-                    // console.log(Date.parse(new Date()));
-                    return CRC.ToModbusCRC16(data, true);
+            //crc16位数字处理 注意这里定义了两个相同的方法要改一起改 下
+            Vue.prototype.crcModelBusClacQuery = function(data) {
+                
+                return crcModelBusClacQuery(data);
                     
             }
+            //crc16位数字处理 注意这里定义了两个相同的方法要改一起改 下
+             function crcModelBusClacQuery(data){   
+                console.log('crcModelBusClacQuery开始')
+                var CRC = {};
+                CRC._auchCRCHi = [
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                    0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                    0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
+                    0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
+                    0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40,
+                    0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
+                    0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40,
+                    0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                    0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                    0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                    0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40,
+                    0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1,
+                    0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+                    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
+                    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40
+                ];
+                CRC._auchCRCLo = [
+                    0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06,
+                    0x07, 0xC7, 0x05, 0xC5, 0xC4, 0x04, 0xCC, 0x0C, 0x0D, 0xCD,
+                    0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09,
+                    0x08, 0xC8, 0xD8, 0x18, 0x19, 0xD9, 0x1B, 0xDB, 0xDA, 0x1A,
+                    0x1E, 0xDE, 0xDF, 0x1F, 0xDD, 0x1D, 0x1C, 0xDC, 0x14, 0xD4,
+                    0xD5, 0x15, 0xD7, 0x17, 0x16, 0xD6, 0xD2, 0x12, 0x13, 0xD3,
+                    0x11, 0xD1, 0xD0, 0x10, 0xF0, 0x30, 0x31, 0xF1, 0x33, 0xF3,
+                    0xF2, 0x32, 0x36, 0xF6, 0xF7, 0x37, 0xF5, 0x35, 0x34, 0xF4,
+                    0x3C, 0xFC, 0xFD, 0x3D, 0xFF, 0x3F, 0x3E, 0xFE, 0xFA, 0x3A,
+                    0x3B, 0xFB, 0x39, 0xF9, 0xF8, 0x38, 0x28, 0xE8, 0xE9, 0x29,
+                    0xEB, 0x2B, 0x2A, 0xEA, 0xEE, 0x2E, 0x2F, 0xEF, 0x2D, 0xED,
+                    0xEC, 0x2C, 0xE4, 0x24, 0x25, 0xE5, 0x27, 0xE7, 0xE6, 0x26,
+                    0x22, 0xE2, 0xE3, 0x23, 0xE1, 0x21, 0x20, 0xE0, 0xA0, 0x60,
+                    0x61, 0xA1, 0x63, 0xA3, 0xA2, 0x62, 0x66, 0xA6, 0xA7, 0x67,
+                    0xA5, 0x65, 0x64, 0xA4, 0x6C, 0xAC, 0xAD, 0x6D, 0xAF, 0x6F,
+                    0x6E, 0xAE, 0xAA, 0x6A, 0x6B, 0xAB, 0x69, 0xA9, 0xA8, 0x68,
+                    0x78, 0xB8, 0xB9, 0x79, 0xBB, 0x7B, 0x7A, 0xBA, 0xBE, 0x7E,
+                    0x7F, 0xBF, 0x7D, 0xBD, 0xBC, 0x7C, 0xB4, 0x74, 0x75, 0xB5,
+                    0x77, 0xB7, 0xB6, 0x76, 0x72, 0xB2, 0xB3, 0x73, 0xB1, 0x71,
+                    0x70, 0xB0, 0x50, 0x90, 0x91, 0x51, 0x93, 0x53, 0x52, 0x92,
+                    0x96, 0x56, 0x57, 0x97, 0x55, 0x95, 0x94, 0x54, 0x9C, 0x5C,
+                    0x5D, 0x9D, 0x5F, 0x9F, 0x9E, 0x5E, 0x5A, 0x9A, 0x9B, 0x5B,
+                    0x99, 0x59, 0x58, 0x98, 0x88, 0x48, 0x49, 0x89, 0x4B, 0x8B,
+                    0x8A, 0x4A, 0x4E, 0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
+                    0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42,
+                    0x43, 0x83, 0x41, 0x81, 0x80, 0x40
+                ];
+                
+                CRC.CRC16 = function (buffer) {
+                    var hi = 0xff;
+                    var lo = 0xff;
+                    for (var i = 0; i < buffer.length; i++) {
+                        var idx = hi ^ buffer[i];
+                        hi = (lo ^ CRC._auchCRCHi[idx]);
+                        lo = CRC._auchCRCLo[idx];
+                    }
+                    // 高低位的替换 只要修改lo和hi的位置即可
+                    var ccc =(lo << 8 | hi).toString(16).toUpperCase();
+                        // ccc=  ((lo & 0x00ff) << 8) | (hi & 0x00ff) & 0xffff;
+                    return CRC.padLeft(ccc, 4, '0');
+                };
+                
+                CRC.isArray = function (arr) {
+                    return Object.prototype.toString.call(arr) === '[object Array]';
+                };
+                
+                CRC.ToCRC16 = function (str) {
+                    return CRC.CRC16(CRC.isArray(str) ? str : CRC.strToByte(str));
+                };
+                
+                CRC.ToModbusCRC16 = function (str) {
+                    return CRC.CRC16(CRC.isArray(str) ? str : CRC.strToHex(str));
+                };
+                
+                CRC.strToByte = function (str) {
+                    var tmp = str.split(''), arr = [];
+                    for (var i = 0, c = tmp.length; i < c; i++) {
+                        var j = encodeURI(tmp[i]);
+                        if (j.length == 1) {
+                            arr.push(j.charCodeAt());
+                        } else {
+                            var b = j.split('%');
+                            for (var m = 1; m < b.length; m++) {
+                                arr.push(parseInt('0x' + b[m]));
+                            }
+                        }
+                    }
+                    return arr;
+                };
+                
+                CRC.convertChinese = function (str) {
+                    var tmp = str.split(''), arr = [];
+                    for (var i = 0, c = tmp.length; i < c; i++) {
+                        var s = tmp[i].charCodeAt();
+                        if (s <= 0 || s >= 127) {
+                            arr.push(s.toString(16));
+                        }
+                        else {
+                            arr.push(tmp[i]);
+                        }
+                    }
+                    return arr;
+                };
+                
+                CRC.filterChinese = function (str) {
+                    var tmp = str.split(''), arr = [];
+                    for (var i = 0, c = tmp.length; i < c; i++) {
+                        var s = tmp[i].charCodeAt();
+                        if (s > 0 && s < 127) {
+                            arr.push(tmp[i]);
+                        }
+                    }
+                    return arr;
+                };
+                
+                CRC.strToHex = function (hex, isFilterChinese) {
+                    hex = isFilterChinese ? CRC.filterChinese(hex).join('') : CRC.convertChinese(hex).join('');
+                
+                    //清除所有空格
+                    hex = hex.replace(/\s/g, "");
+                    //若字符个数为奇数，补一个空格
+                    hex += hex.length % 2 != 0 ? " " : "";
+                
+                    var c = hex.length / 2, arr = [];
+                    for (var i = 0; i < c; i++) {
+                        arr.push(parseInt(hex.substr(i * 2, 2), 16));
+                    }
+                    return arr;
+                };
+                
+                CRC.padLeft = function (s, w, pc) {
+                    if (pc == undefined) {
+                        pc = '0';
+                    }
+                    for (var i = 0, c = w - s.length; i < c; i++) {
+                        s = pc + s;
+                    }
+                    return s;
+                };
+                
+                // console.log(Date.parse(new Date()));
+                // console.log(CRC.ToCRC16('12345678', true));
+                // console.log(CRC.ToCRC16('12345678', false));
+                // console.log(CRC.ToModbusCRC16('12345678', true));
+                // console.log(Date.parse(new Date()));
+                console.log('crcModelBusClacQuery结束')
+                return CRC.ToModbusCRC16(data, true);
+                
+        }
             // Vue.prototype.getConfig = function(){
             //     return BASE_CONFIG
             // }
@@ -1241,11 +1250,11 @@ Array.prototype.in_array = function (element) {
                         }
                 }
             } 
-            //公共 ：安卓蓝牙交互出入口 + 苹果20200817
+            // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
                 console.log(sendData)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
-               
+                
                 if(!this.GLOBAL_CONFIG.TESTFLAG){
                     Toast({
                         message: this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
@@ -1263,7 +1272,7 @@ Array.prototype.in_array = function (element) {
                             checkStatus[crc] =false;//默认请求还未成功
                             checkData[crc] = sendData;//要发送的数据
                             checkTime[crc] = new Date().getTime();//时间戳
-                            checkSendTimes[cr] =1;
+                            checkSendTimes[crc] =1;
                         }
                         //1、改写直接 发字符串
                         try {
@@ -1275,7 +1284,7 @@ Array.prototype.in_array = function (element) {
                             }
                         } catch (error) {
                             Toast({
-                                message: error,
+                                message: 'sendError:'+pageFrom,
                                 position: 'middle',
                                 iconClass: 'icon icon-success',
                                 duration: 1500
@@ -1363,119 +1372,143 @@ Array.prototype.in_array = function (element) {
                     clearInterval(TimerTask);
                 }
             }
-            //ios监听蓝牙返回数据 重要！！！
+            //ios监听蓝牙返回数据 重要！！！ 移到lauout.vue中
             window['iosBleDataLayoutFuc']= (bleReponseData) => {
-                console.log(bleReponseData)
-                Toast({
-                    message: bleReponseData,
-                    position: 'middle',
-                    iconClass: 'icon icon-success',
-                    duration: 11000
-                });
+                bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
+                bleReponseData=bleReponseData.split(',')
                 try {
-                if(Array.isArray(bleReponseData)){
-                    let data='';
-                    //1、处理
-                    // [218, 225, 0, 0, 0, 0, 2, 0, 60, 0, 61, 0, 180, 0, 200, 0, 2, 9, 46, 119]
-                    bleReponseData.forEach(element => {
-                        data += parseInt(element,10).toString(16);
+                    Toast({
+                        message:Array.isArray(bleReponseData),
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 11000
                     });
-                    //2、crc校验(注意最长的)     console.log(this.crcModelBusClacQuery('100000', true))//0570
-                    let len =data.length;
-                    data =data.toUpperCase();//大写
-                    //帧头+指令+crc校验daffaaaa aaaa
-                    if(len>11 && data.indexOf('DA')==0){
-                        //da 10 00 00 0750
+                    if(bleReponseData && bleReponseData.length>0){
+                        let data='';
+                        //1、处理
+                        // [218, 225, 0, 0, 0, 0, 2, 0, 60, 0, 61, 0, 180, 0, 200, 0, 2, 9, 46, 119]
+                        let tempByte ='';
+                        bleReponseData.forEach(element => {
+                            tempByte = parseInt(element,10).toString(16);
+                            data += tempByte.length==2?tempByte:'0'+tempByte;//注意补位
+                        });
+                        //2、crc校验(注意最长的)     console.log(this.crcModelBusClacQuery('100000', true))//0570
+                        let len =data.length;
+                        data =data.toUpperCase();//大写
                         
-                        // let value = data.substring(2,len-4);
-                        let crc = data.substring(len-4,len);
-                        if(data.indexOf("DAFF")==0){
-                            //规则变更:(ff+接收到数据)+crc
-                            if(data.length!=12){
-                                return;
-                            }else{
-                                let oldcrc = data.substring(4, 8)
-            //					data.substring(2, 8);//原来的crc
-            //					data.substring(8, 12);//现在的crc
-                                let  tempMidData ="FF"+oldCrc;
-                                let newCrc = this.crcModelBusClacQuery(tempMidData, true);
-                                if(crc == newCrc){
-                                    delete(checkData[oldcrc]);
-                                    delete(checkPage[oldcrc]);
-                                    delete(checkStatus[oldcrc]);
-                                    delete(checkTime[oldcrc]);
-                                    delete(checkSendTimes[oldcrc]);
+                        //帧头+指令+crc校验daffaaaa aaaa
+                        if(len>11 && data.indexOf('DA')==0){
+                            //da 10 00 00 0750
+                            // let value = data.substring(2,len-4);
+                            let crc = data.substring(len-4,len);
+                            if(data.indexOf("DAFF")==0){
+                                //规则变更:(ff+接收到数据)+crc
+                                if(data.length!=12){
+                                    return;
+                                }else{
+                                    let oldcrc = data.substring(4, 8)
+                //					data.substring(2, 8);//原来的crc
+                //					data.substring(8, 12);//现在的crc
+                                    let  tempMidData ="FF"+oldCrc;
+                                    let newCrc = crcModelBusClacQuery(tempMidData, true);
+                                    
+                                    if(crc == newCrc){
+                                        delete(checkData[oldcrc]);
+                                        delete(checkPage[oldcrc]);
+                                        delete(checkStatus[oldcrc]);
+                                        delete(checkTime[oldcrc]);
+                                        delete(checkSendTimes[oldcrc]);
+                                    }
                                 }
-                            }
-                            return;
-                        //如果是返回焊接中的电流，电压
-                         }else if(data.indexOf("DAB")==0){
-                            window.tellVueWelding(data);
-                            // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
-                            return;
-                        //MEMORY
-                        }else if(data.indexOf("DAD")==0){
-                            window.broastMemoryFromAndroid(data);
-                            // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
-                            return;
-                        }
-                       //history
-                        else if(data.indexOf("DAC")==0){
-                            window.broastHistoryFromAndroid(data);
-                            // mWebView.loadUrl("javascript:broastHistoryFromAndroid('" + data +"')");
-                            return;
-                        }//失败 重发
-                        else if(data.indexOf("DA00")==0){
-                            //重发
-                            checkTime[crc] = new Date().getTime();
-                            checkSendTimes[crc]=checkSendTimes[crc]+1;
-                            let reSendData = checkData[crc];
-                            var message = {"method":"handleSendData","sendDt":reSendData}
-                            window.webkit.messageHandlers.interOp.postMessage(message);
-                            return;
-                        }
-                        
-                        //不是响应信息走正常路线
-                        //1、截取数据进行切割校验   最后四位 作为crc校验值    查看是否正确
-                        let midData ="";
-                        if(data.length==8){
-                            //结束 没有数据字段
-                            midData="";
-                        }else{
-                            midData =data.substring(2, data.length()-4);
-                        }
-                        //查不到走这里
-                        if(!checkData[crc] && midData){
-                            let newCrc = this.crcModelBusClacQuery(midData, true);
-                            //取crc校验如果不一致则失败 发送crc校验失败的响应值
-                            if(crc!=newCrc){
-                                //可能数据太长造成的
-                                doDataTooLongHeader(data);
+                                return;
+                            //如果是返回焊接中的电流，电压
+                            }else if(data.indexOf("DAB")==0){
+                                window.tellVueWelding(data);
+                                // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
+                                return;
+                            //MEMORY
+                            }else if(data.indexOf("DAD")==0){
+                                window.broastMemoryFromAndroid(data);
+                                // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
                                 return;
                             }
-                            if(!checkData[newCrc]){
+                        //history
+                            else if(data.indexOf("DAC")==0){
+                                window.broastHistoryFromAndroid(data);
+                                // mWebView.loadUrl("javascript:broastHistoryFromAndroid('" + data +"')");
+                                return;
+                            }//失败 重发
+                            else if(data.indexOf("DA00")==0){
+                                //重发
+                                checkTime[crc] = new Date().getTime();
+                                checkSendTimes[crc]=checkSendTimes[crc]+1;
+                                let reSendData = checkData[crc];
+                                var message = {"method":"handleSendData","sendDt":reSendData}
+                                window.webkit.messageHandlers.interOp.postMessage(message);
+                                return;
+                            }
+                            
+                            //不是响应信息走正常路线
+                            //1、截取数据进行切割校验   最后四位 作为crc校验值    查看是否正确
+                            let midData ="";
+                            if(data.length==8){
+                                //结束 没有数据字段
+                                midData="";
+                            }else{
+                                midData =data.substring(2, data.length-4);
+                            }
+                            // Toast({
+                            //     message: 'midData'+midData,
+                            //     position: 'middle',
+                            //     iconClass: 'icon icon-success',
+                            //     duration: 5000
+                            // });
+                            //查不到走这里
+                            if(!checkData[crc] && midData){
+                                console.log(midData)
+                                let newCrc = crcModelBusClacQuery(midData, true);
+                                console.log(newCrc)
+                                //取crc校验如果不一致则失败 发送crc校验失败的响应值
+                                // Toast({
+                                //     message: crc+'||'+newCrc,
+                                //     position: 'middle',
+                                //     iconClass: 'icon icon-success',
+                                //     duration: 2000
+                                // });
+                                if(crc!=newCrc){
+                                    //可能数据太长造成的
+                                    doDataTooLongHeader(data);
+                                    return;
+                                }
+                                if(!checkData[newCrc]){
                                     //应该是蓝牙传输过过来的数据 需要区分去哪
                                     //1、正确关闭 定时器
                                     if(mayTooLongList.length>0){
                                         clearDate();
                                     }
                                     //2、发送
+                                    console.log(data,checkPage[crc])
+                                    // Toast({
+                                    //     message: 'broastFromAndroid||'+data+'||'+checkPage[crc],
+                                    //     position: 'middle',
+                                    //     iconClass: 'icon icon-success',
+                                    //     duration: 6000
+                                    // });
                                     window.broastFromAndroid(data,checkPage[crc]);
                                     delete(checkStatus[crc]);
                                     delete(checkData[crc]);
                                     delete(checkPage[crc]);
                                     delete(checkTime[crc]);
                                     delete(checkSendTimes[crc]);
-                                    
                                 }
+                            }
+                        
+                        }else{
+                            //可能是数据太长的尾巴
+                            doDataTooLongLast(data);
                         }
-                    
-                    }else{
-                        //可能是数据太长的尾巴
-                        doDataTooLongLast(data);
+            
                     }
-        
-                }
                 } catch (error) {
                     Toast({
                         message: error,
@@ -1502,13 +1535,19 @@ Array.prototype.in_array = function (element) {
             function clearDate(){
                 let value = mayTooLongList[0].value;
                 let crc =value.substring(value.length-4, value.length);
-                let newData1 = "DA00" + crc +this.crcModelBusClacQuery("00" + crc, true)
+                let newData1 = "DA00" + crc +crcModelBusClacQuery("00" + crc, true)
                 var message = {"method":"handleSendData","sendDt":newData1}
                 window.webkit.messageHandlers.interOp.postMessage(message);
                 mayTooLongList =[];//清空
             }
             //数据太长造成的
             function doDataTooLongLast(data){
+                Toast({
+                    message: 'doDataTooLongLast'+data,
+                    position: 'middle',
+                    iconClass: 'icon icon-success',
+                    duration: 5000
+                });
                 let templist = [];
                 let midData ="";
                 for (let index = 0; index < mayTooLongList.length; index++) {
@@ -1529,11 +1568,11 @@ Array.prototype.in_array = function (element) {
                         if (midData) {
                             
                             let tempMidData = midData;
-                            let newCrc = this.crcModelBusClacQuery(tempMidData,true)
+                            let newCrc = crcModelBusClacQuery(tempMidData,true)
                             // 取crc校验如果不一致则失败 发送crc校验失败的响应值
                             if (newCrc!=crc) {
                                 // 错误 应答
-                                let newData1 = "DA00" + crc + this.crcModelBusClacQuery("00" + crc,true)
+                                let newData1 = "DA00" + crc + crcModelBusClacQuery("00" + crc,true)
                                 let message = {"method":"handleSendData","sendDt":newData1}
                                 window.webkit.messageHandlers.interOp.postMessage(message);
                                 return;
@@ -1553,7 +1592,7 @@ Array.prototype.in_array = function (element) {
                               
                             }else{
                                 // 错误 应答
-                                let newData1 = "DA00" + crc + this.crcModelBusClacQuery("00" + crc,true)
+                                let newData1 = "DA00" + crc + crcModelBusClacQuery("00" + crc,true)
                                 let message = {"method":"handleSendData","sendDt":newData1}
                                 window.webkit.messageHandlers.interOp.postMessage(message);
                             }

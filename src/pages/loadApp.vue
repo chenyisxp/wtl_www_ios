@@ -3,16 +3,17 @@
     <!-- <div class="modal" :class="{'mhid':mhidFlag}">
 
     </div> -->
-   <div class="video" :class="{'hid':hidFlag}">
-       <!-- <video   preload='auto' muted=“muted” src="../assets/video/app_video.mp4"  autoplay="autoplay"  width='100%' height='100%'> -->
-        <!-- <source src="../assets/video/app_video.mp4" type="video/mp4" />
-        loading... -->
-        <!-- </video> -->
-   </div>
+    <!-- :class="{'hid':hidFlag}" -->
+   <!-- <div class="video hid" >
+        <video id="myAudio" @onended="handleOnended"  preload='auto' muted=“muted” src="../assets/video/app_open_h24.mp4"  autoplay="autoplay"  width='100%' height='100%'>
+        <source src="../assets/video/app_open_h24.mp4" type="video/mp4" />
+        loading...</video>
+   </div> -->
   </div>
 </template>
 
 <script>
+import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 export default {
   name: 'appLoad',
   components: {
@@ -28,12 +29,35 @@ export default {
   },
 
   methods: {
-    
+    handleOnended(){
+      alert(11)
+    }
   },
   mounted: function () {
-    this.hidTimer = setTimeout(() => {
-      this.hidFlag=true;
-    }, 110);
+     Toast({
+                message: 'mounted!',
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 1000
+            });
+            document.getElementById('myAudio').play(); 
+    setTimeout(() => {
+       Toast({
+              message: '走!',
+              position: 'middle',
+              iconClass: 'icon icon-success',
+              duration: 1000
+          });
+      // this.$router.push({path:'/newIndex',query:{}});
+    }, 3000);
+    // var aud = document.getElementById("myAudio");
+    // aud.onended = ()=>{
+    //     //跳走
+    //     this.$router.push({path:'/newIndex',query:{}});
+    // };
+    // this.hidTimer = setTimeout(() => {
+    //   this.hidFlag=true;
+    // }, 110);
 //    this.goTimer = setTimeout(() => {
 //         this.$router.push({path:'/newIndex',query:{}});
 //     }, 4210);

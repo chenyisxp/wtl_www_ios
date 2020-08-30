@@ -635,9 +635,16 @@ export default {
 .eleUnShow{
     display: none;
 }
+// @media screen and (max-width: 400px) {
+//   .hisWeldInfo .mainPanel .m-show {font-size: 35px;}
+//   .hisWeldInfo .mainPanel .m-show .m-s-l{background-size: 38px;padding-left: 45px;}
+//   .hisWeldInfo .mainPanel .m-show .m-s-r{background-size: 38px;padding-left: 45px;}
+// }
 @media screen and (max-width: 400px) {
-  .hisWeldInfo .mainPanel .m-show {font-size: 35px;}
-  .hisWeldInfo .mainPanel .m-show .m-s-l{background-size: 38px;padding-left: 45px;}
-  .hisWeldInfo .mainPanel .m-show .m-s-r{background-size: 38px;padding-left: 45px;}
+   .hisWeldInfo .mainPanel .m-show {font-size: 33px;padding: 0 9px}
+   .hisWeldInfo .mainPanel .m-show .m-s-l_current,
+   .hisWeldInfo .mainPanel .m-show .m-s-l_force{background-size: 35px;padding-left: 36px;}
+   .hisWeldInfo .mainPanel .m-show .m-s-l{background-size: 35px;padding-left: 36px;}
+   .hisWeldInfo .mainPanel .m-show .m-s-r{background-size: 35px;padding-left: 36px;}
 }
 </style>

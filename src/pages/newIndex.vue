@@ -140,10 +140,24 @@ export default {
       }
     },
     changeBleName_IOS(type){
+      // this.updateBlelistDB =[{"address":"663E99B6-39F0-CD53-CF0C-BEB6CA13B875","bleName":"HC-08","remarkInfo":"HC-08","realBleName":"HC-08","realAddress":"663E99B6-39F0-CD53-CF0C-BEB6CA13B875","type":1}]
       let address =this.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, "");
+      // address='663E99B6-39F0-CD53-CF0C-BEB6CA13B875';
+      // Toast({
+      //     message: type+'Reset success!'+address,
+      //     position: 'middle',
+      //     iconClass: 'icon icon-success',
+      //     duration: 1000
+      // });
       if(type==0){//重置
         for (let index = 0; index < this.updateBlelistDB.length; index++) {
-          const element = array[index];
+          const element = this.updateBlelistDB[index];
+          Toast({
+              message: address+'||'+element.address,
+              position: 'middle',
+              iconClass: 'icon icon-success',
+              duration: 3000
+          });
           if(address == element.address){
             element.bleName=element.realBleName;
             this.bleName = element.realBleName;
@@ -161,7 +175,8 @@ export default {
         }
       }else if(type==1){
         for (let index = 0; index < this.updateBlelistDB.length; index++) {
-          const element = array[index];
+          const element = this.updateBlelistDB[index];
+          
           if(address == element.address){
             element.bleName=this.inputBleName;
             this.bleName=this.inputBleName;
@@ -297,6 +312,7 @@ export default {
                       self.upshowFlag=true;//延迟显示底色
                     }
                 ,200)
+                self.$forceUpdate();
     },
     newIndexToAndroid(data,crcCode){
         // Toast({
@@ -404,12 +420,12 @@ export default {
                 //发送确认收到的指令给安卓
                 var invalue =data.substring(data.length-4,data.length);
                 //新规则: 指令ff+crc+检验crc   测试模式不发送
-                Toast({
-                    message: '222',
-                    position: 'middle',
-                    iconClass: 'icon icon-success',
-                    duration: 2500
-                  });
+                // Toast({
+                //     message: '222',
+                //     position: 'middle',
+                //     iconClass: 'icon icon-success',
+                //     duration: 2500
+                //   });
                 that.callSendDataToBleUtil('newIndex','DAFF'+invalue+that.crcModelBusClacQuery('FF'+invalue, true),invalue);
                 that.isLoading =false;
                 clearTimeout(that.loadingTimer);
@@ -756,7 +772,9 @@ export default {
   },
   mounted: function () {
      let that = this;
-
+    //  this.callSendDataToBleUtil('newIndex','DA100000','0570');
+    //  window.iosBleDataLayoutFuc([218, 225, 74, 0, 1, 3, 3, 163, 39, 0, 58, 0, 160, 0, 160, 0, 2, 12, 136, 137])
+      // console.log(this.crcModelBusClacQuery('E14A0133A32703A0A00A002C0', true))
      if(!that.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
       clearInterval(that.$store.state.globalGetConnectStatus);
       that.$store.state.globalGetConnectStatus = setInterval(() => {
@@ -816,6 +834,13 @@ export default {
         that.nowConnectStatus='connected';
       } 
        window['broastFromAndroid'] = (data,pageFrom) => {
+         Toast({
+            message: 'newindex'+data+'||',
+            position: 'middle',
+            iconClass: 'icon icon-success',
+            duration: 11500
+          });
+         console.log('newindex_broastFromAndroid')
             // 20190623 比较大的改动主调这两个不知道会不会有影响
             // this.$store.state.memoryInfo ={};//清空
             // this.$store.state.rstInfo={};
@@ -832,8 +857,10 @@ export default {
           // alert(data)
           that.$store.state.havedClickPage=false;
           that.$store.state.oldBroastData =data;
-          
+          that.modelType='0570';
+          that.comfromFlag=true;
           var tempType=that.getModelType(data.substring(2,4));
+          console.log(that.modelType,tempType)
           if(that.modelType!=tempType){
             return;
           }
@@ -881,8 +908,13 @@ export default {
       envType(){
         return this.$store.state.envType;　　//需要监听的数据
       },
-      updateBlelistDB(){
-        return this.$store.state.updateBlelistDB;
+      updateBlelistDB:{
+        get(){
+          return this.$store.state.updateBlelistDB;
+        },set(val){
+          this.$store.state.updateBlelistDB =val;
+        }
+        
       }
   },destroyed(){
     console.log('1111111:'+this.nowMainIndex)
@@ -1368,7 +1400,13 @@ export default {
   //   width: 200px;;
   // }
 }
-
+* {
+  -webkit-user-select:text !important;
+  -khtml-user-select:text !important;
+  -moz-user-select:text !important;
+  -ms-user-select:text !important;
+  user-select:text !important;
+}
 @media(max-width:384px) and (max-height:567px){
 }
 

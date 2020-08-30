@@ -39,26 +39,31 @@
             <img v-if="chooseModel==2" src="../../assets/images/weld_setting_tig.jpg">
             <img v-if="chooseModel==4" src="../../assets/images/weld_setting_mig.jpg">
           </div>
-          <div class="resetBtn">Restore  settings</div>
+          <div class="resetBtn" @click="handleRestore">Restore  settings</div>
       </div>
 
     </div>
 </template>
 
 <script>
+import { Toast } from 'mint-ui'
 export default {
   name: "",
   components: {},
   data() {
     return {
        nowchoose:'mm',
-       chooseModel:1,
+       chooseModel:4,
        clickTimes:0
        
     };
   },
 
   methods: {
+    handleRestore(){
+      this.chooseModel=4;
+      this.callSendDataToBleUtil('setmanage','DA4000001470','1470');
+    },
     goDevleper(){
       this.clickTimes+=1;
       if(this.clickTimes==10){
@@ -81,9 +86,19 @@ export default {
       this.$router.push(url);
     },
     choose(type){
-      this.nowchoose=type;
+      
       //测试模式开关
       if(!this.GLOBAL_CONFIG.TESTFLAG){
+        if(this.getConnectStatus!='connected'){
+            Toast({
+                message: 'Please connect Bluetooth first',
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 1500
+            });
+            return;
+        }
+        this.nowchoose=type;
         if(type=='mm'){
           this.callSendDataToBleUtil('setmanage','DA4000001470','1470');
         }else{
@@ -117,7 +132,10 @@ export default {
   computed: {
       envType(){
         return this.$store.state.envType;　　//需要监听的数据
-      }
+      },
+      getConnectStatus () {
+          return this.$store.state.getConnectStatus;　　//需要监听的数据
+      },
   }
 };
 </script>

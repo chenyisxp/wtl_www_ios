@@ -1276,6 +1276,7 @@ export default {
     background: #01303e;
     width: 100%;
     min-height: 100vh;
+    overflow: auto;
     // flex-flow: row wrap;
     // display: flex;
     position: relative;
@@ -2126,5 +2127,14 @@ export default {
 }
 .eleUnShow{
     display: none;
+}
+/***iPhone5以下机型特殊处理***/
+@media(max-width:320px) and (min-height:490px){  
+  .weldMMA .electricCurrent .up .u-right .bt{
+      width: 20px;
+  }
+  .weldMMA .electricCurrent .up .u-right .del,.weldMMA  .electricCurrent .up .u-right .add{
+      background-size: 20px;
+  }
 }
 </style>

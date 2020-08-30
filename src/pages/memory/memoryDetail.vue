@@ -1153,8 +1153,17 @@ export default {
 //    .memoryDetail .mmp .mainPanel .m-show{
 //        display: inline-block;
 //    }
-   .memoryDetail .mmp .mainPanel .m-show {font-size: 35px;}
-   .memoryDetail .mmp .mainPanel .m-show .m-s-l{background-size: 38px;padding-left: 45px;}
-   .memoryDetail .mmp .mainPanel .m-show .m-s-r{background-size: 38px;padding-left: 45px;}
+   .memoryDetail .mmp .mainPanel .m-show {font-size: 33px;}
+   .memoryDetail .mmp .mainPanel .m-show .m-s-l_current,
+   .memoryDetail .mmp .mainPanel .m-show .m-s-l_force{background-size: 35px;padding-left: 36px;}
+   .memoryDetail .mmp .mainPanel .m-show .m-s-l{background-size: 35px;padding-left: 36px;}
+   .memoryDetail .mmp .mainPanel .m-show .m-s-r{background-size: 35px;padding-left: 36px;}
+}
+* {
+  -webkit-user-select:text !important;
+  -khtml-user-select:text !important;
+  -moz-user-select:text !important;
+  -ms-user-select:text !important;
+  user-select:text !important;
 }
 </style>
