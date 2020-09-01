@@ -884,6 +884,9 @@ export default {
           // }  
           
       }
+       window['testcallSendDataToBleUtil']= (bleReponseData) => {
+             this.callSendDataToBleUtil('newIndex','DA10000570','0570');  
+        }
       //禁止使用返回键
       // window.history.pushState(null, null, "#");
       // window.addEventListener("popstate", function(e) {

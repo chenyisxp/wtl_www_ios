@@ -77,7 +77,7 @@ export default {
         data=data.replace(/\s+/g,"").toUpperCase();
         //校验数据格式是否正确 发送信号给安卓 DAB1 0100 0200 8658 双字节
         var oldCrc =data.substring(data.length-4,data.length+1);
-        //  alert(this.crcModelBusClacQuery(data.substring(2,data.length-4, true)))
+         alert(this.crcModelBusClacQuery(data.substring(2,data.length-4, true)))
         if(data.length!=16){
           return;
         }else if(oldCrc!=this.crcModelBusClacQuery(data.substring(2,data.length-4), true)){//crc校验
@@ -98,7 +98,7 @@ export default {
         //有空的情况
         // this.$store.state.getWeldingInfoTimes = this.$store.state.getWeldingInfoTimes?this.$store.state.getWeldingInfoTimes:0+1;
         this.wtlLog('layout','getWeldingInfoTimes='+this.$store.state.getWeldingInfoTimes);
-        this.$store.state.getWeldingInfoTimes = this.$store.state.getWeldingInfoTimes+1;
+        this.$store.state.getWeldingInfoTimes = (this.$store.state.getWeldingInfoTimes || 0)+1;
         // alert(this.$store.state.getWeldingInfoTimes)
         switch (data.substring(2,4)) {
           case 'B1':
@@ -134,7 +134,7 @@ export default {
         console.log('this.$store.state.getWeldingInfoTime'+this.$store.state.getWeldingInfoTime)
   
           //11、且当前模式也自动返回了相关数据
-          // alert(JSON.stringify(this.$store.state.rstInfo))
+          alert(JSON.stringify(this.$store.state.rstInfo))
           if(JSON.stringify(this.$store.state.rstInfo) != "{}"){
             //22、是不是焊接中的数据
             this.wtlLog('layout','weldStatus='+this.$store.state.rstInfo.initBean.weldStatus);

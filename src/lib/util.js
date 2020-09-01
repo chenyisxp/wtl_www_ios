@@ -1249,7 +1249,8 @@ Array.prototype.in_array = function (element) {
                                 break;
                         }
                 }
-            } 
+            }
+           
             // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
                 console.log(sendData)
@@ -1269,7 +1270,7 @@ Array.prototype.in_array = function (element) {
                         if("FF"!=directive){//不是响应的需要开启定时器
                             // MainActivity.requestFromHtmlInit(pageFrom, data, crcCode);
                             checkPage[crc]= pageFrom;//页面来源
-                            checkStatus[crc] =false;//默认请求还未成功
+                            checkStatus[crc] =1;//默认请求还未成功 2:成功
                             checkData[crc] = sendData;//要发送的数据
                             checkTime[crc] = new Date().getTime();//时间戳
                             checkSendTimes[crc] =1;
@@ -1280,6 +1281,7 @@ Array.prototype.in_array = function (element) {
                             var message = {"method":"handleSendData","sendDt":sendData}
                             window.webkit.messageHandlers.interOp.postMessage(message);
                             if("FF"!=directive){//响应不需要开启定时器
+                                // console.log('initTimer=========')
                                 initTimer();
                             }
                         } catch (error) {
@@ -1337,10 +1339,11 @@ Array.prototype.in_array = function (element) {
             }
             function initTimer(){
                var shutDownFlag =false;//终止的标识
+               
                	//检查是否需要重发
                 for(let crcCode  in checkStatus){
-                    console.log(key + '---' + obj[key]);
-                    if(!obj[key]){
+                    // console.log(crcCode + '---' + checkStatus[crcCode]);
+                    if(!checkStatus[crcCode]){
                         //没有数据停止
                         continue;
                     }
@@ -1358,6 +1361,7 @@ Array.prototype.in_array = function (element) {
                             var sendData = checkData[crcCode];
                             // target_chara.setValue(HexCommandtoByte(data.getBytes()));
                             // mBluetoothLeService.writeCharacteristic(target_chara);
+                            console.log('sendData'+sendData);
                             var message = {"method":"handleSendData","sendDt":sendData}
                             window.webkit.messageHandlers.interOp.postMessage(message);
                         }
@@ -1366,6 +1370,7 @@ Array.prototype.in_array = function (element) {
                 if(shutDownFlag){
 		    		//有未完成的任务开启
 		    		TimerTask =setInterval(()=>{
+                        // console.log('setInterval====')
                         initTimer();
                     },1500);
 		    	}else{
