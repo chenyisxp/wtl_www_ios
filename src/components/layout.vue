@@ -242,12 +242,12 @@ export default {
     console.log('layout=====')
     var userAgent = navigator.userAgent.toLowerCase();
     if (/iphone|ipad|ipod|apple|webkit/.test(userAgent )) {
-      Toast({
-            message: "Ios客户端",
-            position: 'middle',
-            iconClass: 'icon icon-success',
-            duration: 2000
-      });
+      // Toast({
+      //       message: "Ios客户端",
+      //       position: 'middle',
+      //       iconClass: 'icon icon-success',
+      //       duration: 2000
+      // });
         // alert("Ios客户端");
        this.$store.state.envType = 'env_ios'
        this.globalSendMsgToIos("handleStartScan","","");

@@ -125,7 +125,7 @@
         <div class="title">
           <div class="le">
             <!-- <img src="../../assets/images/histroy.png"> -->
-             <img v-if="nowtypename=='POLATRITY'" src="../../assets/images/blue_acdc.png"> 
+             <img v-if="nowtypename=='POLATRITY' || nowtypename=='POLARITY'" src="../../assets/images/blue_acdc.png"> 
              <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
              <img v-if="nowtypename=='Pulse'" src="../../assets/images/blue_weld_icon_new_pluse.png"> 
               <img v-if="nowtypename=='HF'" src="../../assets/images/blue_weld_icon_new_hf.png"> 
