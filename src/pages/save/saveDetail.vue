@@ -1020,4 +1020,24 @@ export default {
     }
   }
 }
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+   .memoryDetail .appBtn{
+        height: 60px;
+    }
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+   .memoryDetail .appBtn{
+        height: 60px;
+    }
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+    .memoryDetail .appBtn{
+        height: 60px;
+    }
+}
 </style>

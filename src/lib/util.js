@@ -1379,7 +1379,7 @@ Array.prototype.in_array = function (element) {
                     clearInterval(TimerTask);
                 }
             }
-            //ios监听蓝牙返回数据 重要！！！ 移到lauout.vue中
+            //ios监听蓝牙返回数据 重要！！！ 
             window['iosBleDataLayoutFuc']= (bleReponseData) => {
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',')

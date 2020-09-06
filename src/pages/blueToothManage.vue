@@ -1021,4 +1021,35 @@ export default {
     }
 
 }
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+   .blueToothManage .blockHig{
+       height: 60px;
+       .scanning{
+            margin-top: 10px;
+            margin-left: 10px;
+       }
+   }
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+    .blueToothManage .blockHig{
+       height: 60px;
+       .scanning{
+            margin-top: 10px;
+            margin-left: 10px;
+       }
+   }
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .blueToothManage .blockHig{
+       height: 60px;
+       .scanning{
+            margin-top: 10px;
+            margin-left: 10px;
+       }
+   }
+}
 </style>

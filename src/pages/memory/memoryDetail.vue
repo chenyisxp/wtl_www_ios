@@ -1159,6 +1159,34 @@ export default {
    .memoryDetail .mmp .mainPanel .m-show .m-s-l{background-size: 35px;padding-left: 36px;}
    .memoryDetail .mmp .mainPanel .m-show .m-s-r{background-size: 35px;padding-left: 36px;}
 }
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+   .memoryDetail .appBtn{
+        height: 60px;
+    }
+    .memoryDetail .mmp .header{
+        height: 65px;
+        line-height: 1;
+        padding-top: 30px;
+        .licon span{
+            top:40px;
+        }
+    }
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+   .memoryDetail .appBtn{
+        height: 60px;
+    }
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+    .memoryDetail .appBtn{
+        height: 60px;
+    }
+}
 * {
   -webkit-user-select:text !important;
   -khtml-user-select:text !important;

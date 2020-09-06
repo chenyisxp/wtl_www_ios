@@ -437,4 +437,39 @@ export default {
       // margin:  0 20px;
   }
 }
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+   .memoryManage .header{
+      height: 65px;
+      line-height: 1;
+      padding-top: 30px;
+      .licon span{
+        top:40px;
+      }
+   }
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+    // iphoneXR样式
+    .memoryManage .header{
+      height: 65px;
+      line-height: 1;
+      padding-top: 30px;
+      .licon span{
+        top:40px;
+      }
+   }
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .memoryManage .header{
+      height: 65px;
+      line-height: 1;
+      padding-top: 30px;
+      .licon span{
+        top:40px;
+      }
+    }
+}
 </style>

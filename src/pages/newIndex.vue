@@ -406,12 +406,12 @@ export default {
               //不是来自按钮点击 是单片机自动上发的话 不做跳转 告诉收到
                 //  alert('来了');
                   var invalue =data.substring(data.length-4,data.length);
-                   Toast({
-                    message: '111',
-                    position: 'middle',
-                    iconClass: 'icon icon-success',
-                    duration: 2500
-                  });
+                  //  Toast({
+                  //   message: '111',
+                  //   position: 'middle',
+                  //   iconClass: 'icon icon-success',
+                  //   duration: 2500
+                  // });
                   that.callSendDataToBleUtil('newIndex','DAFF'+invalue+that.crcModelBusClacQuery('FF'+invalue, true),invalue);
                   return;
             }
@@ -1410,29 +1410,78 @@ export default {
   -ms-user-select:text !important;
   user-select:text !important;
 }
-@media(max-width:384px) and (max-height:567px){
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+   .newIndex{
+      .header{
+        height: 60px;
+        .blue-icon{
+          top: 35px;
+        }
+        .connectedstatus{
+          top: 35px;
+        }
+        .mechineId{
+          top: 35px;
+        }
+      }
+      .footer-btns{
+        height: 50px;
+        .btn{
+          height: 50px;
+        }
+      }
+   }
 }
-
-    
-@media(max-width:320px) and (min-height:490px){ 
-  
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+    // iphoneXR样式
+    // iphoneX iphoneXS样式
+   .newIndex{
+      .header{
+        height: 60px;
+        .blue-icon{
+          top: 35px;
+        }
+        .connectedstatus{
+          top: 35px;
+        }
+        .mechineId{
+          top: 35px;
+        }
+      }
+      .footer-btns{
+        height: 50px;
+        .btn{
+          height: 50px;
+        }
+      }
+   }
 }
-
-@media (min-width:360px) {
-    
-    
-}
-@media (min-width:370px) {
-    
-
-
-}
-@media (min-width:384px) {
-    
-   
-
-}
-@media (min-width:410px) {
-
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    // iphoneXR样式
+    // iphoneX iphoneXS样式
+   .newIndex{
+      .header{
+        height: 60px;
+        .blue-icon{
+          top: 35px;
+        }
+        .connectedstatus{
+          top: 35px;
+        }
+        .mechineId{
+          top: 35px;
+        }
+      }
+      .footer-btns{
+        height: 50px;
+        .btn{
+          height: 50px;
+        }
+      }
+   }
 }
 </style>

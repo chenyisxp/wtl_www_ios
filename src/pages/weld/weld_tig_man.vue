@@ -2659,4 +2659,76 @@ export default {
 @media(max-width:320px) and (min-height:490px){  
   
 }
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+   .weldMMA .footers {
+        height: 50px;
+        .new-footer-btns{
+            height: 50px;
+            .btn{
+            height: 50px;
+            }
+        }
+   }
+   .weldMMA .header{
+        height: 65px;
+        line-height: 1;
+        padding-top: 30px;
+            .ivu-icon{
+                top:37px;
+            }
+    }
+    .weldMMA .con-box{
+        margin-top: 65px;
+    }
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+    // iphoneXR样式
+   .weldMMA .footers {
+        height: 50px;
+        .new-footer-btns{
+            height: 50px;
+            .btn{
+            height: 50px;
+            }
+        }
+   }
+   .weldMMA .header{
+        height: 65px;
+        line-height: 1;
+        padding-top: 30px;
+            .ivu-icon{
+                top:37px;
+            }
+    }
+    .weldMMA .con-box{
+        margin-top: 65px;
+    }
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+   // iphoneX iphoneXS样式
+    .weldMMA .footers {
+        height: 50px;
+        .new-footer-btns{
+            height: 50px;
+            .btn{
+            height: 50px;
+            }
+        }
+    }
+    .weldMMA .header{
+        height: 65px;
+        line-height: 1;
+        padding-top: 30px;
+            .ivu-icon{
+                top:37px;
+            }
+    }
+    .weldMMA .con-box{
+        margin-top: 65px;
+    }
+}
 </style>
