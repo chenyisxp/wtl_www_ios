@@ -121,7 +121,7 @@ export default {
         if(data.length!=16){
           return;
         }else if(oldCrc!=this.crcModelBusClacQuery(data.substring(2,data.length-4), true)){//crc校验
-              // console.log('data.substring(data.length-4,data.length+1)::'+this.crcModelBusClacQuery(data.substring(2,data.length-4), true))
+              console.log('data.substring(data.length-4,data.length+1)::'+this.crcModelBusClacQuery(data.substring(2,data.length-4), true))
           if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
             this.callSendDataToBleUtil('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
           }else{
@@ -130,7 +130,7 @@ export default {
           return;
         }
         //发送确认秦请求
-        
+        console.log('======22==========')
         if(!this.GLOBAL_CONFIG.TESTFLAG){
           //  alert(111)
           if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
@@ -687,6 +687,7 @@ export default {
                     }
                 }
                 if(shutDownFlag){
+                  clearInterval(TimerTask);
 		    		//有未完成的任务开启
 		    		TimerTask =setInterval(()=>{
                         initTimer();

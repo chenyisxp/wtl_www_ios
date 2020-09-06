@@ -834,12 +834,12 @@ export default {
         that.nowConnectStatus='connected';
       } 
        window['broastFromAndroid'] = (data,pageFrom) => {
-         Toast({
-            message: 'newindex'+data+'||',
-            position: 'middle',
-            iconClass: 'icon icon-success',
-            duration: 11500
-          });
+        //  Toast({
+        //     message: 'newindex'+data+'||',
+        //     position: 'middle',
+        //     iconClass: 'icon icon-success',
+        //     duration: 11500
+        //   });
          console.log('newindex_broastFromAndroid')
             // 20190623 比较大的改动主调这两个不知道会不会有影响
             // this.$store.state.memoryInfo ={};//清空
@@ -857,8 +857,8 @@ export default {
           // alert(data)
           that.$store.state.havedClickPage=false;
           that.$store.state.oldBroastData =data;
-          that.modelType='0570';
-          that.comfromFlag=true;
+          // that.modelType='0570';
+          // that.comfromFlag=true;
           var tempType=that.getModelType(data.substring(2,4));
           console.log(that.modelType,tempType)
           if(that.modelType!=tempType){

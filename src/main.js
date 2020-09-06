@@ -230,9 +230,6 @@ new Vue({
       // window.addEventListener("popstate", function(e) {
       //   window.history.pushState(null, null, "#");
       // })
-  
-    
-    console.log('mainjs=====')
    },destroyed () {
    }
  

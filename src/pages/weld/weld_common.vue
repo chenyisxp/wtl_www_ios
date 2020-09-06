@@ -4,7 +4,9 @@
             <Icon type="ios-arrow-back" @click="go('/newIndex')"/>{{changeStrEmptyName(typeName)}}
             <span class="setupyi">SET UP</span>
         </div>
-        <div class="mmp" ref="mmpId" id="idid">     
+        <div class="mmp" ref="mmpId" id="idid">    
+                <!-- <div style="height:100px;background: red;" @click="handleTestClick">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div> 
+                <div style="height:100px;background: blue;" @click="handleTestClick2">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div>  -->
                  <!-- 业务需要 mig_material 值 ==0 显示gas选项否则隐藏 只有FCAW-S 没有气体 又改为显示no gas--> 
                 <!-- <div class="containList" v-for="(item,index) in nowTypeList" :key="index" :class="item.typeName=='GAS'&& MIG_MATERIAL ==3?'eleUnShow':''"> -->
                 <div class="con-box">
@@ -357,6 +359,13 @@ export default {
   },
 
   methods: {
+      handleTestClick(){
+            var message = {"method":"handleSendData","sendDt":"da1000000570"}
+            window.webkit.messageHandlers.interOp.postMessage(message);
+      },
+      handleTestClick2(){
+           this.callSendDataToBleUtil('weld_common',"da1000000570","0570");
+      },
        initWeldingAutoRouter(){
              let self =this;
               //是不是焊接中....
@@ -1399,6 +1408,8 @@ export default {
     }
   },
   mounted: function () {
+      //测试
+        
     //   alert( this.$store.state.getConnectStatus);
     this.pageBackTo =this.$route.query.pageBackTo;
     this.typeName =this.$route.query.type;

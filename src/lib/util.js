@@ -39,7 +39,7 @@ Array.prototype.in_array = function (element) {
                 // value:''
                 // }
             ];
-            var TimerTask ={};
+            let TimerTask ={};
             // private static HashMap<String, String> checkPage=new HashMap<String, String>();
             // private static HashMap<String, Boolean> checkStatus=new HashMap<String, Boolean>();
             // private static HashMap<String, Long> checkTime=new HashMap<String, Long>();
@@ -1257,12 +1257,12 @@ Array.prototype.in_array = function (element) {
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
                 
                 if(!this.GLOBAL_CONFIG.TESTFLAG){
-                    Toast({
-                        message: this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
-                        position: 'middle',
-                        iconClass: 'icon icon-success',
-                        duration: 2500
-                      });
+                    // Toast({
+                    //     message: this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
+                    //     position: 'middle',
+                    //     iconClass: 'icon icon-success',
+                    //     duration: 2500
+                    //   });
                     if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
                         //ios 逻辑需借鉴后端的
                         let directive =sendData.substring(2,4);
@@ -1343,7 +1343,7 @@ Array.prototype.in_array = function (element) {
                	//检查是否需要重发
                 for(let crcCode  in checkStatus){
                     // console.log(crcCode + '---' + checkStatus[crcCode]);
-                    if(!checkStatus[crcCode]){
+                    if(checkStatus[crcCode]!=1){
                         //没有数据停止
                         continue;
                     }
@@ -1365,12 +1365,14 @@ Array.prototype.in_array = function (element) {
                             var message = {"method":"handleSendData","sendDt":sendData}
                             window.webkit.messageHandlers.interOp.postMessage(message);
                         }
+                    }else{
+                        checkStatus[crcCode]=3;//强制置为成功
                     }
                 }
                 if(shutDownFlag){
-		    		//有未完成的任务开启
+                    //有未完成的任务开启
+                    clearInterval(TimerTask);//清除旧的定时器！！会造成内存溢出
 		    		TimerTask =setInterval(()=>{
-                        // console.log('setInterval====')
                         initTimer();
                     },1500);
 		    	}else{
@@ -1382,12 +1384,12 @@ Array.prototype.in_array = function (element) {
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',')
                 try {
-                    Toast({
-                        message:Array.isArray(bleReponseData),
-                        position: 'middle',
-                        iconClass: 'icon icon-success',
-                        duration: 11000
-                    });
+                    // Toast({
+                    //     message:Array.isArray(bleReponseData),
+                    //     position: 'middle',
+                    //     iconClass: 'icon icon-success',
+                    //     duration: 11000
+                    // });
                     if(bleReponseData && bleReponseData.length>0){
                         let data='';
                         //1、处理
@@ -1547,12 +1549,12 @@ Array.prototype.in_array = function (element) {
             }
             //数据太长造成的
             function doDataTooLongLast(data){
-                Toast({
-                    message: 'doDataTooLongLast'+data,
-                    position: 'middle',
-                    iconClass: 'icon icon-success',
-                    duration: 5000
-                });
+                // Toast({
+                //     message: 'doDataTooLongLast'+data,
+                //     position: 'middle',
+                //     iconClass: 'icon icon-success',
+                //     duration: 5000
+                // });
                 let templist = [];
                 let midData ="";
                 for (let index = 0; index < mayTooLongList.length; index++) {

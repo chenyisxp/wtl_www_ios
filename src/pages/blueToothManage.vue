@@ -1,6 +1,6 @@
 <template>
   <div class="blueToothManage">
-       {{rstMsg}}
+       <!-- {{rstMsg}} -->
        <div class="blockHig">
            <span class="scanning" @click="handleCameraScan"></span>
            <!-- <span class="rBtn" v-if="reBackFlag">ReBack</span> -->
@@ -135,7 +135,7 @@ export default {
         newFilterList:[],
         orderList1:[],
         orderList2:[],
-        importantkey:'',//关键字key
+        importantkey:'08',//关键字key
         moreFlag:false,
         rstMsg:'',
         stopScanTimer:{},
@@ -700,12 +700,13 @@ export default {
 
 
         }
+        //模拟多个： Sd8eab80c2c18b79bC,DE0EA5ED-978E-07AF-6E90-9BB27D274EF5|||HC-08,663E99B6-39F0-CD53-CF0C-BEB6CA13B875
         //ios蓝牙扫描结果
         window['handBleListToHtml5']= (data) => {
-            if(self.havedScanClick){
-                //规避后台扫描的
-                return;
-            }
+            // if(self.havedScanClick){
+            //     //规避后台扫描的
+            //     return;
+            // }
             //栗子：QJB2,0,5A1AE6BB-1188-4CB8-4193-9DB06B4222A1|||HC-08,0,663E99B6-39F0-CD53-CF0C-BEB6CA13B875|||
             //扫描中回应
             let tempI =0;
@@ -751,6 +752,8 @@ export default {
                         }
                     }
                 });
+                console.log(self.orderList1);
+                console.log(self.orderList2);
                 
             }
         }
