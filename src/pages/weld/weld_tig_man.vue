@@ -1,10 +1,11 @@
 <template>
-  <div class="weldMMA" :class="ifFixedFlag?'weldFixed':''" :style="{height:newContainHeight+100+'px'}" id="allPage" ref="allPage">
-    <div class="header">
+  <div class="weldMMA" :class="[ifFixedFlag?'weldFixed':'',envType=='env_ios'?'env_ios_gClass':'']" :style="{height:newContainHeight+100+'px'}" id="allPage" ref="allPage">
+    <!-- <div class="header">
       <Icon type="ios-arrow-back" @click="go('/newIndex')"/>
       {{changeStrEmptyName(typeName)}}
       <span class="setupyi">SET UP</span>
-    </div>
+    </div> -->
+    <Head :wantTo="'/newIndex'" :typeName="typeName" :pageFrom="'/weld_tig_man'" :nowModalTypeId="nowModalTypeId"></Head>
     <div class="mmp" ref="mmpId" id="idid">
       <div class="con-box">
            <div class="containList" v-for="(item,index) in nowTypeList" :key="index">
@@ -155,12 +156,14 @@
 import { MessageBox, Popup, Toast, Indicator } from "mint-ui";
 import $ from 'jquery'
 import Loading from "@/components/base/Loading";
+import Head from "@/components/base/header";
 import weld_commonVue from './weld_common.vue';
  const TIGMAN_DIRECTIVE_MAP =new Map([['MODE','D0'],['POLATRITY','D1'],['HF','D2'],['Pulse','D3'],['BTNS','D4'],['PARAMVALUE','D5']]);
 export default {
   name: "",
   components: {
-    Loading
+    Loading,
+    Head
   },
   data() {
     return {

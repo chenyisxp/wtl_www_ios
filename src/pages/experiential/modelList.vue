@@ -1,5 +1,5 @@
 <template>
-  <div class="modelList">
+  <div class="modelList" :class="envType=='env_ios'?'env_ios_gClass':''">
        <div class="header">
             <div class="licon" @click="go('/newIndex')">
                     <span></span>

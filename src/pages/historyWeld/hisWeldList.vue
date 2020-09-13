@@ -1,9 +1,10 @@
 <template>
-  <div class="hisWeldList">
-    <div class="header"><Icon type="ios-arrow-back" @click="go('/newIndex')"/>Histoty List</div>
+  <div class="hisWeldList" :class="envType=='env_ios'?'env_ios_gClass':''">
+    <!-- <div class="header"><Icon type="ios-arrow-back" @click="go('/newIndex')"/>Histoty List</div> -->
     <!-- <div class="maginname">
         {{nowConnectMachine}}
     </div> -->
+    <Head :wantTo="'/newIndex'" :headName="'Histoty List'"></Head>
     <div class="hislist">
         <div class="li"  @click="gohisWeld(0)">
             <div class="typename">
@@ -67,11 +68,12 @@
 
 <script>
 import { Toast ,Indicator } from 'mint-ui'
+import Head from "@/components/base/header";
 import Loading from "@/components/base/Loading";
 export default {
   name: '',
   components: {
-
+    Head,
    Loading
   },
   data () {
@@ -214,7 +216,9 @@ export default {
    
   },
   computed:{
-       
+    envType(){
+        return this.$store.state.envType;
+    }
   },destroyed(){
     this.isLoading=false;
     clearTimeout(this.loadingTimer);

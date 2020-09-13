@@ -1,26 +1,28 @@
 <template>
-  <div class="saveManage">
-   <div class="header">
+  <div class="saveManage"  :class="envType=='env_ios'?'env_ios_gClass':''">
+   <!-- <div class="header">
        <div class="licon" @click="goback">
             <span></span>
       </div>
-     BACK</div>
-   <ul class="mListContain">
-        <li v-for="(item,index) in mList" class="m-li" :key="index">
-           <div class="m-b" :class="'b-'+index" @click="goDetail(item.mid,item.remarksTtile)">{{item.remarksTtile}}</div>
-        </li>
-   </ul>
-   <Loading :is-loading="isLoading"></Loading>
+     BACK</div> -->
+    <Head :wantTo="'/newIndex'" :pageBackTo="pageFrom" :headName="'BACK'"></Head>
+    <ul class="mListContain">
+          <li v-for="(item,index) in mList" class="m-li" :key="index">
+            <div class="m-b" :class="'b-'+index" @click="goDetail(item.mid,item.remarksTtile)">{{item.remarksTtile}}</div>
+          </li>
+    </ul>
+    <Loading :is-loading="isLoading"></Loading>
   </div>
 </template>
 
 <script>
 import { CellSwipe ,Indicator,Toast} from "mint-ui";
 import Loading from "@/components/base/Loading";
+import Head from "@/components/base/header";
 import index from '../../store';
 export default {
   name: "",
-  components: {Loading},
+  components: {Loading,Head},
   data() {
     return {
       pageFrom:'',
@@ -446,6 +448,7 @@ export default {
   }
   .mListContain{
       // margin:  0 20px;
+      
   }
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
-  <div class="hisWeldInfo">
-    <div class="header"><Icon type="ios-arrow-back" @click="go('/hisWeldList')"/>History Detail</div>
-   
+  <div class="hisWeldInfo" :class="envType=='env_ios'?'env_ios_gClass':''">
+    <!-- <div class="header"><Icon type="ios-arrow-back" @click="go('/hisWeldList')"/>History Detail</div> -->
+   <Head :wantTo="'/hisWeldList'" :headName="'History Detail'"></Head>
     <div class="mainPanel">
-                <div class="m-l1"></div>
+        <div class="panel-inner">
+             <div class="m-l1"></div>
                 <div class="modelName">{{name}}</div>
                 <div class="m-show" v-if="name=='MIG SYN'">
                     <div class="m-s-l">{{tmp1}}<span class="unit">{{calcUnit()}}</span></div>
@@ -49,7 +50,8 @@
                     </li>
                 </ul>
                  <div class="m-l3"></div>
-            </div>
+        </div>     
+    </div>
     <div class="btnli">
           <div class="appBtn" type="primary" ghost @click="applyWeld">Application</div>
           <!-- <Button type="info" ghost class="info" @click="go('/memoryManage')">保存焊接参数</Button> -->
@@ -61,10 +63,12 @@
 <script>
 import { Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
+import Head from "@/components/base/header";
 export default {
   name: '',
   components: {
-   Loading
+   Loading,
+   Head
   },
   data () {
     return {
@@ -430,7 +434,9 @@ export default {
    
   },
   computed:{
-       
+    envType(){
+        return this.$store.state.envType;
+    }
   },destroyed(){
      clearTimeout(this.loadingTimer);
      window.removeEventListener('popstate', this.goBack, false);
@@ -523,14 +529,24 @@ export default {
     }
   }
   .mainPanel{
-            margin: 50px 20px 50px 20px;
-            background: #092b37;
-            box-shadow:
+      
+            padding: 90px 20px 80px 20px;
+            // background: #092b37;
+            // box-shadow:
+            //     // 0px -10px 0px 0px #ff0000,   /*上边阴影  红色*/
+            //     -1px 0px 0px 0px #1d414d,   /*左边阴影  绿色*/
+            //     1px 0px 0px 0px #1d414d,    /*右边阴影  蓝色*/
+            //     // 0px 10px 0px 0px #eede15;    /*下边阴影  黄色*/
+            //     ;
+            .panel-inner{
+                box-shadow: -1px 0px 0px 0px #1d414d, 1px 0px 0px 0px #1d414d;
+                background: #092b37;
+                box-shadow:
                 // 0px -10px 0px 0px #ff0000,   /*上边阴影  红色*/
                 -1px 0px 0px 0px #1d414d,   /*左边阴影  绿色*/
                 1px 0px 0px 0px #1d414d,    /*右边阴影  蓝色*/
                 // 0px 10px 0px 0px #eede15;    /*下边阴影  黄色*/
-                ;
+            }
             .m-l1{
                 background-image: radial-gradient(ellipse at 50% -20%,#5a7789,#092b37);
                 height: 5px;

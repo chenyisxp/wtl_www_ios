@@ -1,10 +1,11 @@
 <template>
   <div class="memoryManage">
-   <div class="header">
+   <!-- <div class="header">
        <div class="licon" @click="go('/newIndex')">
             <span></span>
       </div>
-     MEMORY</div>
+     MEMORY</div> -->
+    <Head :wantTo="'/newIndex'" :headName="'MEMORY'"></Head>
    <ul class="mListContain">
         <li v-for="(item,index) in mList" class="m-li" :key="index">
            <div class="m-b" :class="'b-'+index" @click="goDetail(item.mid,item.remarksTtile)">{{item.remarksTtile}}</div>
@@ -16,10 +17,11 @@
 
 <script>
 import { CellSwipe ,Indicator,Toast} from "mint-ui";
+import Head from "@/components/base/header";
 import Loading from "@/components/base/Loading";
 export default {
   name: "",
-  components: {Loading},
+  components: {Loading,Head},
   data() {
     return {
       LoadingTimer:{},
@@ -435,6 +437,7 @@ export default {
   }
   .mListContain{
       // margin:  0 20px;
+      padding-top: 70px;
   }
 }
 /* x xs */

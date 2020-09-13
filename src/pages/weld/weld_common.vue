@@ -1,9 +1,10 @@
 <template>
-  <div class="weldMMA" :class="[ifFixedFlag?'weldFixed':'']" :style="{height:newContainHeight+80+'px'}" ref="allPage" id="allPage">
-        <div class="header">
+  <div class="weldMMA" :class="[ifFixedFlag?'weldFixed':'',envType=='env_ios'?'env_ios_gClass':'']" :style="{height:newContainHeight+80+'px'}" ref="allPage" id="allPage">
+        <!-- <div class="header">
             <Icon type="ios-arrow-back" @click="go('/newIndex')"/>{{changeStrEmptyName(typeName)}}
             <span class="setupyi">SET UP</span>
-        </div>
+        </div> -->
+        <Head :wantTo="'/newIndex'" :pageBackTo="pageBackTo" :typeName="typeName" :pageFrom="'/weld_common'" :nowModalTypeId="nowModalTypeId"></Head>
         <div class="mmp" ref="mmpId" id="idid">    
                 <!-- <div style="height:100px;background: red;" @click="handleTestClick">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div> 
                 <div style="height:100px;background: blue;" @click="handleTestClick2">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div>  -->
@@ -207,11 +208,13 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
+import Head from "@/components/base/header";
 import $ from 'jquery'
 export default {
   name: '',
   components: {
-   Loading
+   Loading,
+   Head
   },
   data () {
     return {
@@ -1443,6 +1446,9 @@ export default {
       
   },
   computed:{
+        envType(){
+            return this.$store.state.envType;　　//需要监听的数据
+        },
         getAndriodNewMsg () {
             // alert(this.$store.state.AdroidNewMsg+'||comon||'+this.$store.state.AdroidOldMsg);
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
@@ -1519,6 +1525,7 @@ export default {
         top: 0;
         height: auto;
         width: 100%;
+        margin-bottom: 50px;
         // align-self: flex-start;
     }
     // opacity: 0.1;

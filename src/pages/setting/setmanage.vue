@@ -1,5 +1,5 @@
 <template>
-  <div class="setmanage">
+  <div class="setmanage" :class="envType=='env_ios'?'env_ios_gClass':''">
       <div class="header"><Icon type="ios-arrow-back" @click="go('/newIndex')"/>SETTING</div>
       <div class="contain">
             <div class="editunit">Change unit</div>

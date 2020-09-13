@@ -1,5 +1,5 @@
 <template>
-  <div class="blueToothManage">
+  <div class="blueToothManage" :class="envType=='env_ios'?'env_ios_class':''">
        <!-- {{rstMsg}} -->
        <div class="blockHig">
            <span class="scanning" @click="handleCameraScan"></span>
@@ -7,7 +7,7 @@
        </div>
        <div class="t-contain">
             <div v-show="!scaningFlag" class="scan">
-                <img src="../assets/images/ble_scan.png"  @click="handleScan"> 
+                <img src="../assets/images/ble_scan.png"  @click="beforeHandleScan"> 
             </div>
             <div v-show="scaningFlag" class="radar"></div>
        </div>
@@ -90,6 +90,17 @@
             <p>name:{{cameraRstName}}</p>
             <p>ip:{{cameraRstIp}}</p>
         </Modal>
+        <Modal
+            v-model="searchInFlag"
+            title="ATTENTION"
+            ok-text='YES'
+            cancel-text='NO'
+            :loading="loading"
+            @on-ok="confrimScan"
+            @on-cancel="searchInFlag=false"
+            >
+            <p>Scanning will disconnect the currently connected device?</p>
+        </Modal>
     <!-- <div style="-webkit-user-select:text !important;">
         <input v-model="cameraRstName" placeholder="测试输入">
     </div>
@@ -118,6 +129,7 @@ export default {
         blueToothFlag:false,//蓝牙开关是否打开
         modal6: false,
         comeraRstFlag:false,
+        searchInFlag:false,
         loading: true,
         addressGo:'',
         isWaitingToGo:false,//等待跳转
@@ -161,8 +173,28 @@ export default {
 
               return;
             }
-          // 调用到蓝牙连接 类似点击历史连接
-          this.setBleConnect(this.cameraRstIp,this.cameraRstName)
+          // 调用到蓝牙连接 类似点击历史连接 ios比较特殊 需要重新定位ip
+
+          if(this.envType=='env_ios'){
+              if(this.rstList.length==0){
+                    Toast({
+                        message: 'If the connection fails, click Bluetooth search to search for available devices',
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 1500
+                    });
+                    return;
+              }else{
+                  this.rstList.forEach(element => {
+                      if(element.bleName == this.cameraRstName){
+                        this.cameraRstIp=element.address;
+                        this.setBleConnect(this.cameraRstIp,this.cameraRstName)
+                      }
+                  });
+              }
+          }else{
+            this.setBleConnect(this.cameraRstIp,this.cameraRstName)
+          }
       },
       //体验模式
       goWeldingExperiential(){
@@ -225,9 +257,16 @@ export default {
         }
     },
     setBleConnect_ios(address,bleName){
-        if(this.$store.state.nowConnectAddress == address && this.$store.state.getConnectStatus=='connected'){
+        // Toast({
+        //         message: `${this.$store.state.nowConnectAddress},${address},${this.getConnectStatus}`,
+        //         position: 'middle',
+        //         iconClass: 'icon icon-success',
+        //         duration: 2000
+        // });
+        if(this.$store.state.nowConnectAddress == address && this.getConnectStatus=='connected'){
             this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
         }else{
+            
             //提前记录名字把 
             this.$store.state.nowConnectMachine=bleName;//全局存储机器名字
             this.$store.state.nowConnectAddress =address;
@@ -384,6 +423,14 @@ export default {
             }
         }, BASE_CONFIG.scaningDuring);
     },
+    beforeHandleScan(){
+        if(this.getConnectStatus=='connected'){
+            this.searchInFlag=true;
+            return;
+        }else{
+            this.handleScan();
+        }
+    },
     handleScan(){
         if(this.envType=='env_ios'){
             this.globalSendMsgToIos("handleStopScan","","");
@@ -393,6 +440,20 @@ export default {
         }else{
             this.scan();
         }
+    },
+    confrimScan(){
+        //关闭弹层、断开扫描、开启扫描
+        this.searchInFlag=false;
+        this.$store.state.getConnectStatus='scaning';
+        let address =this.$store.state.nowConnectAddress
+        if(address){
+            this.globalSendMsgToIos("handleDisConnect",address,"")
+            //开启定时器
+            // this.timeInterval1 = setInterval(() => {
+            //     this.globalSendMsgToIos("handleGetBleState","","");
+            // },800);
+        }
+        this.handleScan();
     },
     scan_ios(){
         let self =this;
@@ -543,12 +604,16 @@ export default {
       return;
     },
     handleCameraScan(){
-        Toast({
-                message: this.envType,
-                position: 'middle',
-                iconClass: 'icon icon-success',
-                duration: 2500
-        });
+        if(this.scaningFlag){
+            Toast({
+                        message: "Please wait for the search scan to finish",
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 2500
+            }); 
+            return;
+        }
+       
         //ios
         if(this.envType=='env_ios'){
             // let message = {"method":"handleStartScan","":""}
@@ -668,7 +733,7 @@ export default {
                 self.comeraRstFlag=true
                 return;
             }
-            // var data ="F0:B5:D1:59:23:4A||HC-08";
+            // var data ="F0:B5:D1:59:23:4A||HC-08"; WELDin1020
             if(data.indexOf('||')>-1){
                 let tempArr = data.split('||');
                 // self.cameraRstIp=tempArr[0].replace(/,/g,":");
@@ -687,22 +752,24 @@ export default {
         }
         //获取ble蓝牙状态
         window['sendToHtmlBleState']= (scanStatus) => {
-            if('scaning'==scanStatus){
-                self.scaningFlag=true;
-            }else{
-                clearInterval(self.timeInterval1);
-                self.scaningFlag=false;
-                self.showOrder =2;//扫描结束
-            }
+            // if('scaning'==scanStatus){
+            //     self.scaningFlag=true;
+            // }else{
+            //     clearInterval(self.timeInterval1);
+            //     self.scaningFlag=false;
+            //     self.showOrder =2;//扫描结束
+            // }
             if('connected'==scanStatus){
-
+                clearInterval(self.timeInterval1)
+                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
             }
-
-
+        }
+        window['sendToHtmlBleStateThenIndex']= () => {
+            self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
         }
         //模拟多个： Sd8eab80c2c18b79bC,DE0EA5ED-978E-07AF-6E90-9BB27D274EF5|||HC-08,663E99B6-39F0-CD53-CF0C-BEB6CA13B875
         //ios蓝牙扫描结果
-        window['handBleListToHtml5']= (data) => {
+        window['handIosBleListToHtml5']= (data) => {
             // if(self.havedScanClick){
             //     //规避后台扫描的
             //     return;

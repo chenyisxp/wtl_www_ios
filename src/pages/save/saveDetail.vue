@@ -1,12 +1,13 @@
 <template>
-  <div class="memoryDetail">
+  <div class="memoryDetail"  :class="envType=='env_ios'?'env_ios_gClass':''">
        <div class="mmp">
-            <div class="header">
+            <!-- <div class="header">
                 <div class="licon" @click="go('/newIndex')">
                     <span></span>
                 </div>
                 M{{pupnum}}
-            </div>
+            </div> -->
+            <Head :wantTo="'/newIndex'"  :headName="'M'+pupnum"></Head>
             <div class="modText">
                 <div class="mup">
                     <div class="u-r">NOTE</div>
@@ -90,9 +91,10 @@
 <script>
 import { MessageBox,Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
+import Head from "@/components/base/header";
 export default {
   name: "",
-  components: {Loading},
+  components: {Loading,Head},
   data() {
     return {
         isLoading:false,
@@ -401,7 +403,11 @@ export default {
     this.remarksText = this.$route.query.remarksText;
   },
   created() {},
-  computed: {}
+  computed: {
+    envType(){
+      return this.$store.state.envType;
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

@@ -1,6 +1,6 @@
 <template>
   <!-- <div class="newIndex"  :style="{height:this.screenHeight+'px'}"> -->
-    <div class="newIndex">
+    <div class="newIndex" :class="envType=='env_ios'?'env_ios_class':''">
        <!-- {{showRespData}} -->
     <div class="header">
         <div class="blue-icon" @click="go('/blueToothManage')"></div>
@@ -704,8 +704,8 @@ export default {
             this.screenHeight =  window.innerHeight;
             // this.screenHeight =  document.body.clientHeight;
             if( this.screenWidth<this.screenHeight){
-            this.conHeight = this.screenHeight-95-100+'px';
-            this.imgHeight = this.screenHeight-95-100;
+            this.conHeight = this.screenHeight-115-100+'px';
+            this.imgHeight = this.screenHeight-95-100+'px';
             this.imgWidth = this.imgHeight*0.7 +'px';//宽高比列5：3
             this.imgHeight+='px';//去除头部底部高度 上下距离
             }else{
@@ -1410,22 +1410,37 @@ export default {
   -ms-user-select:text !important;
   user-select:text !important;
 }
+//ios顶部状态栏适配 +20px
+.env_ios_class{
+ .header{
+    height:70px;
+    .blue-icon{
+      top: 60%;
+    }
+    .connectedstatus{
+      top:65%;
+    }
+    .mechineId{
+      top:45px;
+    }
+ }
+}
 /* x xs */
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
    // iphoneX iphoneXS样式
-   .newIndex{
-      .header{
-        height: 60px;
+   .env_ios_class{
+     .header{
+        height:70px;
         .blue-icon{
-          top: 35px;
+          top: 65%;
         }
         .connectedstatus{
-          top: 35px;
+          top:70%;
         }
         .mechineId{
-          top: 35px;
+          top:50px;
         }
-      }
+    }
       .footer-btns{
         height: 50px;
         .btn{
@@ -1438,19 +1453,19 @@ export default {
 @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
     // iphoneXR样式
     // iphoneX iphoneXS样式
-   .newIndex{
+   .env_ios_class{
       .header{
-        height: 60px;
+        height:70px;
         .blue-icon{
-          top: 35px;
+          top: 65%;
         }
         .connectedstatus{
-          top: 35px;
+          top:70%;
         }
         .mechineId{
-          top: 35px;
+          top:50px;
         }
-      }
+    }
       .footer-btns{
         height: 50px;
         .btn{
@@ -1463,19 +1478,19 @@ export default {
 @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
     // iphoneXR样式
     // iphoneX iphoneXS样式
-   .newIndex{
+   .env_ios_class{
       .header{
-        height: 60px;
+        height:70px;
         .blue-icon{
-          top: 35px;
+          top: 65%;
         }
         .connectedstatus{
-          top: 35px;
+          top:70%;
         }
         .mechineId{
-          top: 35px;
+          top:50px;
         }
-      }
+    }
       .footer-btns{
         height: 50px;
         .btn{
@@ -1484,4 +1499,5 @@ export default {
       }
    }
 }
+
 </style>

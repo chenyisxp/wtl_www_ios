@@ -1,6 +1,7 @@
 <template>
-  <div class="weldMMA" :class="ifFixedFlag?'weldFixed':''"  :style="{height:newContainHeight+20+'px'}" id="allPage" ref="allPage">
-        <div class="header"><Icon type="ios-arrow-back" @click="go('/newIndex')"/>{{typeName}}<span class="setupyi">SET UP</span></div>
+  <div class="weldMMA" :class="[ifFixedFlag?'weldFixed':'',envType=='env_ios'?'env_ios_gClass':'']"  :style="{height:newContainHeight+20+'px'}" id="allPage" ref="allPage">
+        <!-- <div class="header"><Icon type="ios-arrow-back" @click="go('/newIndex')"/>{{typeName}}<span class="setupyi">SET UP</span></div> -->
+        <Head :wantTo="'/newIndex'" :typeName="typeName" :pageFrom="'/weld_mma'" :nowModalTypeId="nowModalTypeId"></Head>
         <div class="mmp" ref="mmpId" id="idid">
                 <div class="con-box">
                         <div class="containList" v-for="(item,index) in nowTypeList" :key="index">
@@ -191,11 +192,13 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import $ from 'jquery'
+import Head from "@/components/base/header";
 import Loading from "@/components/base/Loading";
 export default {
   name: '',
   components: {
-   Loading
+   Loading,
+   Head
   },
   data () {
     return {
@@ -1207,7 +1210,10 @@ export default {
       
   },
   computed:{
-          getAndriodNewMsg () {
+        envType(){
+            return this.$store.state.envType;　　//需要监听的数据
+        },
+        getAndriodNewMsg () {
             // alert(this.$store.state.AdroidNewMsg+'||||'+this.$store.state.AdroidOldMsg);
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
         }

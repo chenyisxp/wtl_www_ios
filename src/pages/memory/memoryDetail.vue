@@ -1,12 +1,13 @@
 <template>
-  <div class="memoryDetail">
+  <div class="memoryDetail" :class="envType=='env_ios'?'env_ios_gClass':''">
        <div class="mmp">
-            <div class="header">
+            <!-- <div class="header">
                 <div class="licon" @click="go('/memoryManage')">
                     <span></span>
                 </div>
                 M{{pupnum}}
-            </div>
+            </div> -->
+            <Head :wantTo="'/memoryManage'" :headName="'M'+pupnum"></Head>
             <div class="modText">
                 <div class="mup">
                     <div class="u-r">Note</div>
@@ -68,7 +69,7 @@
                  <div class="m-l3"></div>
             </div>
         </div>
-        <div class="appBtn" @click="applyWeld">Application</div>
+        <div class="appBtn newFixed" @click="applyWeld">Application</div>
         <div class="hideWid" v-if="hideFlag" id="hiid">
             <div class="up" v-if="upshowFlag" @click="closeModal"></div>
             <div class="down" v-if="downshowFlag" :class="closeClass?'transdown':''">
@@ -88,9 +89,10 @@
 <script>
 import { Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
+import Head from "@/components/base/header";
 export default {
   name: "",
-  components: {Loading},
+  components: {Loading,Head},
   data() {
     return {
         isLoading:false,
@@ -524,7 +526,11 @@ export default {
       }
   },
   created() {},
-  computed: {},
+  computed: {
+    envType(){
+        return this.$store.state.envType;
+    },
+  },
   destroyed(){
        window.removeEventListener('popstate', this.goBack, false);
   }
@@ -721,8 +727,9 @@ export default {
         }
         }
         .appBtn{
-            
-            clear: both;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
             height: 50px;
             line-height: 50px;
             text-align: center;
@@ -730,8 +737,6 @@ export default {
             color: #3cbde7;
             font-size: 24px;
             padding-bottom: 50px;
-            align-self: flex-end;
-            width: 100%;
             background: -moz-linear-gradient(top, #070304 0%, #3d3b3c 100%) ;
             background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3d3b3c), color-stop(100%,#070304));
             // text-shadow: 0.1em 0.1em 0.3em #fff;
