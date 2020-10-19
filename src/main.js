@@ -95,16 +95,16 @@ Vue.component(Radio.name, Radio);
 Vue.component(RadioGroup.name, RadioGroup);
 Vue.component(Table.name, Table);
 Vue.component(TableColumn.name, TableColumn);
-Vue.component(DatePicker.name, DatePicker);
-Vue.component(TimeSelect.name, TimeSelect);
-Vue.component(Carousel.name, Carousel);
-Vue.component(CarouselItem.name, CarouselItem);
-Vue.component(Tree.name, Tree);
-Vue.component(Autocomplete.name, Autocomplete);
+// Vue.component(DatePicker.name, DatePicker);
+// Vue.component(TimeSelect.name, TimeSelect);
+// Vue.component(Carousel.name, Carousel);
+// Vue.component(CarouselItem.name, CarouselItem);
+// Vue.component(Tree.name, Tree);
+// Vue.component(Autocomplete.name, Autocomplete);
 Vue.component(Alert.name, Alert);
-Vue.component(Tag.name, Tag);
-Vue.component(Steps.name, Steps);
-Vue.component(Step.name, Step);
+// Vue.component(Tag.name, Tag);
+// Vue.component(Steps.name, Steps);
+// Vue.component(Step.name, Step);
 
 
 Vue.config.productionTip = false

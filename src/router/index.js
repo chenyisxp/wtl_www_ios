@@ -8,6 +8,7 @@ import HisWeldInfo from '@/pages/historyWeld/hisWeldInfo'
 import Weld_common from '@/pages/weld/weld_common'
 import NewIndex from '@/pages/newIndex';
 import LoadApp from '@/pages/loadApp.vue';
+import {Toast  } from 'mint-ui'
 
 import store from '../store/index'
 Vue.use(Router)
@@ -190,11 +191,15 @@ router.beforeEach((to, from, next) => {
 			// 		next();
 			// 	}
 			// }else{
-				
 				next();
 			// }
 		}else{
-			
+			// Toast({
+			// 	message: 'blueToothManaged'+store.state.getConnectStatus,
+			// 	position: 'middle',
+			// 	iconClass: 'icon icon-success',
+			// 	duration: 1500
+			// });
 			store.state.routerOprete='';
 			//前往蓝牙连接页
 			next({ path: '/blueToothManage' });

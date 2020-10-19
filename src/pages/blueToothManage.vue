@@ -147,7 +147,8 @@ export default {
         newFilterList:[],
         orderList1:[],
         orderList2:[],
-        importantkey:'08',//关键字key
+        // importantkey:'08',//关键字key
+        importantkey:'WELD',//关键字key
         moreFlag:false,
         rstMsg:'',
         stopScanTimer:{},
@@ -155,7 +156,8 @@ export default {
         timeDelayer:{},
         updateBlelistDB:[],//备注连接过的json数据
         lastBleConnectTimer:{},
-        havedScanClick:true//是否点击处理蓝牙后台自动扫描问题
+        havedScanClick:true,//是否点击处理蓝牙后台自动扫描问题
+        timerInterval:{}
 
      } 
   },
@@ -185,7 +187,9 @@ export default {
                     });
                     return;
               }else{
+                    
                   this.rstList.forEach(element => {
+                      
                       if(element.bleName == this.cameraRstName){
                         this.cameraRstIp=element.address;
                         this.setBleConnect(this.cameraRstIp,this.cameraRstName)
@@ -242,12 +246,12 @@ export default {
     buildData(){
        var aa= [{address:'\"56:4B:ED:75:AC:29\"', bleName:'null', rssi:'-97'}, {address:'\"78:04:73:00:AC:3D\"', bleName:'HC-08', rssi:'-41'}];
         this.rstList =aa;
-        Toast({
-            message: 'bele:::'+ aa.length,
-            position: 'middle',
-            iconClass: 'icon icon-success',
-            duration: 500
-        });
+        // Toast({
+        //     message: 'bele:::'+ aa.length,
+        //     position: 'middle',
+        //     iconClass: 'icon icon-success',
+        //     duration: 500
+        // });
     },
     setBleConnect(address,bleName){
         if(this.envType=='env_ios'){
@@ -270,7 +274,20 @@ export default {
             //提前记录名字把 
             this.$store.state.nowConnectMachine=bleName;//全局存储机器名字
             this.$store.state.nowConnectAddress =address;
-            this.globalSendMsgToIos("handleConnect",address,"")
+           try {
+                
+                this.globalSendMsgToIos("handleConnect",address,"");
+                this.timerInterval =setInterval(() => {
+                    this.globalSendMsgToIos("handleGetBleStateThenToNewIndex",'',"");
+                }, 1000);
+           } catch (error) {
+                Toast({
+                        message: error,
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 5000
+                });
+           }
         } 
     },
     setBleConnect_android(address,bleName){
@@ -717,13 +734,13 @@ export default {
         
         let self =this;
         window['broastCameraScanRst'] = (data) => {
-            Toast({
-                    message: 'scanned data is not in rule'+data,
-                    position: 'middle',
-                    iconClass: 'icon icon-success',
-                    duration: 2500
-            });
-            console.log('+++++++++++++++++++++')
+            // Toast({
+            //         message: 'scanned data is not in rule'+data,
+            //         position: 'middle',
+            //         iconClass: 'icon icon-success',
+            //         duration: 2500
+            // });
+            // console.log('+++++++++++++++++++++')
             console.log('+++++++++++++++++++++')
             // TODO 按规则 切割成 name和ip
             //测试模式时
@@ -764,17 +781,22 @@ export default {
                 self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
             }
         }
-        window['sendToHtmlBleStateThenIndex']= () => {
-            self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
+        window['handleGetBleStateThenToNewIndex']= () => {
+            self.$store.state.getConnectStatus='connected';
+            clearInterval(self.timerInterval )
+            setTimeout(() => {
+                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
+            }, 100);
         }
-        //模拟多个： Sd8eab80c2c18b79bC,DE0EA5ED-978E-07AF-6E90-9BB27D274EF5|||HC-08,663E99B6-39F0-CD53-CF0C-BEB6CA13B875
+        //模拟多个： Sd8eab80c2c18b79bC,DE0EA5ED-978E-07AF-6E90-9BB27D274EF5||HC-08,663E99B6-39F0-CD53-CF0C-BEB6CA13B875
         //ios蓝牙扫描结果
         window['handIosBleListToHtml5']= (data) => {
+            
             // if(self.havedScanClick){
             //     //规避后台扫描的
             //     return;
             // }
-            //栗子：QJB2,0,5A1AE6BB-1188-4CB8-4193-9DB06B4222A1|||HC-08,0,663E99B6-39F0-CD53-CF0C-BEB6CA13B875|||
+            //栗子：QJB2,0,5A1AE6BB-1188-4CB8-4193-9DB06B4222A1||HC-08,0,663E99B6-39F0-CD53-CF0C-BEB6CA13B875||
             //扫描中回应
             let tempI =0;
             if(data){
@@ -783,6 +805,7 @@ export default {
                 let bleInfo ={};
                 let rstLLIST=[];
                 bleList.forEach(element => {
+                    bleInfo ={};
                     bleArr = element.split(',');
                     bleInfo['bleName']=bleArr[0];
                     bleInfo['address']=bleArr[1];
@@ -861,7 +884,7 @@ export default {
       clearInterval(self.timeInterval1);
       clearInterval(self.timeInterval2);
       clearTimeout(self.connectFailedInfo);
-     
+      clearInterval(self.timerInterval)
       MessageBox.close(); 
        window.removeEventListener('popstate', this.goBack, false);
   },

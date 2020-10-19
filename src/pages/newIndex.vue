@@ -703,14 +703,15 @@ export default {
             this.screenWidth = document.body.clientWidth;
             this.screenHeight =  window.innerHeight;
             // this.screenHeight =  document.body.clientHeight;
+            console.log(this.screenWidth,this.screenHeight)
             if( this.screenWidth<this.screenHeight){
-            this.conHeight = this.screenHeight-115-100+'px';
-            this.imgHeight = this.screenHeight-95-100+'px';
-            this.imgWidth = this.imgHeight*0.7 +'px';//宽高比列5：3
+            this.conHeight = this.screenHeight-95-100+'px';
+            this.imgHeight = this.screenHeight-95-100;
+            this.imgWidth = this.imgHeight*0.8 +'px';//宽高比列5：3
             this.imgHeight+='px';//去除头部底部高度 上下距离
             }else{
             this.conHeight = this.screenWidth-95-100+'px';
-            this.imgWidth = this.screenWidth*0.7+'px';
+            this.imgWidth = this.screenWidth*0.8+'px';
             this.imgHeight = this.screenWidth-95-100+'px';//去除头部底部高度 上下距离
             }
       },

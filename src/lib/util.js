@@ -1282,7 +1282,10 @@ Array.prototype.in_array = function (element) {
                             window.webkit.messageHandlers.interOp.postMessage(message);
                             if("FF"!=directive){//响应不需要开启定时器
                                 // console.log('initTimer=========')
-                                initTimer();
+                                //异步操作
+                                setTimeout(() => {
+                                    initTimer();
+                                }, 20);
                             }
                         } catch (error) {
                             Toast({
