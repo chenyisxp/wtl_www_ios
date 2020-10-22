@@ -462,6 +462,7 @@ Array.prototype.in_array = function (element) {
                            var byte1Bean = num16To2Arr(arrayList[2],'',pageFrom);
                            //拆解成
                            var  arrtwo= num16To2ArrSpecial02(arrayList[3]);
+                           console.log(rstInfo,arrayList)
                            rstInfo.nowTypeList.forEach(element => {
                                 switch (element.typeName) {
                                     case 'MODE':
@@ -1405,7 +1406,7 @@ Array.prototype.in_array = function (element) {
                         //2、crc校验(注意最长的)     console.log(this.crcModelBusClacQuery('100000', true))//0570
                         let len =data.length;
                         data =data.toUpperCase();//大写
-                        
+                        console.log(data)
                         //帧头+指令+crc校验daffaaaa aaaa
                         if(len>11 && data.indexOf('DA')==0){
                             //da 10 00 00 0750
@@ -1419,8 +1420,10 @@ Array.prototype.in_array = function (element) {
                                     let oldcrc = data.substring(4, 8)
                 //					data.substring(2, 8);//原来的crc
                 //					data.substring(8, 12);//现在的crc
-                                    let  tempMidData ="FF"+oldCrc;
+                                    let  tempMidData = "FF" +oldcrc.toString();//转字符串否则出错
+                                    
                                     let newCrc = crcModelBusClacQuery(tempMidData, true);
+                                    console.log(crc,oldcrc,newCrc)
                                     
                                     if(crc == newCrc){
                                         delete(checkData[oldcrc]);

@@ -54,7 +54,8 @@
         </div>
         <!-- 如果自己要用本地hc-8查看模拟报文发送接受 需打开，否则看不到这个蓝牙 -->
       <!-- <div class="morescan" v-if="orderList2.length>0 && (showOrder==1||showOrder==2) && moreFlag" @click="moreScan">More >></div> -->
-       <div class="btList" v-if="orderList2.length>0 && showOrder==2 && !moreFlag">
+       <!-- IOS点击会死机 -->
+       <!-- <div class="btList" v-if="orderList2.length>0 && showOrder==2 && !moreFlag">
             <div class="ceq">othter equipment</div>
             <ul>
                 <li class="b-li"  v-for="(item,index) in orderList2" @click="setBleConnect(item.address,item.bleName)" :key="index">
@@ -63,7 +64,7 @@
                         <div class="d connect">Connect ></div>
                 </li>
             </ul>
-        </div>
+        </div> -->
       <div v-if="orderList1.length==0 && orderList2.length==0 && lastConnectList.length==0 && showOrder==0" class="empty">The list is empty.</div>
        <Loading :is-loading="isLoading"></Loading>
        <Modal
@@ -107,8 +108,8 @@
     <input v-model="cameraRstName" placeholder="测试输入2"> -->
     
     <!-- 测试入口 -->
-    <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    <!-- <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div> -->
   </div>
 </template>
 

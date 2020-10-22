@@ -280,12 +280,12 @@ export default {
               this.$store.state.getConnectStatus =  window.android.getConStatus();
             }
             if(this.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
-               Toast({
-                  message: '连接状态：：'+this.$store.state.getConnectStatus,
-                  position: 'middle',
-                  iconClass: 'icon icon-success',
-                  duration: 1000
-              });
+              //  Toast({
+              //     message: '连接状态：：'+this.$store.state.getConnectStatus,
+              //     position: 'middle',
+              //     iconClass: 'icon icon-success',
+              //     duration: 1000
+              // });
             }
             //不是测试模式就该返回了
             
@@ -425,12 +425,12 @@ export default {
     }
     window['broastFromAndroid'] = (data) => {
        console.log('lay_broastFromAndroid')
-        Toast({
-            message: 'layout'+data,
-            position: 'middle',
-            iconClass: 'icon icon-success',
-            duration: 2500
-          });
+        // Toast({
+        //     message: 'layout'+data,
+        //     position: 'middle',
+        //     iconClass: 'icon icon-success',
+        //     duration: 2500
+        //   });
     //  alert(this.$store.state.AdroidNewMsg+'||||'+this.$store.state.AdroidOldMsg);
       //全局都要 改造一起返回
       if(this.$store.state.AdroidOldMsg){

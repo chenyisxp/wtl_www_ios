@@ -692,6 +692,16 @@ export default {
         }
         
     },
+    onlyChangeCheckedNoSend(type,value,index){
+        this.nowTypeList.forEach(element => {
+            if(element.typeName==type){
+                if(type=='MATERIAL'){
+                    this.MIG_MATERIAL =value;
+                }
+                element.chooseKey=value;
+            }
+        });
+    },
     changeChecked(type,value,index){
         this.nowTypeList.forEach(element => {
             if(element.typeName==type){
@@ -722,6 +732,11 @@ export default {
                 // }else{
                 //     this.changeChecked('POLATRITY',0);
                 // }
+                if(value!=1){//不是选铝改成dc
+                    this.onlyChangeCheckedNoSend('POLATRITY',1);
+                }else{
+                    this.onlyChangeCheckedNoSend('POLATRITY',0);
+                }
                 element.chooseKey=value;
                 //计算 查找 发送请求给ble告知 修改了
                 var dirctCode = this.getDirective(this.typeName,type);
@@ -1031,6 +1046,16 @@ export default {
         //        this.changeMetirialChecked('MATERIAL' ,element.chooseKey, 0);
         //     }
         // });
+        //处理POLATRITY显示
+        this.nowTypeList.forEach(element => {
+            if(element.typeName=='MATERIAL'){
+                if(element.value!=1){//不是选铝改成dc
+                    this.onlyChangeCheckedNoSend('POLATRITY',1);
+                }else{
+                    this.onlyChangeCheckedNoSend('POLATRITY',0);
+                }
+            }
+        });
         //weld_cur赋值----电流
         this.min = list.TIGSYN_MIN_CUR;
         this.max = list.TIGSYN_MAX_CUR;//要根据单位区分

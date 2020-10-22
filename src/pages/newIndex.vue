@@ -152,12 +152,12 @@ export default {
       if(type==0){//重置
         for (let index = 0; index < this.updateBlelistDB.length; index++) {
           const element = this.updateBlelistDB[index];
-          Toast({
-              message: address+'||'+element.address,
-              position: 'middle',
-              iconClass: 'icon icon-success',
-              duration: 3000
-          });
+          // Toast({
+          //     message: address+'||'+element.address,
+          //     position: 'middle',
+          //     iconClass: 'icon icon-success',
+          //     duration: 3000
+          // });
           if(address == element.address){
             element.bleName=element.realBleName;
             this.bleName = element.realBleName;
