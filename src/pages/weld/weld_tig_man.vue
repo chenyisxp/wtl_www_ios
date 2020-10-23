@@ -2650,7 +2650,13 @@ export default {
   background: #fff;
 }
 .weldFixed {
-  position: fixed;
+    position: fixed;
+    left: 0;
+    top:0;
+    bottom: 0px; /*距离底部的距离为底部盒子的高度，自己也可以设置*/
+    overflow-y:hidden;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;   /*这句是为了滑动更顺畅*/
 }
 .weldMMA .footers.unEnough {
 //   position: unset;
