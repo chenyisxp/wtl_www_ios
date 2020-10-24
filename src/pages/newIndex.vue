@@ -4,7 +4,7 @@
        <!-- {{showRespData}} -->
     <div class="header">
         <div class="blue-icon" @click="go('/blueToothManage')"></div>
-        <div class="connectedstatus">Bluetooth {{nowConnectStatus}}</div>
+        <div class="connectedstatus">Bluetooth {{nowConnectStatus=='connected'?nowConnectStatus:'unConnected'}}</div>
         <div class="mechineId" @click="handleRender" v-if="nowConnectStatus=='connected'">{{bleName}}</div>
         <!-- <div class="connectTime">connected start time 18:18:18</div> -->
     </div>

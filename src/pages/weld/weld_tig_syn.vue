@@ -487,11 +487,8 @@ export default {
          
         //计算出每个长度对应的位置
          for (let i = 0; i < self.rulerNumAtr.length; i++) {
-             //公式原则：在区间+-1 1算是精确度
-            //  console.log(pagey)
-            //  console.log(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)-1)
-            //  console.log(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)+1)
-            if(pagey>(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)-1) && pagey<(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)+1) ){
+            // if(pagey>(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)-1) && pagey<(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)+1) ){
+            if(pagey>(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)-6) && pagey<(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)+1) ){
                 midLine.style.height = self.rulerNumAtr[i].height+'px';
                 cubeBox1.style.height =self.rulerNumAtr[i].height+'px';
                 self.actualNum =self.rulerNumAtr[i].num;
@@ -978,7 +975,7 @@ export default {
         }else{
             list  =this.$store.state.rstInfo;
         }
-                
+        console.log(list)       
         //最新的
         // list.initBean.unit=1;
         if(true){
@@ -1171,20 +1168,19 @@ export default {
     })
   },
   created () {
-      
-  },
-  computed:{
-        envType(){
-            return this.$store.state.envType;　　//需要监听的数据
-        },
-        getAndriodNewMsg () {
-            
-            return this.$store.state.AdroidNewMsg;　　//需要监听的数据
+      window['broastFromAndroid'] = (val) => {
+        //全局都要 改造一起返回
+        if(this.$store.state.AdroidOldMsg){
+            this.$store.state.AdroidNewMsg =val;
+        }else{
+            this.$store.state.AdroidNewMsg =val;
+            this.$store.state.AdroidOldMsg=val;
         }
-  },
-  watch: {
-           getAndriodNewMsg(val, oldVal){
-            if(val!=this.$store.state.AdroidOldMsg){
+        // alert("mainNew"+data)
+        this.wtlLog('layout','broastFromAndroid='+val);
+        this.modelType=this.getModelType(val.substring(2,4));
+        console.log(val,this.$store.state.AdroidOldMsg)
+        if(val!=this.$store.state.AdroidOldMsg){
                 
                 this.$store.state.AdroidOldMsg=val;
                 //更新操作
@@ -1205,7 +1201,41 @@ export default {
                 }
                 
             }
-            },
+    }
+  },
+  computed:{
+        envType(){
+            return this.$store.state.envType;　　//需要监听的数据
+        },
+        // getAndriodNewMsg () {
+            
+        //     return this.$store.state.AdroidNewMsg;　　//需要监听的数据
+        // }
+  },
+  watch: {
+        //    getAndriodNewMsg(val, oldVal){
+        //     if(val!=this.$store.state.AdroidOldMsg){
+                
+        //         this.$store.state.AdroidOldMsg=val;
+        //         //更新操作
+        //         this.modelType=this.getModelType(val.substring(2,4));
+                
+        //         this.wtlLog('weld_tigsyn_bfa3','this.modelType'+this.modelType);
+                  
+        //         var rst =this.buildData('newIndex',this.modelType,val.replace(/\s+/g,"").replace(/(.{2})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, ""));
+                 
+        //          if(JSON.stringify(rst) != "{}"){
+        //             //发送确认收到的指令给安卓
+        //             var invalue =val.substring(val.length-4,val.length);
+        //             //新规则: 指令ff+crc+检验crc   测试模式不发送
+        //             this.callSendDataToBleUtil('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
+        //             //重新初始化
+                    
+        //             this.initFuc();
+        //         }
+                
+        //     }
+        //     },
         //list渲染完执行高度计算 更精确
            nowTypeList:function() {
                   this.$nextTick(function(){

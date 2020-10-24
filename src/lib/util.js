@@ -168,7 +168,7 @@ Array.prototype.in_array = function (element) {
                             {id:0,key:'2T',value:'2T'},{id:1,key:'4T',value:'4T'}
                         ]
                     },{
-                        typeName:'POLARITY',
+                        typeName:'POLATRITY',
                         chooseKey:0,//默认选中
                         comList:[
                             {id:0,key:'AC',value:'AC'},{id:1,key:'DC',value:'DC'}
@@ -516,10 +516,11 @@ Array.prototype.in_array = function (element) {
                                     case 'MODE':
                                         element.chooseKey=rstBean.mode;
                                         break;
-                                    case 'POLATRITY':
+                                    case 'POLATRITY':// POLATRITY 20201024 不对应啊 所以值没改
                                         element.chooseKey=rstBean.polatrity;
                                         break;
-                                    case 'Pluse':
+                                    case 'Pulse'://"Pulse" Pluse 20201024 不对应啊 所以值没改
+                                       console.log(rstBean.ifpulse)
                                         element.chooseKey=rstBean.ifpulse;
                                         break;
                                     case 'HF':
@@ -618,6 +619,7 @@ Array.prototype.in_array = function (element) {
                     var  rstBean = tigmanSpecilBuildHeader(arrayList[2],arrayList[3],pageFrom);
                     console.log(rstBean);
                     rstInfo.nowTypeList.forEach(element => {
+                        console.log(element.typeName)
                             switch (element.typeName) {
                                 case 'MODE':
                                     element.chooseKey=rstBean.mode;
@@ -625,7 +627,8 @@ Array.prototype.in_array = function (element) {
                                 case 'POLATRITY':
                                     element.chooseKey=rstBean.polatrity;
                                     break;
-                                case 'Pluse':
+                                case 'Pulse':
+                                    console.log(rstBean.ifpulse)
                                     element.chooseKey=rstBean.ifpulse;
                                     break;
                                 case 'HF':
@@ -881,6 +884,7 @@ Array.prototype.in_array = function (element) {
             
             function tigmanSpecilBuildHeader(arr1,arr2,pageFrom){
                  var buildArr = ((Array(8).join(0) + parseInt(arr1,10).toString(2)).slice(-8)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                 console.log(arr1,arr2)
                  var secdArr = ((Array(8).join(0) + parseInt(arr2,10).toString(2)).slice(-8)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
                  var bean ={};
                  //0|单位
@@ -919,8 +923,6 @@ Array.prototype.in_array = function (element) {
                         bean.ifhf =secdArr[5]
                     //3|pulse
                         bean.ifpulse =secdArr[4]
-                        console.log(bean.ifpulse)
-                        // bean.ifpulse=1;
                         bean.ifpulseValue =bean.ifpulse==1?'NOPULSE':'PULSE';
                     //4|空
                         bean.empty20 =secdArr[3]
@@ -957,6 +959,7 @@ Array.prototype.in_array = function (element) {
              //转成16进制转2进制 之后不足的位数补零 TIGSYN
             function num16To2ArrSpecial02(num,len){
                 var buildArr = ((Array(8).join(0) + parseInt(num,10).toString(2)).slice(-8)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                console.log(num,buildArr)
                 // var buildArr = parseInt(num,10).toString(2);
                 var bean ={};
                 //钨丝直径

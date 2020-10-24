@@ -125,8 +125,8 @@
         </Card>-->
         <div class="title">
           <div class="le">
-            <!-- <img src="../../assets/images/histroy.png"> -->
-             <img v-if="nowtypename=='POLATRITY' || nowtypename=='POLARITY'" src="../../assets/images/blue_acdc.png"> 
+            <!-- <img src="../../assets/images/histroy.png"> 20201024 POLATRITY 替换 POLARITY -->
+             <img v-if="nowtypename=='POLATRITY' || nowtypename=='POLATRITY'" src="../../assets/images/blue_acdc.png"> 
              <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
              <img v-if="nowtypename=='Pulse'" src="../../assets/images/blue_weld_icon_new_pluse.png"> 
               <img v-if="nowtypename=='HF'" src="../../assets/images/blue_weld_icon_new_hf.png"> 
@@ -158,7 +158,7 @@ import $ from 'jquery'
 import Loading from "@/components/base/Loading";
 import Head from "@/components/base/header";
 import weld_commonVue from './weld_common.vue';
- const TIGMAN_DIRECTIVE_MAP =new Map([['MODE','D0'],['POLATRITY','D1'],['HF','D2'],['Pulse','D3'],['BTNS','D4'],['PARAMVALUE','D5']]);
+ const TIGMAN_DIRECTIVE_MAP =new Map([['MODE','D0'],['POLATRITY','D1'],['POLATRITY','D1'],['HF','D2'],['Pulse','D3'],['BTNS','D4'],['PARAMVALUE','D5']]);
 export default {
   name: "",
   components: {
@@ -560,6 +560,7 @@ export default {
         let num =this.jinzhiChangeFuc(value);
         let crc = this.crcModelBusClacQuery(dirctCode + num, true);
         let sendData = "DA" + dirctCode + num + crc;
+        console.log(dirctCode,sendData)
         if(!this.GLOBAL_CONFIG.TESTFLAG){
           this.callSendDataToBleUtil('weld_tig_man',sendData,crc);
         }
@@ -2091,7 +2092,7 @@ export default {
             background-size: 40px;
             background-position: left center;
           }
-          .typename.POLARITY{
+          .typename.POLATRITY{
             background: url(../../assets/images/weld_icon_new_acdc.png) no-repeat;
             background-size: 40px;
             background-position: left center;
@@ -2248,6 +2249,7 @@ export default {
           .cct{width: 160px;height: 70px;float: left;text-align: center;}
             .con{
                  position: relative;
+                 display: inline-block;
                  
             }
             .con.s::after{
@@ -2256,7 +2258,7 @@ export default {
                     width: 3px;
                     height: 3px;
                     position: absolute;
-                    bottom: 46px;
+                    bottom: 55px;
                     font-size: 18px;
                     right: -8px;
             }

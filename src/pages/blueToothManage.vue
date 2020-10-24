@@ -102,6 +102,17 @@
             >
             <p>Scanning will disconnect the currently connected device?</p>
         </Modal>
+        <Modal
+            v-model="cameraScanFlag"
+            title="ATTENTION"
+            ok-text='YES'
+            cancel-text='NO'
+            :loading="loading"
+            @on-ok="confrimTrunOnScan"
+            @on-cancel="cameraScanFlag=false"
+            >
+            <p>Are you sure to turn on scan? The current connection is disconnected.</p>
+        </Modal>
     <!-- <div style="-webkit-user-select:text !important;">
         <input v-model="cameraRstName" placeholder="测试输入">
     </div>
@@ -124,6 +135,7 @@ export default {
   },
   data () {
     return {
+        cameraScanFlag:false,
         cameraRstName:'',
         cameraRstIp:'',
         reBackFlag:false,//返回按钮显示 时机 点击连接 没有连接上就要返回了
@@ -184,7 +196,7 @@ export default {
                         message: 'If the connection fails, click Bluetooth search to search for available devices',
                         position: 'middle',
                         iconClass: 'icon icon-success',
-                        duration: 1500
+                        duration: 3000
                     });
                     return;
               }else{
@@ -621,22 +633,21 @@ export default {
         // window.history.back()
       return;
     },
-    handleCameraScan(){
-        if(this.scaningFlag){
-            Toast({
-                        message: "Please wait for the search scan to finish",
-                        position: 'middle',
-                        iconClass: 'icon icon-success',
-                        duration: 2500
-            }); 
-            return;
+    confrimTrunOnScan(){
+        this.searchInFlag=false;
+        this.$store.state.getConnectStatus='scaning';
+        let address =this.$store.state.nowConnectAddress
+        if(address){
+            this.globalSendMsgToIos("handleDisConnect",address,"")
+           
         }
-       
         //ios
         if(this.envType=='env_ios'){
             // let message = {"method":"handleStartScan","":""}
-           
             try {
+                //同步开启扫描
+                this.globalSendMsgToIos("handleStartScan","","");
+                this.cameraScanFlag=false;
                 this.globalSendMsgToIos("handleOpenIosScan","","");//打开二维码扫描
             } catch (error) {
                 Toast({
@@ -649,6 +660,22 @@ export default {
         }else{
             window.android.openCameraScan();
         }
+    },
+    handleCameraScan(){
+        if(this.scaningFlag){
+            Toast({
+                        message: "Please wait for the search scan to finish",
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 2500
+            }); 
+            return;
+        }
+        if(this.getConnectStatus=='connected'){
+            this.cameraScanFlag=true;
+            return;
+        }
+        this.confrimTrunOnScan();
         
     },
     init_ios(){
