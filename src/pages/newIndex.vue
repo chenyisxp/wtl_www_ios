@@ -4,7 +4,7 @@
        <!-- {{showRespData}} -->
     <div class="header">
         <div class="blue-icon" @click="go('/blueToothManage')"></div>
-        <div class="connectedstatus">Bluetooth {{nowConnectStatus=='connected'?nowConnectStatus:'unConnected'}}</div>
+        <div class="connectedstatus">Bluetooth {{nowConnectStatus=='connected'?nowConnectStatus:'Ready'}}</div>
         <div class="mechineId" @click="handleRender" v-if="nowConnectStatus=='connected'">{{bleName}}</div>
         <!-- <div class="connectTime">connected start time 18:18:18</div> -->
     </div>
@@ -705,14 +705,19 @@ export default {
             // this.screenHeight =  document.body.clientHeight;
             console.log(this.screenWidth,this.screenHeight)
             if( this.screenWidth<this.screenHeight){
-            this.conHeight = this.screenHeight-95-100+'px';
-            this.imgHeight = this.screenHeight-95-100;
-            this.imgWidth = this.imgHeight*0.8 +'px';//宽高比列5：3
-            this.imgHeight+='px';//去除头部底部高度 上下距离
+              this.conHeight = this.screenHeight-95-100+'px';
+              this.imgHeight = this.screenHeight-95-100;
+              if(this.imgHeight*0.8>this.screenWidth){
+                this.imgWidth = this.screenWidth +'px';//宽高比列5：3
+                this.imgHeight = this.screenWidth*1.3;
+              }else{
+                this.imgWidth = this.imgHeight*0.8 +'px';//宽高比列5：3
+              }
+              this.imgHeight+='px';//去除头部底部高度 上下距离
             }else{
-            this.conHeight = this.screenWidth-95-100+'px';
-            this.imgWidth = this.screenWidth*0.8+'px';
-            this.imgHeight = this.screenWidth-95-100+'px';//去除头部底部高度 上下距离
+              this.conHeight = this.screenWidth-95-100+'px';
+              this.imgWidth = this.screenWidth*0.8+'px';
+              this.imgHeight = this.screenWidth-95-100+'px';//去除头部底部高度 上下距离
             }
       },
        getModelType(elementKey){
@@ -1075,6 +1080,9 @@ export default {
             }
             .c-img.cla_0{
               top: 40px;
+              top:50%;
+              transform: translate(0%,-50%);
+
               left: -150px;
               z-index: 2;
               zoom: .8;
@@ -1085,15 +1093,20 @@ export default {
             .c-img.cla_1{
               z-index: 3;
               left: 50%;
-              top: 0;
+              // top: 0;
+              // transform: translate(-50%,0%);
+              top: 50%;
+              transform: translate(-50%,-50%);
               zoom: 1;
-              transform: translate(-50%,0%);
               transition-duration:.05s;
               // linear匀速 ease-in加速 ease-out减速 ease-in-out先加速再减速*/
               transition-timing-function:linear;
             }
             .c-img.cla_2{
-              top: 40px;
+              // top: 40px;
+              top: 50%;
+              transform: translate(0%,-50%);
+
               z-index: 1;
               right: -150px;
               zoom: .8;
@@ -1103,10 +1116,14 @@ export default {
               
             }
             .c-img.cla_3{
-              top: 40px;
+              // top: 40px;
+              top: 50%;
+              transform: translate(0%,-50%);
+
+              zoom: 0.8;
               z-index: 1;
               left: 50%;
-              transform: translate(-50%,0) scale(.8);
+              // transform: translate(-50%,0) scale(.8);
               transition-duration:.05s;
               // linear匀速 ease-in加速 ease-out减速 ease-in-out先加速再减速*/
               transition-timing-function:linear;

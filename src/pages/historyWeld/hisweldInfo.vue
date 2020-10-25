@@ -530,7 +530,7 @@ export default {
   }
   .mainPanel{
       
-            padding: 90px 20px 80px 20px;
+            padding: 100px 20px 80px 20px;
             // background: #092b37;
             // box-shadow:
             //     // 0px -10px 0px 0px #ff0000,   /*上边阴影  红色*/

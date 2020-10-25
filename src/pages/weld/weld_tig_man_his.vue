@@ -1538,7 +1538,9 @@ export default {
       console.log(this.nowChooseLineKey);
       //记录选中的 避免每次刷新后重置选项
       if(this.envType=='env_ios'){
-         this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
+        if(this.nowChooseLineKey){
+          this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
+        }
       }else{
          window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
       }

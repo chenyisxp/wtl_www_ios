@@ -1,7 +1,9 @@
 <template>
   <div class='header-container' :class="envType=='env_ios'?'env_ios_component':''">
         <div class="header">
-            <Icon type="ios-arrow-back" @click="handleGo()"/>
+            <div class="iAB-box">
+                <Icon type="ios-arrow-back" @click="handleGo()"/>
+            </div>
             <div class="headInBox" >
                 <span v-if="typeName">{{changeStrEmptyName(typeName)}}<span class="setupyi">SET UP</span></span>
                 <span v-if="headName">{{headName}}</span>
@@ -61,11 +63,13 @@ export default {
         top: 0;
         left: 0;
         .ivu-icon{
-        font-size: 20px;
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translate(0,-50%)
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            position: fixed;
+            left: 15px;
+            top: 30px;
         }
         .setupyi{
             padding-left: 10px;
@@ -73,13 +77,10 @@ export default {
   }
   .env_ios_component{
         .header{
-            height: 70px !important;
+            height: 80px !important;
             line-height: 1px !important;
             .ivu-icon{
-                top: 70%;
-                -webkit-transform: translate(0, -50%);
-                -ms-transform: translate(0, -50%);
-                transform: translate(0, -50%);
+                
             }
             .headInBox{
                 position: absolute;

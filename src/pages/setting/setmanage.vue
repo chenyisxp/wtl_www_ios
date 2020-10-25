@@ -151,8 +151,9 @@ export default {
   width: 100%;
   .header {
     position: relative;
-    height: 50px;
-    line-height: 50px;
+    height: 60px;
+    line-height: 1;
+    padding-top: 35px;
     font-size: 14px;
     text-align: center;
     color: #fff;
@@ -162,8 +163,8 @@ export default {
       font-size: 20px;
       position: absolute;
       left: 15px;
-      top: 50%;
-      transform: translate(0, -50%);
+      top: 30px;
+      left: 10px;
     }
   }
   .contain{

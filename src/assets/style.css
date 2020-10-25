@@ -256,10 +256,11 @@ html{ overflow:-moz-scrollbars-vertical;} */
   top: 45px !important;
 } */
 .env_ios_gClass  .con-box{
-  margin-top: 75px !important;
+  margin-top: 85px !important;
 }
 .env_ios_gClass .mmp{
   overflow: auto;
+  padding-top: 10px;
   padding-bottom: 70px !important;
 }
 /* .env_ios_gClass  .new-footer-btns{
@@ -290,7 +291,7 @@ html{ overflow:-moz-scrollbars-vertical;} */
    top: 45px !important;
  } */
  .env_ios_gClass  .con-box{
-   margin-top: 75px !important;
+   margin-top: 85px !important;
  }
  .env_ios_gClass .mmp{
    margin-bottom: 70px !important;
@@ -330,7 +331,7 @@ html{ overflow:-moz-scrollbars-vertical;} */
       top: 45px !important;
     } */
     .env_ios_gClass  .con-box{
-      margin-top: 75px !important;
+      margin-top: 85px !important;
     }
     .env_ios_gClass .mmp{
       margin-bottom: 70px !important;
@@ -370,7 +371,7 @@ html{ overflow:-moz-scrollbars-vertical;} */
     top: 45px !important;
   } */
   .env_ios_gClass  .con-box{
-    margin-top: 75px !important;
+    margin-top: 85px !important;
   }
   .env_ios_gClass .mmp{
     padding-top: 70px !important;

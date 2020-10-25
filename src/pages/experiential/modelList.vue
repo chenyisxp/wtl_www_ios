@@ -93,12 +93,14 @@ export default {
         
         if(!this.GLOBAL_CONFIG.TESTFLAG){
           //  alert(111)
-            window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+            if(this.envType!='env_ios'){
+              window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+            }
         } 
         //有空的情况
         // this.$store.state.getWeldingInfoTimes = this.$store.state.getWeldingInfoTimes?this.$store.state.getWeldingInfoTimes:0+1;
         this.wtlLog('layout','getWeldingInfoTimes='+this.$store.state.getWeldingInfoTimes);
-        this.$store.state.getWeldingInfoTimes = (this.$store.state.getWeldingInfoTimes || 0)+1;
+        this.$store.state.getWeldingInfoTimes = (this.$store.state.getWeldingInfoTimes? parseInt(this.$store.state.getWeldingInfoTimes):0)+1;
         // alert(this.$store.state.getWeldingInfoTimes)
         switch (data.substring(2,4)) {
           case 'B1':
@@ -131,10 +133,10 @@ export default {
         }
         //00、是否前往焊接中的页面 第一次返回数据前往
         // alert(this.$store.state.getWeldingInfoTimes)
-        console.log('this.$store.state.getWeldingInfoTime'+this.$store.state.getWeldingInfoTime)
+        console.log('this.$store.state.getWeldingInfoTime'+this.$store.state.getWeldingInfoTimes)
   
           //11、且当前模式也自动返回了相关数据
-          // alert(JSON.stringify(this.$store.state.rstInfo))
+          console.log(JSON.stringify(this.$store.state.rstInfo))
           if(JSON.stringify(this.$store.state.rstInfo) != "{}"){
             //22、是不是焊接中的数据
             this.wtlLog('layout','weldStatus='+this.$store.state.rstInfo.initBean.weldStatus);

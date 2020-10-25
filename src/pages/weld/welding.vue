@@ -1,11 +1,12 @@
 <template>
-  <div class="weldingManage">
-   <div class="header">
+  <div class="weldingManage" :class="envType=='env_ios'?'env_ios_gClass':''">
+   <!-- <div class="header">
        <div class="licon" @click="goback">
             <span></span>
       </div>
      WELDING
-    </div>
+    </div> -->
+    <Head :wantTo="$store.state.weldingInfo.url" :headName="'WELDING'" :pageFrom="'/welding'"></Head>
     <!-- <div class="backBtn">
         BACK
     </div> -->
@@ -82,10 +83,12 @@
 </template>
 
 <script>
-
+import Head from "@/components/base/header";
 export default {
   name: "",
-  components: {},
+  components: {
+      Head
+  },
   data() {
     return {
   // 电流控制器 begin
@@ -706,13 +709,16 @@ export default {
    
   },
   computed: {
-       getWeldingDelayFlag(){
-            return this.$store.state.weldingDelay;
-       },
+        envType(){
+            return this.$store.state.envType;　　//需要监听的数据
+        },
+        getWeldingDelayFlag(){
+                return this.$store.state.weldingDelay;
+        },
         getNowWeldStatus(){
              return this.$store.state.weldingStatus;　　//需要监听的数据
         },
-       getAndriodNewMsg () {
+        getAndriodNewMsg () {
             // alert(this.$store.state.AdroidNewMsg+'||||'+this.$store.state.AdroidOldMsg);
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
         },
@@ -795,7 +801,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .weldingManage {
-    
+    padding-top: 110px;
    width: 100%;
    min-height: 100vh;
    background: #053342;
@@ -847,7 +853,7 @@ export default {
       -webkit-box-shadow: 0px 0px 10px 5px #2d5360 inset;
       box-shadow: 0px 0px 10px 5px #2d5360 inset; 
       margin: 0 20px;
-      margin-top: 20px;
+      
       .welding{
           height: 30px;
           line-height: 30px;
@@ -1052,6 +1058,11 @@ export default {
      }
   }
   }
+}
+.env_ios_gClass{
+    .main{
+        
+    }
 }
 @media screen and (max-width: 400px) {
   .weldingManage .main .electricCurrent .up .u-right .value{font-size: 36px;width: 100px;}

@@ -119,8 +119,8 @@
     <input v-model="cameraRstName" placeholder="测试输入2"> -->
     
     <!-- 测试入口 -->
-    <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    <!-- <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div> -->
   </div>
 </template>
 
@@ -761,6 +761,14 @@ export default {
   created () {
         
         let self =this;
+        window['sendToHtmlConnectedFail'] = () =>{
+            Toast({
+                    message: 'Connection failed. Please try scanning again.',
+                    position: 'middle',
+                    iconClass: 'icon icon-success',
+                    duration: 2500
+            });
+        }
         window['broastCameraScanRst'] = (data) => {
             // Toast({
             //         message: 'scanned data is not in rule'+data,

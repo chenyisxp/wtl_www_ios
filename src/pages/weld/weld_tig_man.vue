@@ -2022,7 +2022,7 @@ export default {
       //  window.removeEventListener('popstate', this.go('/newIndex'), false);
       //记录最后一次修改的字段20200823 没用了吗
       if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
-       if(this.envType=='env_ios'){
+       if(this.envType=='env_ios' && this.nowChooseLineKey){
          this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
        }else{
          window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
