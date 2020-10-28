@@ -35,21 +35,26 @@ let BASE_CONFIG = {
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'44202041e004f690069000a0005001e001e32ff4f1'},
         //tigman新规则
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 02 04  1100 D923'},//模拟04线条
-        // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 02 08  1100 DAE3'},//模拟04线条
+        // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 02 08  1100 DAE3'}s,//模拟04线条
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 08 0b 32 00 3209'},//问题
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 0d 04 42 00 3d1c'},//问题
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 0d 0a 1b 00 ae47'},//post gas问题
-        tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 06 02 5f 00 48f7'},//slow up问题
+        // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 06 02 5f 00 48f7'},//slow up问题
+        tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 06 08 5f 00 48f7'},//slow down
 
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 82 00 01 09 6400 6400 01 09 8768'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 00 01 09 6400 6400 01 09 6F6F'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
-        mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
+        // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
+        mma:{heade:'dae',headm:'dad',headc:'dac',data:'54A0007055A00380004076134'},//20201028真实焊机上发
         //2、焊接准备中的状态 参数模拟       
         // migsyn:{heade:'dae',headm:'dad',headc:'dac',data:'1 40 00 00 00 02 00 3C00 3D00 b400 c800 02 09 DE46'},
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 40 3D00 c800 00 F53B'},
-        migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 42 6a00 ac00 03 054e'},
-        tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'3 40 00 03 6400 6400 02 09 50 05  8F81'},
+        // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 42 6a00 ac00 03 054e'},
+        migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'},//20201028真实焊机上发 正常
+        // tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'3 40 00 03 6400 6400 02 09 50 05  8F81'},
+        tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'34A0A0AC300C300060A460AFA07'},
+        
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 40 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 FF97'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 c2 00 01 09 6400 6400 CD99'},
    },

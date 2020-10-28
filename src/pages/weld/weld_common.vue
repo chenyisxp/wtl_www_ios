@@ -4,7 +4,7 @@
             <Icon type="ios-arrow-back" @click="go('/newIndex')"/>{{changeStrEmptyName(typeName)}}
             <span class="setupyi">SET UP</span>
         </div> -->
-        <Head :wantTo="'/newIndex'" :pageBackTo="pageBackTo" :typeName="typeName" :pageFrom="'/weld_common'" :nowModalTypeId="nowModalTypeId"></Head>
+        <Head :wantTo="'/newIndex'" :typeName="typeName" :pageFrom="'/weld_common'" :nowModalTypeId="nowModalTypeId"></Head>
         <div class="mmp" ref="mmpId" id="idid">    
                 <!-- <div style="height:100px;background: red;" @click="handleTestClick">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div> 
                 <div style="height:100px;background: blue;" @click="handleTestClick2">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div>  -->
@@ -1152,8 +1152,8 @@ export default {
     //数组 滑动 数组构造
     buildRulerArrRange(min,max){
         
-        var tempArr =[];
-        var tempInchArr =[];
+        // var tempArr =[];
+        // var tempInchArr =[];
         this.rulerInchNumAtr=[];
         this.rulerNumAtr=[];
 
@@ -1207,11 +1207,6 @@ export default {
                this.rulerNumAtr.push(bb);
                 i++;
             }
-            // for(i=0;i<=max;i++){
-            //     alert(111)
-            //     this.rulerInchNumAtr.push(this.rulerInchNumAtrMap.get(parseInt(i)));
-            //     this.rulerNumAtr.push(this.rulerNumAtrMap.get(parseInt(i)))
-            // }
         }
         
       let vag =Math.round((this.commonContainHeight/130)*100)/100;

@@ -37,7 +37,7 @@
             <img v-if="chooseModel==4" src="../../assets/images/weld_setting_4.jpg"> -->
             <img v-if="chooseModel==1" src="../../assets/images/weld_setting_mma.jpg">
             <img v-if="chooseModel==2" src="../../assets/images/weld_setting_tig.jpg">
-            <img v-if="chooseModel==4" src="../../assets/images/weld_setting_mig.jpg">
+            <img v-if="chooseModel==4" @click="goDevleper" src="../../assets/images/weld_setting_mig.jpg">
           </div>
           <div class="resetBtn" @click="handleRestore">Restore  settings</div>
       </div>
@@ -169,6 +169,7 @@ export default {
   }
   .contain{
      margin: 0 15px;
+     padding-bottom: 60px;
     .checklist{
       height: 30px;;
       line-height: 30px;

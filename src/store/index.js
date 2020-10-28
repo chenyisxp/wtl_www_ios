@@ -50,7 +50,9 @@ const state = {
     nowPageFrom:'',
     updateBlelistDB:[],//蓝牙连接或则重命名的数据
     tigManChooseLineKey:'',
-    callMemoryRemarks:[]
+    callMemoryRemarks:[],
+    rizhiList:[],
+    rizhiListFlag:true
 }
 
 const mutations = {

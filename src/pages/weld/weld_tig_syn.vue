@@ -285,7 +285,7 @@ export default {
         typeName:'',
         nowTypeList:[],//共通title数据集合
         chooseKey:[],//共通选中集合
-           rulerNumAtrMap:  new Map([
+        rulerNumAtrMap:  new Map([
             [0,{num:'0.6mm',height:6,id:0}],
             [1,{num:'0.7mm',height:7,id:1}],
             [2,{num:'0.9mm',height:9,id:2}],
@@ -909,8 +909,8 @@ export default {
                this.buildSliderChangeData(this.nowPosionX2*10,'slowDownTime');
             })
     },
-      //数组 滑动 数组构造
-    buildRulerArrRange(min,max){
+    //数组 滑动 数组构造 废弃
+    buildRulerArrRangeBak(min,max){
         max =parseInt(max);
         min =parseInt(min);
         var tempArr =[];
@@ -967,6 +967,71 @@ export default {
          console.log(element.height)
       });
       console.log(this.rulerNumAtr);
+    },
+    //数组 滑动 数组构造 来自weldcommon
+    buildRulerArrRange(min,max){
+        
+        // var tempArr =[];
+        // var tempInchArr =[];
+        this.rulerInchNumAtr=[];
+        this.rulerNumAtr=[];
+
+        min =parseInt(min);
+        var i =parseInt(min);
+        max =parseInt(max);
+        if(max>13){
+            max=13;
+        }
+        //根据上传的范围显示出范围 先轴的值不变值限范围就好
+        if(max<=min){
+            return;
+        }else{
+             let tempRulerNumAtrMap =  new Map([
+                [0,{num:'0.6mm',height:6,id:0}],
+                [1,{num:'0.7mm',height:7,id:1}],
+                [2,{num:'0.9mm',height:9,id:2}],
+                [3,{num:'1.2mm',height:12,id:3}],
+                [4,{num:'1.6mm',height:16,id:4}],
+                [5,{num:'2.1mm',height:21,id:5}],
+                [6,{num:'2.8mm',height:28,id:6}],
+                [7,{num:'3.4mm',height:34,id:7}],
+                [8,{num:'4.8mm',height:48,id:8}],
+                [9,{num:'6.4mm',height:64,id:9}],
+                [10,{num:'8.0mm',height:88,id:10}],
+                [11,{num:'9.5mm',height:95,id:11}],
+                [12,{num:'11.0mm',height:110,id:12}],
+                [13,{num:'12.7mm',height:127,id:13}]
+            ]);
+            let   tempRulerInchNumAtrMap=new Map([
+                [0,{num:'24GA',height:6,id:0}],
+                [1,{num:'22GA',height:7,id:1}],
+                [2,{num:'20GA',height:9,id:2}],
+                [3,{num:'18GA',height:12,id:3}],
+                [4,{num:'16GA',height:16,id:4}],
+                [5,{num:'14GA',height:21,id:5}],
+                [6,{num:'12GA',height:28,id:6}],
+                [7,{num:'1/8"',height:34,id:7}],
+                [8,{num:'3/16"',height:48,id:8}],
+                [9,{num:'1/4"',height:64,id:9}],
+                [10,{num:'5/16"',height:88,id:10}],
+                [11,{num:'3/8"',height:95,id:11}],
+                [12,{num:'7/16"',height:110,id:12}],
+                [13,{num:'1/2"',height:127,id:13}]
+            ]);
+           while (i<=max)
+            {
+                let aa= tempRulerInchNumAtrMap.get(i);
+               this.rulerInchNumAtr.push(aa);
+               let bb= tempRulerNumAtrMap.get(i);
+               this.rulerNumAtr.push(bb);
+                i++;
+            }
+        }
+        
+      let vag =Math.round((this.commonContainHeight/130)*100)/100;
+      this.rulerNumAtr.forEach(element => {
+         element.height= Math.round((vag * element.height)*10)/10;
+      });
     },
     initFuc(){
         var list  ={};
@@ -1046,7 +1111,7 @@ export default {
         //处理POLATRITY显示
         this.nowTypeList.forEach(element => {
             if(element.typeName=='MATERIAL'){
-                if(element.value!=1){//不是选铝改成dc
+                if(element.chooseKey!=1){//不是选铝改成dc
                     this.onlyChangeCheckedNoSend('POLATRITY',1);
                 }else{
                     this.onlyChangeCheckedNoSend('POLATRITY',0);

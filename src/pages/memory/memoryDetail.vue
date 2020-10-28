@@ -45,7 +45,7 @@
                     
                 </div>
                 <ul class="params">
-                    <li v-for="(item,index) in nowTypeList"  :class="item.typeName=='GAS'&& MIG_MATERIAL !=0?'eleUnShow':''">
+                    <li v-for="(item,index) in nowTypeList" :key="'N_'+index"  :class="item.typeName=='GAS'&& MIG_MATERIAL !=0?'eleUnShow':''">
                         <div class="p-l-l">{{changeStrShowName(item.typeName)}}</div>
                         <div class="p-l-r">
                              <span v-for="(temp,newIdx) in item.comList" v-if="UnitFlag==0 && item.chooseKey==temp.id">
@@ -306,6 +306,7 @@ export default {
       }
       console.log('tmp1'+this.tmp1+"||"+'tmp2'+this.tmp2);
     },
+    //注意和saveDetail里一致
     buildTigManData(list){
         console.log( this.nowModelTypeName )
             if ( this.nowModelTypeName == "2T_NOPULSE_DC") {//plusE ON 

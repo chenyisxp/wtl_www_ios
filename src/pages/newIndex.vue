@@ -1430,18 +1430,18 @@ export default {
 }
 //ios顶部状态栏适配 +20px
 .env_ios_class{
- .header{
-    height:70px;
-    .blue-icon{
-      top: 60%;
-    }
-    .connectedstatus{
-      top:65%;
-    }
-    .mechineId{
-      top:45px;
-    }
- }
+  .header{
+      height:80px;
+      .blue-icon{
+        top: 65%;
+      }
+      .connectedstatus{
+        top:70%;
+      }
+      .mechineId{
+        top:55px;
+      }
+  }
 }
 /* x xs */
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {

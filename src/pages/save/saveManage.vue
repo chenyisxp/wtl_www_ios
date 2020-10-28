@@ -132,7 +132,7 @@ export default {
           let newData =data;
          
           //返回的通道数不一致
-          // console.log(pupnum+'||||'+index+'');
+          console.log(pupnum+'||||'+index+'');
           this.wtlLog('weld_saveMange_manage',"pupnum="+pupnum+',index='+index+',newData'+newData);
           if(parseInt(pupnum)!=index){
             Toast({
@@ -222,7 +222,9 @@ export default {
                 // this.broastFromAndroid('dad3 03 00 00 03 6400 6400 0209  1EB4','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
                 break;
             case '4':
-                  this.broastFromAndroid('dad4 04 00 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 5FAD','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
+                  // this.broastFromAndroid('dad4 04 00 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 5FAD','hisweldlist',2,this.GLOBAL_CONFIG.TESTFLAG);
+                  this.broastFromAndroid('dad4 08 03 03 2300 634e 0023 0064 0005 3023 00 6432','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
+                  
                 break;
             case '5':
                   this.broastFromAndroid('dad5 05 82 00 01 09 6400 6400 872E','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);

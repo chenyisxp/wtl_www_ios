@@ -16,6 +16,7 @@
                 </div>
                 <div class="m-show" v-if="name=='TIG SYN'">
                     <div class="m-s-l_current">{{tmp1}}</div>
+                    <div class="m-s-r_gas">{{tmp2}}</div>
                 </div>
                 <!-- <div class="m-show" v-if="name=='TIG MAN'">
                     <div class="m-s-l">{{tmp1}}</div>
@@ -383,6 +384,7 @@ export default {
         break;
       case 2://tig syn
             this.tmp1=list.SYN_WELD_CUR;
+            this.tmp2=list.postGasTime
           break;
       case 3://tig MAN
                this.nowModelTypeName =list.initBean.nowChooseModel;
@@ -610,6 +612,13 @@ export default {
                 .m-s-r{
                     float:right;
                     background:url(../../assets/images/voltage.png) no-repeat;    
+                    background-size: 43px;
+                    background-position:left center;
+                    padding-left: 50px;
+                }
+                .m-s-r_gas{
+                    float:right;
+                    background:url(../../assets/images/postGas.png) no-repeat;    
                     background-size: 43px;
                     background-position:left center;
                     padding-left: 50px;

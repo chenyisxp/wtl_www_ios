@@ -7,7 +7,7 @@
                 </div>
                 M{{pupnum}}
             </div> -->
-            <Head :wantTo="'/newIndex'"  :headName="'M'+pupnum"></Head>
+            <Head  :nowModalTypeId="nowModalTypeId" :pageFrom="'/saveDetail'"  :headName="'M'+pupnum"></Head>
             <div class="modText">
                 <div class="mup">
                     <div class="u-r">NOTE</div>
@@ -112,6 +112,21 @@ export default {
             {name:'DIAMETER',value:'0.6mm'},
             {name:'THICKNESS',value:'0.6mm'}
         ],
+        paramKeysNameMap:{
+            pre_gas:'Pre Gas',
+            start_cur_end:'Start Current',
+            pulse_duty:'Pulse Duty',
+            pulse_fre:'Pulse Fre',
+            base_cur:'Base Current',
+            slop_down:'Slop Down',
+            slop_up:'Slop Up',
+            crater_cur:'Crater Current',
+            post_gas:'Post Gas',
+            ac_balance:'Ac Balance',
+            ac_fre:'Ac Fre',
+            weld_current:'Weld current'
+
+        },//显示的名字
         suppllytments:[],//额外字段
         name:'',//当前模式姓名
         type:'',//类型
@@ -309,7 +324,121 @@ export default {
           break;
       }
     },
+    //注意和memorydetail里一致
     buildTigManData(list){
+        console.log( this.nowModelTypeName )
+            if ( this.nowModelTypeName == "2T_NOPULSE_DC") {//plusE ON 
+                         var t0 ={typeName:this.paramKeysNameMap.pre_gas,value:list.PRE_GAS_VAL/10+'s'};   
+                        // var t1 ={typeName:this.paramKeysNameMap.start_cur_end,value:list.START_CUR_VAL+'A'};
+                        var t2 ={typeName:this.paramKeysNameMap.pulse_duty,value:list.DUTY_VAL/10+'%'};
+                        var t3 ={typeName:this.paramKeysNameMap.pulse_fre,value:list.PULSE_FRE_VAL/10+'Hz'};
+                        var t4 ={typeName:this.paramKeysNameMap.base_cur,value:list.BASE_CUR_VAL+'A'};
+                        var t5 ={typeName:this.paramKeysNameMap.slop_down,value:list.SLOP_DOWN_VAL/10+'s'};
+                        var t6 ={typeName:this.paramKeysNameMap.slop_up,value:list.STOP_UP_VAL/10+'s'};
+                        // var t7 ={typeName:this.paramKeysNameMap.crater_cur,value:list.CRATER_CUR_VAL+'A'};
+                        var t8 ={typeName:this.paramKeysNameMap.post_gas,value:list.PRE_GAS_VAL/10+'s'}; 
+                        var t9 ={typeName:this.paramKeysNameMap.weld_current,value:list.WELD_CUR_VAL+'A'};
+                        
+                        this.suppllytments.push(t0);
+                        // this.suppllytments.push(t1);
+                        this.suppllytments.push(t2);
+                        this.suppllytments.push(t3);
+                        this.suppllytments.push(t4);
+                        this.suppllytments.push(t5);
+                        this.suppllytments.push(t6);
+                        // this.suppllytments.push(t7);
+                        this.suppllytments.push(t8);
+                        this.suppllytments.push(t9);
+               } else if ( this.nowModelTypeName == "4T_NOPULSE_DC") { //plusE ON 
+                        //      pre_gas:'Pre Gas',
+                        // start_cur_end:'Start Current',
+                        // pulse_duty:'Pulse Duty',
+                        // pulse_fre:'Pulse Fre',
+                        // base_cur:'Base Current',
+                        // slop_down:'Slop Down',
+                        // slop_up:'Slop Up',
+                        // crater_cur:'Crater Current',
+                        // post_gas:'Post Gas',
+                        // weld_current:'Weld current'
+                        var t0 ={typeName:this.paramKeysNameMap.pre_gas,value:list.PRE_GAS_VAL/10+'s'};   
+                        var t1 ={typeName:this.paramKeysNameMap.start_cur_end,value:list.START_CUR_VAL+'A'};
+                        var t2 ={typeName:this.paramKeysNameMap.pulse_duty,value:list.DUTY_VAL/10+'%'};
+                        var t3 ={typeName:this.paramKeysNameMap.pulse_fre,value:list.PULSE_FRE_VAL/10+'Hz'};
+                        var t4 ={typeName:this.paramKeysNameMap.base_cur,value:list.BASE_CUR_VAL+'A'};
+                        var t5 ={typeName:this.paramKeysNameMap.slop_down,value:list.SLOP_DOWN_VAL/10+'s'};
+                        var t6 ={typeName:this.paramKeysNameMap.slop_up,value:list.STOP_UP_VAL/10+'s'};
+                        var t7 ={typeName:this.paramKeysNameMap.crater_cur,value:list.CRATER_CUR_VAL+'A'};
+                        var t8 ={typeName:this.paramKeysNameMap.post_gas,value:list.PRE_GAS_VAL/10+'s'}; 
+                        var t9 ={typeName:this.paramKeysNameMap.weld_current,value:list.WELD_CUR_VAL+'A'};
+                        
+                        this.suppllytments.push(t0);
+                        this.suppllytments.push(t1);
+                        this.suppllytments.push(t2);
+                        this.suppllytments.push(t3);
+                        this.suppllytments.push(t4);
+                        this.suppllytments.push(t5);
+                        this.suppllytments.push(t6);
+                        this.suppllytments.push(t7);
+                        this.suppllytments.push(t8);
+                        this.suppllytments.push(t9);
+                       
+                }else if ( this.nowModelTypeName == "2T_PULSE_DC") {// pulse off
+                        var t0 ={typeName:this.paramKeysNameMap.pre_gas,value:list.PRE_GAS_VAL/10+'s'};      
+                        var t6 ={typeName:this.paramKeysNameMap.slop_up,value:list.STOP_UP_VAL/10+'s'};
+                        var t11 ={typeName:this.paramKeysNameMap.weld_current,value:list.WELD_CUR_VAL+'A'};
+                        var t5 ={typeName:this.paramKeysNameMap.slop_down,value:list.SLOP_DOWN_VAL/10+'s'};
+                        var t8 ={typeName:this.paramKeysNameMap.post_gas,value:list.POST_GAS_VAL/10+'s'};
+                        // var t1 ={typeName:this.paramKeysNameMap.start_cur_end,value:list.START_CUR_VAL+'A'};
+                        // var t7 ={typeName:this.paramKeysNameMap.crater_cur,value:list.CRATER_CUR_VAL+'A'};
+                        // var t2 ={typeName:this.paramKeysNameMap.pulse_duty,value:list.DUTY_VAL/10+'%'};
+                        // var t4 ={typeName:this.paramKeysNameMap.base_cur,value:list.BASE_CUR_VAL+'A'};
+                        // var t3 ={typeName:this.paramKeysNameMap.pulse_fre,value:list.PULSE_FRE_VAL/10+'Hz'};
+
+
+                        this.suppllytments.push(t0);
+                        this.suppllytments.push(t6);
+                        this.suppllytments.push(t11);
+                        this.suppllytments.push(t5);
+                        this.suppllytments.push(t8);
+                        // this.suppllytments.push(t1);
+                        // this.suppllytments.push(t7);
+                        // this.suppllytments.push(t2);
+                        // this.suppllytments.push(t4);
+                        // this.suppllytments.push(t3);
+                }else if( this.nowModelTypeName=='4T_PULSE_DC'){
+                        var t0 ={typeName:this.paramKeysNameMap.pre_gas,value:list.PRE_GAS_VAL/10+'s'};      
+                        var t6 ={typeName:this.paramKeysNameMap.slop_up,value:list.STOP_UP_VAL/10+'s'};
+                        var t11 ={typeName:this.paramKeysNameMap.weld_current,value:list.WELD_CUR_VAL+'A'};
+                        var t5 ={typeName:this.paramKeysNameMap.slop_down,value:list.SLOP_DOWN_VAL/10+'s'};
+                        var t8 ={typeName:this.paramKeysNameMap.post_gas,value:list.POST_GAS_VAL/10+'s'};
+                        var t1 ={typeName:this.paramKeysNameMap.start_cur_end,value:list.START_CUR_VAL+'A'};
+                        var t7 ={typeName:this.paramKeysNameMap.crater_cur,value:list.CRATER_CUR_VAL+'A'};
+                        // var t2 ={typeName:this.paramKeysNameMap.pulse_duty,value:list.DUTY_VAL/10+'%'};
+                        // var t4 ={typeName:this.paramKeysNameMap.base_cur,value:list.BASE_CUR_VAL+'A'};
+                        // var t3 ={typeName:this.paramKeysNameMap.pulse_fre,value:list.PULSE_FRE_VAL/10+'Hz'};
+
+
+                        this.suppllytments.push(t0);
+                        this.suppllytments.push(t6);
+                        this.suppllytments.push(t11);
+                        this.suppllytments.push(t5);
+                        this.suppllytments.push(t8);
+                        this.suppllytments.push(t1);
+                        this.suppllytments.push(t7);
+                        // this.suppllytments.push(t2);
+                        // this.suppllytments.push(t4);
+                        // this.suppllytments.push(t3);
+                }
+                
+                if(this.nowDCORACFLAG==0){ //1:
+                    var t9 ={typeName:this.paramKeysNameMap.ac_balance,value:list.AC_DUTY_VAL+'%'};//交流占空比
+                    var t10 ={typeName:this.paramKeysNameMap.ac_fre,value:list.AC_FRE_VAL+'Hz'};
+                    this.suppllytments.push(t9);
+                    this.suppllytments.push(t10);
+                }
+    },
+    //废弃
+    old_buildTigManData(list){
             if ( this.nowModelTypeName == "2T_NOPULSE_DC") {
                         var t0 ={typeName:'PRE-GAS',value:list.PRE_GAS_VAL/10+'s'};      
                         var t6 ={typeName:'SLOP-UP',value:list.STOP_UP_VAL/10+'s'};

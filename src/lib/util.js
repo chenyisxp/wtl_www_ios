@@ -46,6 +46,9 @@ Array.prototype.in_array = function (element) {
             // private static HashMap<String, Integer> checkSendTimes=new HashMap<String, Integer>();
             // private static HashMap<String, Integer> mayTooLong=new HashMap<String, Integer>();
             // private static ArrayList<BleTooLongBean> mayTooLongList =new  ArrayList<BleTooLongBean>();
+            // 增加节流函数
+            var delayTimer={};
+            var lastTimesReceiveData=''; 
 
             var weldParam ={
                 //inch单位下的直径
@@ -453,16 +456,17 @@ Array.prototype.in_array = function (element) {
                        break;
                     case weldDirctive.tigSyn:
                         rstInfo.nowTypeList=weldParam.tigsynList;
+                        console.log(rstInfo.nowTypeList)
                         rstInfo.weldType='TIGSYN';
                         rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.newIndex;//这个和首页里的配对
                        //确认指令
-                       console.log('arrayList.length'+arrayList.length)
+                       
                        if((arrayList[1]=='227'||arrayList[1]=='211'||arrayList[1]=='195') &&arrayList.length==11){
                            //赋值开始  ......
                            var byte1Bean = num16To2Arr(arrayList[2],'',pageFrom);
                            //拆解成
                            var  arrtwo= num16To2ArrSpecial02(arrayList[3]);
-                           console.log(rstInfo,arrayList)
+                           
                            rstInfo.nowTypeList.forEach(element => {
                                 switch (element.typeName) {
                                     case 'MODE':
@@ -477,10 +481,15 @@ Array.prototype.in_array = function (element) {
                                     case 'THICKNESS':
                                         element.chooseKey=arrayList[4]?arrayList[4]:0;
                                         break;
+                                    case 'POLATRITY':
+                                        element.chooseKey=arrtwo.material==1?0:1;//只有al是ac
+                                        break;
                                     default:
                                         break;
                                 }
                             });
+                            console.log(rstInfo,arrayList)
+                            
                             // arrayList[3];//钨棒直径+金属
                             // arrayList[4];//板厚
                             // arrayList[5];//电流推荐值
@@ -599,9 +608,9 @@ Array.prototype.in_array = function (element) {
                //全局存储
                if(pageFrom=='memory'){
                 //    alert(JSON.stringify(rstInfo))
-                store.state.memoryInfo = rstInfo;
+                store.state.memoryInfo =JSON.parse(JSON.stringify(rstInfo));//深度复制
                }else{
-                store.state.rstInfo = rstInfo;
+                store.state.rstInfo = JSON.parse(JSON.stringify(rstInfo));//深度复制
                }
             //    alert(JSON.stringify(rstInfo));
                console.log(rstInfo);
@@ -691,7 +700,6 @@ Array.prototype.in_array = function (element) {
                 // data =data.replace(' ', '');
                 console.log(weldParam.migsynTypeList,pageFrom,dirctiveType,data);
                 // alert(dirctiveType+'||'+store.state.nowModelDirectice+'||'+pageFrom)
-               
                 
                 var rstInfo ={};
                 if(!pageFrom){
@@ -1388,6 +1396,37 @@ Array.prototype.in_array = function (element) {
             }
             //ios监听蓝牙返回数据 重要！！！ 
             window['iosBleDataLayoutFuc']= (bleReponseData) => {
+                // if(lastTimesReceiveData==bleReponseData){
+                //     //返回响应
+                //     //延迟一阵子再执行 机器上发频率0.5s
+                //     delayTimer = setTimeout(() => {
+                //         iosBleDataLayoutFuc(bleReponseData)
+                //     }, 400);
+                //     return;
+                // }else{
+                //     lastTimesReceiveData=bleReponseData;
+                //     clearTimeout(delayTimer);
+                //     iosBleDataLayoutFuc(bleReponseData)
+                // }
+                iosBleDataLayoutFuc(bleReponseData)
+            }
+            //ios监听蓝牙返回数据 重要！！！ 
+            function iosBleDataLayoutFuc(bleReponseData){
+                console.log(store.state.rizhiListFlag)
+                if(store.state.rizhiListFlag){
+                    //记录日志
+                    var oDay = new Date(); 
+                    var bean = {
+                        'sendTime':oDay.getFullYear()+'-'+(oDay.getMonth()+1)+'-'+oDay.getDate()+' '+oDay.getHours()+':'+oDay.getMinutes(),
+                        'bleReponseData':bleReponseData
+                    }
+                    let aa =store.state.rizhiList;
+                    if(aa.length>5000){
+                        aa=[];//清空
+                    }
+                    aa.unshift(bean);
+                    store.state.rizhiList = aa;
+                }
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',')
                 try {
@@ -1526,12 +1565,12 @@ Array.prototype.in_array = function (element) {
             
                     }
                 } catch (error) {
-                    Toast({
-                        message: error,
-                        position: 'middle',
-                        iconClass: 'icon icon-success',
-                        duration: 2000
-                    });
+                    // Toast({
+                    //     message: error,
+                    //     position: 'middle',
+                    //     iconClass: 'icon icon-success',
+                    //     duration: 2000
+                    // });
                 }
                 
             }

@@ -295,7 +295,7 @@ export default {
                 }, 1000);
            } catch (error) {
                 Toast({
-                        message: error,
+                        message: '异常btooth:'+error,
                         position: 'middle',
                         iconClass: 'icon icon-success',
                         duration: 5000
@@ -651,7 +651,7 @@ export default {
                 this.globalSendMsgToIos("handleOpenIosScan","","");//打开二维码扫描
             } catch (error) {
                 Toast({
-                        message: error,
+                        message: "异常bt01:"+error,
                         position: 'middle',
                         iconClass: 'icon icon-success',
                         duration: 2500

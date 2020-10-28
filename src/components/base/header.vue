@@ -30,10 +30,38 @@ export default {
                 return;
             }else if(this.typeName){
                 this.$router.push({path:this.wantTo,query:{type: this.typeName ,nowModalTypeId:this.nowModalTypeId,pageFrom:this.pageFrom}});
+            }else if(this.pageFrom=='/saveDetail'){
+                this.goWeldPage(this.nowModalTypeId);
             }else{
                 this.$router.push({path:this.wantTo,query:{}});
             }
-      }
+      },
+      //应该是去之前的焊接页
+    goWeldPage(newIndexId){
+        console.log(newIndexId);
+        newIndexId =parseInt(newIndexId || 0);
+        let self =this;
+        // alert(newIndexId)
+        switch (newIndexId) {
+            case self.GLOBAL_CONFIG.callWeldTypeData.migsyn.newIndex://migsyn
+                self.$router.push({ path: '/weld_common', query:{type:'MIGSYN',pageBackTo:'/newIndex'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.migman.newIndex://migman
+                self.$router.push({ path: '/weld_common', query:{type:'MIGMAN',pageBackTo:'/newIndex'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.tigsyn.newIndex://tigsyn
+                self.$router.push({ path: '/weld_tig_syn', query:{type:'TIGMAN',pageBackTo:'/newIndex'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.tigman.newIndex://tigman
+                self.$router.push({ path: '/weld_tig_man', query:{type:'TIGMAN',pageBackTo:'/newIndex'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.mma.newIndex://mma
+                self.$router.push({ path: '/weld_mma', query:{type:'MMA',pageBackTo:'/newIndex'} });
+                break;
+            default:
+                break;
+        }
+    }
   },
   updated () {},
   computed:{

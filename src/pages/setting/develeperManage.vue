@@ -1,6 +1,11 @@
 <template>
     <div class="developerManage">
       <div class="contain">
+            <!-- <input type="text" class="copyObj"  value="我是要复制的内容" id="copyObj" /> -->
+            <!-- <div  class="copyObj"  value="我是要复制的内容" id="copyObj" @click="copyArticle">我是要复制</div> -->
+            <!-- <input class="mm_input db" readonly type="text" id="psd" value="">
+            <span style="cursor: pointer;width: 45px;height: 20px;line-height: 22px;color: #fff;background: #a32d2b;display: inline-block;
+            text-align: center;font-size: 10px;margin-left: 2px;" class="copy" @click="copyPsd()">复制</span> -->
             <ul class="d-ul">
                 <li class="d-li">
                     <div class="lf">体验者模式开关</div>
@@ -67,11 +72,17 @@
                        <input class="secd" type="number" v-model="secdTime"  min="1" max="20" >s
                     </div>
                 </li>
-                  <li class="d-li">
+                <li class="d-li">
                     <div class="lf">接收的报文</div>
-                   
                 </li>
-                 
+                <li class="d-li" @click="copyArticle()" >
+                    <div class="lf">点击复制log</div>
+                </li>
+                 <li>
+                     <div class="rizhi" v-for="(item,index) in rizhiList" :key="index">
+                        {{item.sendTime}}:{{item.bleReponseData}}
+                    </div>
+                 </li>
             </ul>
            <div>
                {{getReportData}}
@@ -84,7 +95,7 @@
 </template>
 
 <script>
-
+import { Toast} from 'mint-ui'
 export default {
   name: "",
   components: {},
@@ -98,13 +109,97 @@ export default {
         secdTime:this.GLOBAL_CONFIG.autoRouterTime/1000,
         gowelding:false,
         testModel:0,
+        rizhiList:this.$store.state.rizhiList
 
 
     };
   },
 
   methods: {
+       copyArticle() {
+            var input = document.createElement("input");
+
+            input.value =JSON.stringify(this.rizhiList); //你需要复制的内容  
+
+            document.body.appendChild(input);
+
+            input.select();
+
+            input.setSelectionRange(0, input.value.length), document.execCommand('Copy');
+
+            document.body.removeChild(input);
+
+            console.log("复制成功");  
+    },
+       copyPsd() {
+            var psd = document.getElementById("psd");
+            var psdUser = '#psd';
+            this.navigatorCopy(psd, psdUser);
+        },
+       // 一键复制文本，兼容iso和安卓
+         navigatorCopy(inputId, domUser) {
+            var u = navigator.userAgent;
+            // 安卓
+            if(u.indexOf('Android') > -1 ){
+                // var copytext = document.getElementById("user");
+                var copytext = inputId;
+                console.log(copytext)
+                copytext.select(); // 选择对象
+                document.execCommand("Copy"); // 执行浏览器复制命令
+                alert('复制成功')
+            }
+            //ios兼容
+            if (navigator.userAgent.match(/(iPhone|iPod|iPad);?/i)) { 
+                // var copyDOM = document.querySelector('#user');  //要复制文字的节点  
+                var copyDOM = document.querySelector(domUser);  //要复制文字的节点  
+                console.log(copyDOM)
+                var range = document.createRange();    
+                // 选中需要复制的节点  
+                range.selectNode(copyDOM);  
+                // 执行选中元素  
+                window.getSelection().addRange(range);  
+                // 执行 copy 操作  
+                var successful = document.execCommand('copy');    
+                try {    
+                    var msg = successful ? '复制成功！' : '复制失败'; 
+                    alert(msg);    
+                } catch(err) {    
+                    alert('复制失败!');    
+                }  
+                // 移除选中的元素  
+                window.getSelection().removeAllRanges();  
+            }
+        },
+        copyUrl() {
+            // for (let index = 0; index < 1000; index++) {
+            //     let info ={
+            //         "sendTime":"2020-10-28 22:53",
+            //         "bleReponseData":"[218,226,74,91,0,186,0,10,75,19]"
+            //     }
+            //     this.rizhiList.push(info);
+            // }
+            // var clickContent = JSON.stringify(this.rizhiList);  //获取要复制的值
+            // var inputElement =  document.getElementById("copyObj");  //获取要赋值的input的元素
+            // inputElement.value = clickContent;  //给input框赋值   
+            // inputElement.select();//选中input框的内容
+            // document.execCommand("Copy");// 执行浏览器复制命令
+            const range = document.createRange();
+            range.selectNode(document.querySelector(".copyObj"));
+
+            const selection = window.getSelection();
+            if(selection.rangeCount > 0) selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('Copy');
+            
+              Toast({
+                message: '日志复制成功，共'+this.rizhiList.length+'条',
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 1500
+            });
+        },
         goback(){
+            this.$store.state.rizhiListFlag=true;
             this.$router.go(-1)
         },
         changeTestFlag (status) {
@@ -234,12 +329,16 @@ export default {
       }
   },
   mounted: function() {
+      this.$store.state.rizhiListFlag=false;
   },
   created() {},
   computed: {
     envType(){
         return this.$store.state.envType;　　//需要监听的数据
     }
+  },
+  destroyed(){
+      this.$store.state.rizhiListFlag=true;
   },
   watch: {
     secdTime(){
@@ -248,12 +347,12 @@ export default {
     getReportData(){
         return this.$store.state.oldBroastData;
     }
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
 .developerManage{
-    height: 100vh;
+    height: 100%;
     width: 100%;
     background: #39abfd;
     display: inline-block;
@@ -300,12 +399,16 @@ export default {
                 height: 120px;
                 
             }
+            .rizhi{
+                padding:5px 0;
+            }
         }
     }
     .goback{
         margin-top: 180px;
         margin-left: 40px;
         margin-right: 40px;
+        margin-bottom: 40px;
         height: 40px;
         line-height: 40px;
         text-align: center;
