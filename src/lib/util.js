@@ -1395,7 +1395,7 @@ Array.prototype.in_array = function (element) {
                 }
             }
             //ios监听蓝牙返回数据 重要！！！ 
-            window['iosBleDataLayoutFuc']= (bleReponseData) => {
+            // window['iosBleDataLayoutFuc']= (bleReponseData) => {
                 // if(lastTimesReceiveData==bleReponseData){
                 //     //返回响应
                 //     //延迟一阵子再执行 机器上发频率0.5s
@@ -1408,10 +1408,10 @@ Array.prototype.in_array = function (element) {
                 //     clearTimeout(delayTimer);
                 //     iosBleDataLayoutFuc(bleReponseData)
                 // }
-                iosBleDataLayoutFuc(bleReponseData)
-            }
+                // iosBleDataLayoutFuc(bleReponseData)
+            // }
             //ios监听蓝牙返回数据 重要！！！ 
-            function iosBleDataLayoutFuc(bleReponseData){
+            window['iosBleDataLayoutFuc']= (bleReponseData) => {
                 console.log(store.state.rizhiListFlag)
                 if(store.state.rizhiListFlag){
                     //记录日志

@@ -230,6 +230,10 @@ new Vue({
       // window.addEventListener("popstate", function(e) {
       //   window.history.pushState(null, null, "#");
       // })
+      //版本号去更新
+      // InterfaceService.getUpdateInfo((data)=>{
+      //   console.log(data)
+      // })
    },destroyed () {
    }
  

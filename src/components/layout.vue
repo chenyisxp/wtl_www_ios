@@ -340,6 +340,12 @@ export default {
   watch: {
     isConnectStatus (newVal, oldVal) {
       console.log('111::'+this.$store.state.nowRouter)
+      // Toast({
+      //       message: 'nowRoute:'+this.$store.state.nowRouter,
+      //       position: 'middle',
+      //       iconClass: 'icon icon-success',
+      //       duration: 2500
+      //     });
       //do something
       if(this.$store.state.nowRouter!='/blueToothManage' 
           && this.$store.state.nowRouter!='/newIndex'
@@ -352,18 +358,29 @@ export default {
           clearTimeout(this.layoutTimer);
           this.displayType=0;
         }else{
+          //开启扫描
+          if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+            this.globalSendMsgToIos("handleStartScan","","");
+          }
           this.displayType=1;
+          // Toast({
+          //   message: 'this.displayType:'+this.displayType+'||'+this.GLOBAL_CONFIG.ENV_IOS_FLAG,
+          //   position: 'middle',
+          //   iconClass: 'icon icon-success',
+          //   duration: 2500
+          // });
           //1、尝试连接
           if(!this.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
                //TODO 1、应该先关闭（是否可以判断是否连接着） 2、重新连接新的
                //window.android.closeBleConnect();
               setTimeout(() => {
                  if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                    this.globalSendMsgToIos("handleStopScan","","");
                     this.globalSendMsgToIos("handleConnect",this.$store.state.nowConnectAddress,"")
                  }else{
                    window.android.setBleConnect(this.$store.state.nowConnectAddress);
                  }
-              }, 2000);
+              }, 4000);//ios慢，多扫描会
                
           }
           //2、8秒后 还没连上 去 蓝牙页

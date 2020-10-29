@@ -1,6 +1,6 @@
 import { Common } from './common';
 import { SERVICE_CODE, STATE_CODE } from './config/interface';
-
+import axios from 'axios'
 let InterfaceService = {
     // 手机验证码发送请求
     getPhoneCode: (params, callback, errorCallback, loadingStartCb, loadingEndCb) => {
@@ -18,6 +18,14 @@ let InterfaceService = {
         }, (data) => {
             typeof errorCallback === 'function' && errorCallback(data);
         }, loadingStartCb, loadingEndCb);
+    },
+    getUpdateInfo:(callback)=>{
+        axios.get("https://itunes.apple.com/CN/lookup?bundleId=com.wtl.wtlBlueTooth")
+            .then(response=>{
+                if(response.status===200){
+                    typeof callback === 'function' && callback(response.data);
+                }
+            }) 
     }
 } 
 

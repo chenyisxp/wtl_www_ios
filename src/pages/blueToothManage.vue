@@ -559,7 +559,7 @@ export default {
                                 self.newFilterList.forEach(fiElement => {
                                     //且应该是我们自己的蓝牙才能放到order1中
                                     if(element.address==fiElement.realAddress ){
-                                        if(element.bleName.indexOf(self.importantkey)>-1){
+                                        if(element.bleName.indexOf(self.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
                                             element.bleName=fiElement.bleName;
                                             self.orderList1.push(element);
                                         }else{
@@ -572,7 +572,7 @@ export default {
                                 });
                                 if(tempI==0){
                                     //是我们要的开头
-                                   if(element.bleName.indexOf(self.importantkey)>-1){
+                                   if(element.bleName.indexOf(self.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
                                         self.orderList1.push(element);
                                    }else{
                                         self.orderList2.push(element);
@@ -858,7 +858,7 @@ export default {
                     self.newFilterList.forEach(fiElement => {
                         //且应该是我们自己的蓝牙才能放到order1中
                         if(element.address==fiElement.realAddress ){
-                            if(element.bleName.indexOf(self.importantkey)>-1){
+                            if(element.bleName.indexOf(self.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
                                 element.bleName=fiElement.bleName;
                                 self.orderList1.push(element);
                             }else{
@@ -871,7 +871,7 @@ export default {
                     });
                     if(tempI==0){
                         //是我们要的开头
-                        if(element.bleName.indexOf(self.importantkey)>-1){
+                        if(element.bleName.indexOf(self.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
                             self.orderList1.push(element);
                         }else{
                             self.orderList2.push(element);
@@ -946,6 +946,7 @@ export default {
                     window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
                 }
                 clearTimeout(self.connectFailedInfo);
+                
                 self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
                
             }

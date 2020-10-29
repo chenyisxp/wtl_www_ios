@@ -907,6 +907,8 @@ export default {
       } 
       window['sendToIndexBleState']=(data)=>{
         that.nowConnectStatus=data;
+        that.$store.state.getConnectStatus=data;
+
       }
   },
   created () {
