@@ -26,7 +26,15 @@ let InterfaceService = {
                     typeof callback === 'function' && callback(response.data);
                 }
             }) 
-    }
+    },
+    getOverseasUpdateInfo:(callback)=>{
+        axios.get("https://itunes.apple.com/lookup?bundleId=com.wtl.wtlBlueTooth")
+            .then(response=>{
+                if(response.status===200){
+                    typeof callback === 'function' && callback(response.data);
+                }
+        }) 
+}
 } 
 
 export { InterfaceService };

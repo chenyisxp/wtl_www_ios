@@ -738,16 +738,16 @@ export default {
                     self.$router.go(-1);
                }
            }else if(url=='/welding'){
-             //执行焊接
-            var data = self.getDirective(self.typeName, 'Getready')+ '0000';
-            var crc = self.crcModelBusClacQuery(data, true);
-            var sendData = "DA" + data + crc;        
-            //生产时打开 
-            this.callSendDataToBleUtil('weld_mma',sendData,crc);
-            //   this.$router.push({path:'/welding',query:{electricCurrent: this.nowPosionX ,voltage:this.nowPosionX2}});
-        }else{
-            self.$router.push({path:url,query:{type: self.typeName ,nowModalTypeId:self.nowModalTypeId,pageFrom:'/weld_mma'}});
-        }
+                //执行焊接
+                var data = self.getDirective(self.typeName, 'Getready')+ '0000';
+                var crc = self.crcModelBusClacQuery(data, true);
+                var sendData = "DA" + data + crc;        
+                //生产时打开 
+                this.callSendDataToBleUtil('weld_mma',sendData,crc);
+                //   this.$router.push({path:'/welding',query:{electricCurrent: this.nowPosionX ,voltage:this.nowPosionX2}});
+            }else{
+                self.$router.push({path:url,query:{type: self.typeName ,nowModalTypeId:self.nowModalTypeId,pageFrom:'/weld_mma'}});
+            }
         
     },
     buildMmaEletrode(type,value,index){

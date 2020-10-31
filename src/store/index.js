@@ -52,7 +52,9 @@ const state = {
     tigManChooseLineKey:'',
     callMemoryRemarks:[],
     rizhiList:[],
-    rizhiListFlag:true
+    rizhiListFlag:true,
+    saveManagePageTo:'',
+    saveManagePageToName:''
 }
 
 const mutations = {

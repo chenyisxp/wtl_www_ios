@@ -436,13 +436,19 @@ export default {
                 }
                 
                 if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode){
+                  that.$store.state.saveManagePageTo='/weld_tig_man';
                   that.go('/weld_tig_man');//最复杂
                 }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.tigsyn.crcCode){
+                  that.$store.state.saveManagePageTo='/weld_tig_syn';
                   that.go('/weld_tig_syn');
                 }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode){
+                  that.$store.state.saveManagePageTo='/weld_mma';
                   that.go('/weld_mma');
                 }else{
+                  that.$store.state.saveManagePageTo='/weld_common';
+                  that.$store.state.saveManagePageToName=rst.weldType
                   that.go('/weld_common?type='+rst.weldType);
+
                 }
             }    
         }

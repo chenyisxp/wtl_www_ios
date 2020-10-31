@@ -5,7 +5,7 @@
             <span></span>
       </div>
      BACK</div> -->
-    <Head :wantTo="'/newIndex'" :pageBackTo="pageFrom" :headName="'BACK'"></Head>
+    <Head :backBefore="true"  :typeName="typeName" :headName="'BACK'"></Head>
     <ul class="mListContain">
           <li v-for="(item,index) in mList" class="m-li" :key="index">
             <div class="m-b" :class="'b-'+index" @click="goDetail(item.mid,item.remarksTtile)">{{item.remarksTtile}}</div>
@@ -70,7 +70,8 @@ export default {
             nowChooseId:'',
             remarksText:'',
             querSendData:'',
-            queryCrc:''
+            queryCrc:'',
+            typeName:''
     };
   },
 
@@ -254,6 +255,7 @@ export default {
         window.addEventListener('popstate', this.goBack, false);
     } 
     let self =this;
+    self.typeName = self.$route.query.typeName
     self.pageFrom = self.$route.query.pageFrom;
     self.$store.state.nowModelDirectice='';//置空
     //禁止返回键

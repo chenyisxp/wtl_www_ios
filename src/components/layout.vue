@@ -13,11 +13,13 @@
           <router-view  v-if="!$route.meta.keepAlive"></router-view>
     </transition>
     <Loading :is-loading="isLoading"></Loading>
-     <Connecting v-show="displayType" :displayType="displayType"></Connecting>
+    <Connecting v-show="displayType" :displayType="displayType"></Connecting>
+    <VUpModal v-show="updateVersionModal" :vuPType="vuPType"></VUpModal>
   </div>
 </template>
 
 <script>
+import VUpModal from "@/components/base/versionUpdateModal";
 import Vue from 'vue'
 import { Toast } from 'mint-ui'
 import Loading from "@/components/base/Loading";
@@ -44,13 +46,18 @@ var mayTooLongList=[
     // }
 ];
 var TimerTask ={};
+import { InterfaceService } from '../lib/service'
 export default {
   components: {
     Loading,
-    Connecting
+    Connecting,
+    VUpModal
   },
   data: function () {
     return {
+      updateVersionModal:false,
+      vuPType:0,
+      iosVersion:'',
       layoutTimer:{},
       modelType:'',
       displayType:0,
@@ -67,6 +74,32 @@ export default {
     }
   },
   methods: {
+    iosVersonCenter(){
+        //版本号去更新 currentVersionReleaseDate
+        // InterfaceService.getUpdateInfo((data)=>{
+        //   if(data && data.results && data.results.length>0){
+        //     let info =  data.results[0];
+        //     console.log(info.version)
+        //   }
+        //   this.globalSendMsgToIos("handGetIosVersion","sendIosVersionToHtml","");
+        // })
+        InterfaceService.getOverseasUpdateInfo((data)=>{
+          if(data && data.results && data.results.length>0){
+            let info =  data.results[0];
+            this.iosVersion =info.version
+            console.log( this.iosVersion,info.version)
+          }
+          this.globalSendMsgToIos("handGetIosVersion","sendIosVersionToHtml","");
+        })
+        window['sendIosVersionToHtml']= (versionNo) => {
+          //版本相同 1.2 testLight 1.3 未来真是1.1 >
+          if(this.iosVersion && this.iosVersion > versionNo){
+            //提示更新弹层
+            this.updateVersionModal = true;
+            this.vuPType=1;
+          }
+        }
+      },
     //焊接中的话自动跳转
       initWeldingAutoRouter(){
             let self =this;
@@ -249,6 +282,7 @@ export default {
       //       duration: 2000
       // });
         // alert("Ios客户端");
+        this.iosVersonCenter();
        this.$store.state.envType = 'env_ios'
        this.globalSendMsgToIos("handleStartScan","","");
     } else if (/android/.test(userAgent )) {
@@ -275,6 +309,7 @@ export default {
               return;
             }
             if(this.envType=='env_ios'){
+             
               this.globalSendMsgToIos("handleGetBleStateByLayout","","");
             }else{
               this.$store.state.getConnectStatus =  window.android.getConStatus();

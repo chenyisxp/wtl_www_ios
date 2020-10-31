@@ -7,7 +7,7 @@
                 </div>
                 M{{pupnum}}
             </div> -->
-            <Head  :nowModalTypeId="nowModalTypeId" :pageFrom="'/saveDetail'"  :headName="'M'+pupnum"></Head>
+            <Head :wantTo="'/saveManage'" :nowModalTypeId="nowModalTypeId" :pageFrom="'/saveDetail'"  :headName="'M'+pupnum"></Head>
             <div class="modText">
                 <div class="mup">
                     <div class="u-r">NOTE</div>

@@ -761,10 +761,6 @@ export default {
        go(url){
            let self =this;
            console.log(self.pageBackTo)
-           if(url=='/saveManage'){
-               self.$router.push({path:url,query:{type: self.typeName ,nowModalTypeId:self.nowModalTypeId,pageFrom:'/weld_common'}});
-               return;
-           }
            
             if(url=='/welding'){
                 //执行焊接
@@ -779,7 +775,7 @@ export default {
                 self.$router.push({path:self.pageBackTo,query:{}});
                 return;
             }else{
-                self.$router.push({path:url,query:{type: self.typeName ,nowModalTypeId:self.nowModalTypeId,pageFrom:'weld_common'}});
+                self.$router.push({path:url,query:{type: self.typeName ,nowModalTypeId:self.nowModalTypeId,pageFrom:'/weld_common'}});
             }
         
     },

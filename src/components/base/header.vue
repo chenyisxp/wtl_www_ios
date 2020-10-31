@@ -14,7 +14,7 @@
 
 <script>
 export default {
-  props: ['align','wantTo','pageBackTo','typeName','pageFrom','nowModalTypeId','headName'],
+  props: ['align','wantTo','pageBackTo','typeName','pageFrom','nowModalTypeId','headName','backBefore'],
   data () {
     return {
     }
@@ -24,9 +24,19 @@ export default {
   },
   methods:{
       handleGo(){
-            if(this.pageBackTo){
+            console.log('his.pageBackTo:'+this.pageBackTo)
+            if(this.backBefore){
+                this.$router.push({path:this.$store.state.saveManagePageTo,query:{type:this.$store.state.saveManagePageToName}});
+                return;
+            }
+
+            if(this.wantTo){
+                this.$router.push({path:this.wantTo,query:{}});
+                return;
+            }else if(this.pageBackTo){
+                console.log('回退')
                 // 回退
-                this.$router.push({path:this.pageBackTo,query:{}});
+                this.$router.push({path:this.pageBackTo,query:{typeName:this.typeName}});
                 return;
             }else if(this.typeName){
                 this.$router.push({path:this.wantTo,query:{type: this.typeName ,nowModalTypeId:this.nowModalTypeId,pageFrom:this.pageFrom}});
