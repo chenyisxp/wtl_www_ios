@@ -119,8 +119,8 @@
     <input v-model="cameraRstName" placeholder="测试输入2"> -->
     
     <!-- 测试入口 -->
-    <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    <!-- <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div> -->
   </div>
 </template>
 
@@ -751,16 +751,14 @@ export default {
     }
   },
   mounted: function () {
-        let self =this;
-        if(self.envType=='env_ios'){
-            self.init_ios();
+        if(this.envType=='env_ios'){
+            this.init_ios();
         }else{
-            self.init_android();
+            this.init_android();
         }
   },
   created () {
         
-        let self =this;
         window['sendToHtmlConnectedFail'] = () =>{
             Toast({
                     message: 'Connection failed. Please try scanning again.',
@@ -780,19 +778,19 @@ export default {
             console.log('+++++++++++++++++++++')
             // TODO 按规则 切割成 name和ip
             //测试模式时
-            if(self.GLOBAL_CONFIG.TESTFLAG){
-                self.cameraRstName=data;
-                self.cameraRstIp="78,78,878,78,78";
-                self.comeraRstFlag=true
+            if(this.GLOBAL_CONFIG.TESTFLAG){
+                this.cameraRstName=data;
+                this.cameraRstIp="78,78,878,78,78";
+                this.comeraRstFlag=true
                 return;
             }
             // var data ="F0:B5:D1:59:23:4A||HC-08"; WELDin1020
             if(data.indexOf('||')>-1){
                 let tempArr = data.split('||');
                 // self.cameraRstIp=tempArr[0].replace(/,/g,":");
-                self.cameraRstIp=tempArr[0].replace(/,/g,":");
-                self.comeraRstFlag=true;
-                self.cameraRstName =data.split('||')[1];
+                this.cameraRstIp=tempArr[0].replace(/,/g,":");
+                this.comeraRstFlag=true;
+                this.cameraRstName =data.split('||')[1];
             }else{
                 Toast({
                         message: 'scanned data is not in rule'+data,
@@ -813,15 +811,15 @@ export default {
             //     self.showOrder =2;//扫描结束
             // }
             if('connected'==scanStatus){
-                clearInterval(self.timeInterval1)
-                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
+                clearInterval(this.timeInterval1)
+                this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
             }
         }
         window['handleGetBleStateThenToNewIndex']= () => {
-            self.$store.state.getConnectStatus='connected';
-            clearInterval(self.timerInterval )
+            this.$store.state.getConnectStatus='connected';
+            clearInterval(this.timerInterval )
             setTimeout(() => {
-                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
+                this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
             }, 100);
         }
         //模拟多个： Sd8eab80c2c18b79bC,DE0EA5ED-978E-07AF-6E90-9BB27D274EF5||HC-08,663E99B6-39F0-CD53-CF0C-BEB6CA13B875
@@ -849,21 +847,21 @@ export default {
                 });
                 //ios独立的逻辑处理
                 //赋值
-                self.rstList =rstLLIST;
+                this.rstList =rstLLIST;
                 tempI =0;
-                self.orderList1=[];
-                self.orderList2=[];
-                self.rstList.forEach(element => {
+                this.orderList1=[];
+                this.orderList2=[];
+                this.rstList.forEach(element => {
                     tempI =0;
-                    self.newFilterList.forEach(fiElement => {
+                    this.newFilterList.forEach(fiElement => {
                         //且应该是我们自己的蓝牙才能放到order1中
                         if(element.address==fiElement.realAddress ){
-                            if(element.bleName.indexOf(self.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
+                            if(element.bleName.indexOf(this.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
                                 element.bleName=fiElement.bleName;
-                                self.orderList1.push(element);
+                                this.orderList1.push(element);
                             }else{
                                 element.bleName=fiElement.bleName;
-                                self.orderList2.push(element);
+                                this.orderList2.push(element);
                             }
                             tempI =1;//外层判断需不要加
                             return false;
@@ -871,15 +869,15 @@ export default {
                     });
                     if(tempI==0){
                         //是我们要的开头
-                        if(element.bleName.indexOf(self.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
-                            self.orderList1.push(element);
+                        if(element.bleName.indexOf(this.importantkey)>-1 || element.bleName.indexOf("HC-08")>-1){
+                            this.orderList1.push(element);
                         }else{
-                            self.orderList2.push(element);
+                            this.orderList2.push(element);
                         }
                     }
                 });
-                console.log(self.orderList1);
-                console.log(self.orderList2);
+                console.log(this.orderList1);
+                console.log(this.orderList2);
                 
             }
         }
@@ -889,24 +887,24 @@ export default {
             //  alert(lastBle)
             if(bleLists){
                 let tempList =JSON.parse(bleLists);
-                self.$store.state.updateBlelistDB=tempList;
-                self.updateBlelistDB = tempList;
+                this.$store.state.updateBlelistDB=tempList;
+                this.updateBlelistDB = tempList;
                 tempList.forEach(element => {
                     if(element.type==1){
-                         self.lastConnectList.push(element);
+                         this.lastConnectList.push(element);
                     }
                 });
                 // var arr = bleLists.split("||||");
                 // var conbean={};
                 // conbean.address =arr[0];
                 // conbean.bleName =arr[1];
-                // self.lastConnectList.push(conbean);
+                // this.lastConnectList.push(conbean);
 
                 
-                if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
-                    self.newFilterList=[];
+                if(this.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
+                    this.newFilterList=[];
                 }else{
-                    self.newFilterList = tempList;
+                    this.newFilterList = tempList;
                 }
             
                
@@ -916,11 +914,10 @@ export default {
 
   },
   destroyed(){
-      let self =this;
-      clearInterval(self.timeInterval1);
-      clearInterval(self.timeInterval2);
-      clearTimeout(self.connectFailedInfo);
-      clearInterval(self.timerInterval)
+      clearInterval(this.timeInterval1);
+      clearInterval(this.timeInterval2);
+      clearTimeout(this.connectFailedInfo);
+      clearInterval(this.timerInterval)
       MessageBox.close(); 
        window.removeEventListener('popstate', this.goBack, false);
   },
