@@ -40,8 +40,9 @@ let BASE_CONFIG = {
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 0d 04 42 00 3d1c'},//问题
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 0d 0a 1b 00 ae47'},//post gas问题
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 06 02 5f 00 48f7'},//slow up问题
-        tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 06 08 5f 00 48f7'},//slow down
-
+        // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 42 06 08 5f 00 48f7'},//slow down
+        tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 08 03 03 23 00 63 4e 00 23 00 64 00 05 30 23 00 64 32'},//history
+        
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 82 00 01 09 6400 6400 01 09 8768'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 00 01 09 6400 6400 01 09 6F6F'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},

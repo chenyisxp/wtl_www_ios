@@ -184,6 +184,7 @@ export default {
             this.isLoading=false;
             }
         }, 11000);
+        
        this.$store.state.nowModelDirectice=this.modelCrc;
        this.modelType = this.modelCrc;
         // setTimeout(() => {
@@ -421,16 +422,40 @@ export default {
     },goBack(){
          this.$router.push({path:'/memoryManage',query:{}}); 
     },
+    checkModal(data){
+        switch (data.substring(2,4)) {
+            case 'E1':
+                return this.GLOBAL_CONFIG.callWeldTypeData.migsyn.crcCode
+                break;
+            case 'E2':
+                return this.GLOBAL_CONFIG.callWeldTypeData.migman.crcCode
+                break;
+            case 'E3':
+                return this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.crcCode
+                break;
+            case 'E4':
+                return this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode
+                break;
+            case 'E4':
+                return this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode
+                break;
+            default:
+                return that.modelType;
+                break;
+        }
+    },
     //for android 给安卓用的方法 begin
     broastFromAndroid3(data,pageFrom){
         this.isLoading =false;
         clearTimeout(this.loadingTimer);
-      console.log(data)
       let that =this;
         // alert('newindex::'+that.modelType+'|||'+that.$store.state.nowModelDirectice);
        if(that.$store.state.nowModelDirectice!='' && that.modelType!=that.$store.state.nowModelDirectice){
           // alert(11)
           return;
+        }
+        else if(that.checkModal(data)!=that.modelType){
+            return;
         }else{
           // alert(22)
              that.$store.state.nowModelDirectice=that.modelType;
@@ -509,7 +534,7 @@ export default {
         //     }
             
         //   }
-          // alert(data)
+        //   alert(data)
         //   that.$store.state.havedClickPage=false;
           that.$store.state.oldBroastData =data;
         

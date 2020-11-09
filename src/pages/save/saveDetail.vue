@@ -1155,6 +1155,13 @@ export default {
     }
   }
 }
+@media screen and (max-width: 400px) {
+   .memoryDetail .mmp .mainPanel .m-show {font-size: 33px;}
+   .memoryDetail .mmp .mainPanel .m-show .m-s-l_current,
+   .memoryDetail .mmp .mainPanel .m-show .m-s-l_force{background-size: 35px;padding-left: 36px;}
+   .memoryDetail .mmp .mainPanel .m-show .m-s-l{background-size: 35px;padding-left: 36px;}
+   .memoryDetail .mmp .mainPanel .m-show .m-s-r{background-size: 35px;padding-left: 36px;}
+}
 /* x xs */
 @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
    // iphoneX iphoneXS样式

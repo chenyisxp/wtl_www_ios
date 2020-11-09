@@ -179,8 +179,8 @@ export default {
                     //  this.broastFromAndroid('dac3 00 00 03 0064 0064 02 09  8C75','hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
                     break;
                 case 3:
-                     this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigman.headc+this.GLOBAL_CONFIG.testData.tigman.data,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
-                    //   this.broastFromAndroid('dac4 00 c0 32 0032 32 0032 0032 03e8 32 32 0032 32 50 23 4CCA','hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    //  this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigman.headc+this.GLOBAL_CONFIG.testData.tigman.data,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    this.broastFromAndroid('dac4 08 03 03 23 00 63 4e 00 23 00 64 00 05 30 23 00 549E','hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
                     break;
                 case 4:
                      this.broastFromAndroid(this.GLOBAL_CONFIG.testData.mma.headc+this.GLOBAL_CONFIG.testData.mma.data,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);

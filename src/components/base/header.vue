@@ -25,13 +25,14 @@ export default {
   methods:{
       handleGo(){
             console.log('his.pageBackTo:'+this.pageBackTo)
+            
             if(this.backBefore){
                 this.$router.push({path:this.$store.state.saveManagePageTo,query:{type:this.$store.state.saveManagePageToName}});
                 return;
             }
 
             if(this.wantTo){
-                this.$router.push({path:this.wantTo,query:{}});
+                this.$router.push({path:this.wantTo,query:{nowModalTypeId:this.nowModalTypeId}});
                 return;
             }else if(this.pageBackTo){
                 console.log('回退')

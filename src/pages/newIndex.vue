@@ -872,7 +872,7 @@ export default {
           // that.modelType='0570';
           // that.comfromFlag=true;
           var tempType=that.getModelType(data.substring(2,4));
-          console.log(that.modelType,tempType)
+          // alert(that.modelType,tempType)
           if(that.modelType!=tempType){
             return;
           }
@@ -1190,6 +1190,8 @@ export default {
         height: 40px;
         background: #333; /* For browsers that do not support gradients */
         // background: -webkit-linear-gradient(#fff, #333, #fff); /* For Safari 5.1 to 6.0 */
+        -webkit-user-select:none !important; /* WebKit内核私有属性 */
+        user-select:none !important; /* CSS3属性 */
       .btn{
           width: 33.33%;
           height: 40px;

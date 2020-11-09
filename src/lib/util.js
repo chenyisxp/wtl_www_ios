@@ -725,7 +725,7 @@ Array.prototype.in_array = function (element) {
                         //  alert(JSON.stringify(rstInfo))
                         break;
                     case 'hisweldlist':
-                        rstInfo =buidDataByPagefrom('newIndex',dirctiveType,data,this);
+                        rstInfo =buidDataByPagefrom(pageFrom,dirctiveType,data,this);
                         break;
                     default:
                         break;
@@ -811,7 +811,9 @@ Array.prototype.in_array = function (element) {
                     temp10.push(parseInt(("0x"+strArr[11]),16).toString(10));//板厚最大值
                     //转成10进制
                     rstInfo = setWeldDataByType(temp10,weldDirctive.mma,pageFrom,_this);
-                }else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='memory'){
+                }
+                // else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='memory'){
+                else  if(compareString(dirctiveType,weldDirctive.tigMan) && (pageFrom=='memory' || pageFrom=='hisweldlist')){
                     var strArr =data.split(' ');
                     console.log(strArr)
                     var temp10 =[];

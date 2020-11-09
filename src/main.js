@@ -1,7 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import MintUI from 'mint-ui'
+// import MintUI from 'mint-ui'
 // import wx from 'weixin-js-sdk'
 import $ from 'jquery'
 
@@ -22,86 +22,87 @@ import { Indicator,Toast } from 'mint-ui'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import {Icon,Switch} from 'iview';
-import {
-  InputNumber,
-  Button,
-  Select,
-  Option,
-  OptionGroup,
-  Popover,
-  Checkbox,
-  Menu,
-  Submenu,
-  MenuItem,
-  MenuItemGroup,
-  Row,
-  Col,
-  Tabs,
-  TabPane,
-  Input,
-  CheckboxButton,
-  CheckboxGroup,
-  Pagination,
-  MessageBox,
-  Message,
-  Dialog,
-  Form,
-  FormItem,
-  Tooltip,
-  Radio,
-  RadioGroup,
-  Table,
-  TableColumn,
-  DatePicker,
-  TimeSelect,
-  Carousel,
-  CarouselItem,
-  Tree,
-  Autocomplete,
-  Alert,
-  Tag,
-  Steps,
-  Step,
-} from 'element-ui';
-import '@/styles/element-variables.scss'
-import './assets/newStyle.css'
+// import {
+//   InputNumber,
+//   Button,
+//   Select,
+//   Option,
+//   OptionGroup,
+//   Popover,
+//   Checkbox,
+//   Menu,
+//   Submenu,
+//   MenuItem,
+//   MenuItemGroup,
+//   Row,
+//   Col,
+//   Tabs,
+//   TabPane,
+//   Input,
+//   CheckboxButton,
+//   CheckboxGroup,
+//   Pagination,
+//   MessageBox,
+//   Message,
+//   Dialog,
+//   Form,
+//   FormItem,
+//   Tooltip,
+//   Radio,
+//   RadioGroup,
+//   Table,
+//   TableColumn,
+//   DatePicker,
+//   TimeSelect,
+//   Carousel,
+//   CarouselItem,
+//   Tree,
+//   Autocomplete,
+//   Alert,
+//   Tag,
+//   Steps,
+//   Step,
+// } from 'element-ui';
+// import '@/styles/element-variables.scss'
+// import './assets/newStyle.css'
 // element ui component
-Vue.component(Input.name, Input);
-Vue.component(InputNumber.name, InputNumber);
-Vue.component(Button.name, Button);
-Vue.component(Select.name, Select);
-Vue.component(Option.name, Option);
-Vue.component(OptionGroup.name, OptionGroup);
-Vue.component(Popover.name, Popover);
-Vue.component(Checkbox.name, Checkbox);
-Vue.component(Menu.name, Menu);
-Vue.component(Row.name, Row);
-Vue.component(Col.name, Col);
-Vue.component(Tabs.name, Tabs);
-Vue.component(TabPane.name, TabPane);
-Vue.component(Submenu.name, Submenu);
-Vue.component(MenuItem.name, MenuItem);
-Vue.component(MenuItemGroup.name, MenuItemGroup);
-Vue.component(CheckboxButton.name, CheckboxButton);
-Vue.component(CheckboxGroup.name, CheckboxGroup);
-Vue.component(Pagination.name, Pagination);
-Vue.component(MessageBox.name, MessageBox);
-Vue.component(Message.name, Message);
-Vue.component(Dialog.name, Dialog);
-Vue.component(Form.name, Form);
-Vue.component(FormItem.name, FormItem);
-Vue.component(Tooltip.name, Tooltip);
-Vue.component(Radio.name, Radio);
-Vue.component(RadioGroup.name, RadioGroup);
-Vue.component(Table.name, Table);
-Vue.component(TableColumn.name, TableColumn);
+// Vue.component(Input.name, Input);
+// Vue.component(InputNumber.name, InputNumber);
+// Vue.component(Button.name, Button);
+// Vue.component(Select.name, Select);
+// Vue.component(Option.name, Option);
+// Vue.component(OptionGroup.name, OptionGroup);
+// Vue.component(Popover.name, Popover);
+// Vue.component(Checkbox.name, Checkbox);
+// Vue.component(Menu.name, Menu);
+// Vue.component(Row.name, Row);
+// Vue.component(Col.name, Col);
+// Vue.component(Tabs.name, Tabs);
+// Vue.component(TabPane.name, TabPane);
+// Vue.component(Submenu.name, Submenu);
+// Vue.component(MenuItem.name, MenuItem);
+// Vue.component(MenuItemGroup.name, MenuItemGroup);
+// Vue.component(CheckboxButton.name, CheckboxButton);
+// Vue.component(CheckboxGroup.name, CheckboxGroup);
+// Vue.component(Pagination.name, Pagination);
+// Vue.component(MessageBox.name, MessageBox);
+// Vue.component(Message.name, Message);
+// Vue.component(Dialog.name, Dialog);
+// Vue.component(Form.name, Form);
+// Vue.component(FormItem.name, FormItem);
+// Vue.component(Tooltip.name, Tooltip);
+// Vue.component(Radio.name, Radio);
+// Vue.component(RadioGroup.name, RadioGroup);
+// Vue.component(Table.name, Table);
+// Vue.component(TableColumn.name, TableColumn);
+
 // Vue.component(DatePicker.name, DatePicker);
 // Vue.component(TimeSelect.name, TimeSelect);
 // Vue.component(Carousel.name, Carousel);
 // Vue.component(CarouselItem.name, CarouselItem);
 // Vue.component(Tree.name, Tree);
 // Vue.component(Autocomplete.name, Autocomplete);
-Vue.component(Alert.name, Alert);
+// Vue.component(Alert.name, Alert);
 // Vue.component(Tag.name, Tag);
 // Vue.component(Steps.name, Steps);
 // Vue.component(Step.name, Step);
@@ -113,7 +114,7 @@ Vue.use(utils_ios)
 
 Vue.use(filters)
 Vue.use(directive)
-Vue.use(MintUI)
+// Vue.use(MintUI)
 Vue.use(iView);
 /* eslint-disable no-new */
 new Vue({
