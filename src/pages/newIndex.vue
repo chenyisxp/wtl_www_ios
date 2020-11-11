@@ -59,7 +59,7 @@
                   </button>
                   <div class="attention">attention</div>
                   <div class="info">You can input new name or reset. </div>
-                  <input class="inner_input" v-model="inputBleName">
+                  <input class="inner_input" v-model="inputBleName" @blur="handleBlurFuc" >
                   <div class="btns">
                     <div class="bt first"  @click="changeBleNameNewFuc(0)"><span>reset</span></div>
                     <div class="bt second" @click="changeBleNameNewFuc(1)"><span>confirm</span></div>
@@ -121,6 +121,9 @@ export default {
   },
 
   methods: {
+    handleBlurFuc(){
+      window.scrollTo(0, 0);
+    },
     //新的选择器 man和syn 合并
     newChangeFuc(idx,type){
       // this.$event.preventDefault();
@@ -932,8 +935,16 @@ export default {
           this.$store.state.updateBlelistDB =val;
         }
         
+      },
+      isConnectStatus () {
+        return this.$store.state.getConnectStatus;　　//需要监听的数据
       }
-  },destroyed(){
+  },watch: {
+    isConnectStatus (newVal, oldVal) {
+      this.nowConnectStatus=newVal
+    }
+  }
+  ,destroyed(){
     console.log('1111111:'+this.nowMainIndex)
     clearInterval(this.timeInterval1);
     clearTimeout(this.loadingTimer);

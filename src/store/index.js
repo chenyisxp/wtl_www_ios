@@ -54,7 +54,8 @@ const state = {
     rizhiList:[],
     rizhiListFlag:true,
     saveManagePageTo:'',
-    saveManagePageToName:''
+    saveManagePageToName:'',
+    testModalDoorFlag:false
 }
 
 const mutations = {

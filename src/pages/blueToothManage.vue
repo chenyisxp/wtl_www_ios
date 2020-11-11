@@ -119,8 +119,10 @@
     <input v-model="cameraRstName" placeholder="测试输入2"> -->
     
     <!-- 测试入口 -->
-    <!-- <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-    <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div> -->
+    <div v-if="testModalDoorFlag">
+        <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+        <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+    </div>
   </div>
 </template>
 
@@ -927,6 +929,9 @@ export default {
         },
         envType(){
             return this.$store.state.envType;
+        },
+        testModalDoorFlag(){
+            return this.$store.state.testModalDoorFlag;　　//需要监听的数据
         }
         
   },watch:{

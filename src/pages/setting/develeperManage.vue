@@ -204,6 +204,7 @@ export default {
         },
         changeTestFlag (status) {
             this.$Message.info('Changed:' + status);
+            this.$store.state.testModalDoorFlag=status;
             this.GLOBAL_CONFIG.TESTFLAG=status;
         },
         changeLogFlag (status) {

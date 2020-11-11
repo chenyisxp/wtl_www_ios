@@ -1,5 +1,5 @@
 <template>
-  <div class="weldMMA" :class="[ifFixedFlag?'weldFixed':'',envType=='env_ios'?'env_ios_gClass':'']"  :style="{height:newContainHeight+120+'px'}" id="allPage"  ref="allPage">
+  <div class="weldMMA" :class="[ifFixedFlag?'weldFixed':'',envType=='env_ios'?'env_ios_gClass':'']"  :style="{height:newContainHeight+80+'px'}" id="allPage"  ref="allPage">
         <!-- <div class="header"><Icon type="ios-arrow-back" @click="go('/newIndex')"/>{{changeStrEmptyName(typeName)}}<span class="setupyi">SET UP</span></div> -->
         <Head :wantTo="'/newIndex'" :typeName="typeName" :pageFrom="'/weld_tig_syn'" :nowModalTypeId="nowModalTypeId"></Head>
         <div class="mmp" ref="mmpId" id="idid">
@@ -1349,7 +1349,7 @@ export default {
         top: 0;
         height: auto;
         width: 100%;
-        margin-bottom: 40px;
+        margin-bottom: 50px;
         // align-self: flex-start;
     }
     // opacity: 0.1;

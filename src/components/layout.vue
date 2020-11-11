@@ -4,17 +4,17 @@
           <router-view></router-view>
       </transition> -->
        <!-- 部分页面缓存控制 -->
-    <transition :name="transitionName">
-        <keep-alive>
-          <router-view v-if="$route.meta.keepAlive"></router-view>
-        </keep-alive>
-    </transition>
-    <transition :name="transitionName">
-          <router-view  v-if="!$route.meta.keepAlive"></router-view>
-    </transition>
-    <Loading :is-loading="isLoading"></Loading>
-    <Connecting v-show="displayType" :displayType="displayType"></Connecting>
-    <VUpModal v-show="updateVersionModal" :vuPType="vuPType"></VUpModal>
+      <transition :name="transitionName">
+          <keep-alive>
+            <router-view v-if="$route.meta.keepAlive"></router-view>
+          </keep-alive>
+      </transition>
+      <transition :name="transitionName">
+            <router-view  v-if="!$route.meta.keepAlive"></router-view>
+      </transition>
+      <Loading :is-loading="isLoading"></Loading>
+      <Connecting v-show="displayType" :displayType="displayType"></Connecting>
+      <VUpModal v-show="updateVersionModal" :vuPType="vuPType"></VUpModal>
   </div>
 </template>
 
@@ -873,5 +873,6 @@ user-select:none;
 }
 .app{
   /* opacity: 0.2; */
+  background: #01303e
 }
 </style>
