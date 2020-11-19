@@ -915,9 +915,14 @@ export default {
         window.addEventListener('popstate', that.goBack, false);
       } 
       window['sendToIndexBleState']=(data)=>{
+        if(that.nowConnectStatus=='connected' && data!='connected'){
+          //突然断开处理
+          let address =that.$store.state.nowConnectAddress
+          that.globalSendMsgToIos("handleDisConnect",address,"")
+        }
         that.nowConnectStatus=data;
         that.$store.state.getConnectStatus=data;
-
+        
       }
   },
   created () {

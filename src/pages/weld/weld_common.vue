@@ -409,17 +409,17 @@ export default {
           
            if(this.UnitFlag==1){
                 self.disNumAtr=[
-                    {num:'19GA',height:10},
-                    {num:'2/16"',height:30},
-                    {num:'5/16"',height:40},
-                    {num:'9/16"',height:40}
+                    {num:'19GA',height:8.05},
+                    {num:'2/16"',height:37.95},
+                    {num:'5/16"',height:55.2},
+                    {num:'9/16"',height:36.8}
                 ]
            }else{
                 self.disNumAtr=[
-                    {num:'1mm',height:10},
-                    {num:'4mm',height:30},
-                    {num:'8mm',height:40},
-                    {num:'12mm',height:40}
+                   {num:'1mm',height:8.05},
+                    {num:'4mm',height:37.95},
+                    {num:'8mm',height:55.2},
+                    {num:'12mm',height:36.8}
                 ]
            }
             let mySlider = self.$refs.rulerMySlider;
@@ -501,17 +501,17 @@ export default {
        }else{
            if(this.UnitFlag==1){
                this.disNumAtr =[
-                    {num:'19GA',height:10},
-                    {num:'2/16"',height:30},
-                    {num:'5/16"',height:40},
-                    {num:'9/16"',height:40}
+                    {num:'19GA',height:8.05},
+                    {num:'2/16"',height:37.95},
+                    {num:'5/16"',height:55.2},
+                    {num:'9/16"',height:36.8}
                ]
            }else {
                this.disNumAtr=[
-                    {num:'1mm',height:10},
-                    {num:'4mm',height:30},
-                    {num:'8mm',height:40},
-                    {num:'12mm',height:40}
+                    {num:'1mm',height:8.05},
+                    {num:'4mm',height:37.95},
+                    {num:'8mm',height:55.2},
+                    {num:'12mm',height:36.8}
                     
                 ]
            }
@@ -1147,7 +1147,6 @@ export default {
     },
     //数组 滑动 数组构造
     buildRulerArrRange(min,max){
-        
         // var tempArr =[];
         // var tempInchArr =[];
         this.rulerInchNumAtr=[];
@@ -1713,6 +1712,7 @@ export default {
         width: 90%;
         // background: green;
         margin: 0 auto;
+        overflow: hidden;//白色会超出限定
         .bgSlider{
 		    background: #ca3231;
             position: absolute;

@@ -365,17 +365,17 @@ export default {
           
            if(this.UnitFlag==1){
                 self.disNumAtr=[
-                    {num:'19GA',height:10},
-                    {num:'2/16"',height:30},
-                    {num:'5/16"',height:40},
-                    {num:'9/16"',height:40}
+                    {num:'19GA',height:8.05},
+                    {num:'2/16"',height:37.95},
+                    {num:'5/16"',height:55.2},
+                    {num:'9/16"',height:36.8}
                 ]
            }else{
                 self.disNumAtr=[
-                    {num:'1mm',height:10},
-                    {num:'4mm',height:30},
-                    {num:'8mm',height:40},
-                    {num:'12mm',height:40}
+                    {num:'1mm',height:8.05},
+                    {num:'4mm',height:37.95},
+                    {num:'8mm',height:55.2},
+                    {num:'12mm',height:36.8}
                 ]
            }
             let mySlider = self.$refs.rulerMySlider;
@@ -456,17 +456,17 @@ export default {
        }else{
            if(this.UnitFlag==1){
                this.disNumAtr =[
-                    {num:'19GA',height:10},
-                    {num:'2/16"',height:30},
-                    {num:'5/16"',height:40},
-                    {num:'9/16"',height:40}
+                     {num:'19GA',height:8.05},
+                    {num:'2/16"',height:37.95},
+                    {num:'5/16"',height:55.2},
+                    {num:'9/16"',height:36.8}
                ]
            }else {
                this.disNumAtr=[
-                    {num:'1mm',height:10},
-                    {num:'4mm',height:30},
-                    {num:'8mm',height:40},
-                    {num:'12mm',height:40}
+                    {num:'1mm',height:8.05},
+                    {num:'4mm',height:37.95},
+                    {num:'8mm',height:55.2},
+                    {num:'12mm',height:36.8}
                     
                 ]
            }
@@ -484,11 +484,12 @@ export default {
         var maxTY =btTY-90;//去除底部高度
         var minTY =btTY -90-150;
         var circlrTY=maxTY-minTY;//范围区间
-         
         //计算出每个长度对应的位置
          for (let i = 0; i < self.rulerNumAtr.length; i++) {
             // if(pagey>(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)-1) && pagey<(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)+1) ){
             if(pagey>(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)-6) && pagey<(((self.rulerNumAtr[i].height/130)*circlrTY+minTY)+1) ){
+                console.log(i)
+                console.log(self.rulerNumAtr)
                 midLine.style.height = self.rulerNumAtr[i].height+'px';
                 cubeBox1.style.height =self.rulerNumAtr[i].height+'px';
                 self.actualNum =self.rulerNumAtr[i].num;
@@ -910,67 +911,68 @@ export default {
             })
     },
     //数组 滑动 数组构造 废弃
-    buildRulerArrRangeBak(min,max){
-        max =parseInt(max);
-        min =parseInt(min);
-        var tempArr =[];
-        var tempInchArr =[];
-        var i =min;
-        //根据上传的范围显示出范围 先轴的值不变值限范围就好
-        if(max<=min){
-            return;
-        }else{
-              let tempRulerNumAtrMap =  new Map([
-                [0,{num:'0.6mm',height:6,id:0}],
-                [1,{num:'0.7mm',height:7,id:1}],
-                [2,{num:'0.9mm',height:9,id:2}],
-                [3,{num:'1.2mm',height:12,id:3}],
-                [4,{num:'1.6mm',height:16,id:4}],
-                [5,{num:'2.1mm',height:21,id:5}],
-                [6,{num:'2.8mm',height:28,id:6}],
-                [7,{num:'3.4mm',height:34,id:7}],
-                [8,{num:'4.8mm',height:48,id:8}],
-                [9,{num:'6.4mm',height:64,id:9}],
-                [10,{num:'8.0mm',height:88,id:10}],
-                [11,{num:'9.5mm',height:95,id:11}],
-                [12,{num:'11.0mm',height:110,id:12}],
-                [13,{num:'12.7mm',height:127,id:13}]
-            ]);
-            let   tempRulerInchNumAtrMap=new Map([
-                [0,{num:'24GA',height:6,id:0}],
-                [1,{num:'22GA',height:7,id:1}],
-                [2,{num:'20GA',height:9,id:2}],
-                [3,{num:'18GA',height:12,id:3}],
-                [4,{num:'16GA',height:16,id:4}],
-                [5,{num:'14GA',height:21,id:5}],
-                [6,{num:'12GA',height:28,id:6}],
-                [7,{num:'1/8"',height:34,id:7}],
-                [8,{num:'3/16"',height:48,id:8}],
-                [9,{num:'1/4"',height:64,id:9}],
-                [10,{num:'5/16"',height:88,id:10}],
-                [11,{num:'3/8"',height:95,id:11}],
-                [12,{num:'7/16"',height:110,id:12}],
-                [13,{num:'1/2"',height:127,id:13}]
-            ]);
-            for( i;i<=max;i++){
-                // console.log(this.rulerNumAtrMap.get(parseInt(i)))
-                 let aa= tempRulerInchNumAtrMap.get(i);
-               this.rulerInchNumAtr.push(aa);
-               let bb= tempRulerNumAtrMap.get(i);
-               this.rulerNumAtr.push(bb);
-            }
-        }
+    // buildRulerArrRangeBak(min,max){
        
-      let vag =Math.round((this.commonContainHeight/130)*100)/100;
-      this.rulerNumAtr.forEach(element => {
-         element.height= Math.round((vag * element.height)*10)/10;
-         console.log(element.height)
-      });
-      console.log(this.rulerNumAtr);
-    },
+    //     alert(max)
+    //     max =parseInt(max);
+    //     min =parseInt(min);
+    //     var tempArr =[];
+    //     var tempInchArr =[];
+    //     var i =min;
+    //     //根据上传的范围显示出范围 先轴的值不变值限范围就好
+    //     if(max<=min){
+    //         return;
+    //     }else{
+    //           let tempRulerNumAtrMap =  new Map([
+    //             [0,{num:'0.6mm',height:6,id:0}],
+    //             [1,{num:'0.7mm',height:7,id:1}],
+    //             [2,{num:'0.9mm',height:9,id:2}],
+    //             [3,{num:'1.2mm',height:12,id:3}],
+    //             [4,{num:'1.6mm',height:16,id:4}],
+    //             [5,{num:'2.1mm',height:21,id:5}],
+    //             [6,{num:'2.8mm',height:28,id:6}],
+    //             [7,{num:'3.4mm',height:34,id:7}],
+    //             [8,{num:'4.8mm',height:48,id:8}],
+    //             [9,{num:'6.4mm',height:64,id:9}],
+    //             [10,{num:'8.0mm',height:88,id:10}],
+    //             [11,{num:'9.5mm',height:95,id:11}],
+    //             [12,{num:'11.0mm',height:110,id:12}],
+    //             [13,{num:'12.7mm',height:127,id:13}]
+    //         ]);
+    //         let   tempRulerInchNumAtrMap=new Map([
+    //             [0,{num:'24GA',height:6,id:0}],
+    //             [1,{num:'22GA',height:7,id:1}],
+    //             [2,{num:'20GA',height:9,id:2}],
+    //             [3,{num:'18GA',height:12,id:3}],
+    //             [4,{num:'16GA',height:16,id:4}],
+    //             [5,{num:'14GA',height:21,id:5}],
+    //             [6,{num:'12GA',height:28,id:6}],
+    //             [7,{num:'1/8"',height:34,id:7}],
+    //             [8,{num:'3/16"',height:48,id:8}],
+    //             [9,{num:'1/4"',height:64,id:9}],
+    //             [10,{num:'5/16"',height:88,id:10}],
+    //             [11,{num:'3/8"',height:95,id:11}],
+    //             [12,{num:'7/16"',height:110,id:12}],
+    //             [13,{num:'1/2"',height:127,id:13}]
+    //         ]);
+    //         for( i;i<=max;i++){
+    //             // console.log(this.rulerNumAtrMap.get(parseInt(i)))
+    //              let aa= tempRulerInchNumAtrMap.get(i);
+    //            this.rulerInchNumAtr.push(aa);
+    //            let bb= tempRulerNumAtrMap.get(i);
+    //            this.rulerNumAtr.push(bb);
+    //         }
+    //     }
+       
+    //   let vag =Math.round((this.commonContainHeight/130)*100)/100;
+    //   this.rulerNumAtr.forEach(element => {
+    //      element.height= Math.round((vag * element.height)*10)/10;
+    //      console.log(element.height)
+    //   });
+    //   console.log(this.rulerNumAtr);
+    // },
     //数组 滑动 数组构造 来自weldcommon
     buildRulerArrRange(min,max){
-        
         // var tempArr =[];
         // var tempInchArr =[];
         this.rulerInchNumAtr=[];
@@ -1032,6 +1034,7 @@ export default {
       this.rulerNumAtr.forEach(element => {
          element.height= Math.round((vag * element.height)*10)/10;
       });
+      console.log(this.rulerNumAtr)
     },
     initFuc(){
         var list  ={};

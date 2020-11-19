@@ -762,6 +762,8 @@ export default {
   created () {
         
         window['sendToHtmlConnectedFail'] = () =>{
+            let address =this.$store.state.nowConnectAddress
+            that.globalSendMsgToIos("handleDisConnect",address,"")
             Toast({
                     message: 'Connection failed. Please try scanning again.',
                     position: 'middle',
