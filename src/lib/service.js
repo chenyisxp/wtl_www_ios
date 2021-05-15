@@ -20,7 +20,7 @@ let InterfaceService = {
         }, loadingStartCb, loadingEndCb);
     },
     getUpdateInfo:(callback)=>{
-        axios.get("https://itunes.apple.com/CN/lookup?bundleId=com.wtl.wtlBlueTooth")
+        axios.get("https://itunes.apple.com/CN/lookup?bundleId=new.uk.co.parweld.www")
             .then(response=>{
                 if(response.status===200){
                     typeof callback === 'function' && callback(response.data);
@@ -28,7 +28,9 @@ let InterfaceService = {
             }) 
     },
     getOverseasUpdateInfo:(callback)=>{
-        axios.get("https://itunes.apple.com/lookup?bundleId=com.wtl.wtlBlueTooth")
+        // ru.grovers.www
+        //com.wtl.wtlBlueTooth
+        axios.get("https://itunes.apple.com/lookup?bundleId=new.uk.co.parweld.www")
             .then(response=>{
                 if(response.status===200){
                     typeof callback === 'function' && callback(response.data);

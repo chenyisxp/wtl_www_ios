@@ -46,7 +46,7 @@ export default {
     hanleGoAppStoreConnect(){
       if(this.envType=='env_ios'){
         this.vuPType=0;
-        this.globalSendMsgToIos('handOpenWeb',"https://itunes.apple.com/app/apple-store/id1536316343",'')
+        this.globalSendMsgToIos('handOpenWeb',"https://itunes.apple.com/app/apple-store/id1557474403",'')
       }
     }
   },

@@ -13,13 +13,15 @@
             </RadioGroup> -->
             <div class="company">Official website</div>
             <div class="company-link">
-              <a @click="openWeb('http://www.wtl.com.cn/')">http://www.wtl.com.cn/</a>
+              <!-- <a @click="openWeb('http://www.wtl.com.cn/')">http://www.wtl.com.cn/</a> -->
               <!-- <a @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a> -->
+              <a @click="openWeb('http://www.parweld.co.uk/')">http://www.parweld.co.uk/</a>
             </div>
           <div class="help">Help Message</div>
           <div class="helpDetail">
            <!-- Tel: +7 831-280-83-53 -->
-           Check the website above.
+           <!-- Check the website above. -->
+           Tel: 01299 266800
           </div>
           <div class="connnect">Wiring diagram</div>
           <div class="tabs">

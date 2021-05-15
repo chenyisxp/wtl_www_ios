@@ -1712,7 +1712,6 @@ export default {
         width: 90%;
         // background: green;
         margin: 0 auto;
-        overflow: hidden;//白色会超出限定
         .bgSlider{
 		    background: #ca3231;
             position: absolute;
