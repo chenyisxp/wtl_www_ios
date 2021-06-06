@@ -639,7 +639,7 @@ export default {
         this.searchInFlag=false;
         this.$store.state.getConnectStatus='scaning';
         let address =this.$store.state.nowConnectAddress
-        if(address){
+        if(address && this.envType=='env_ios'){
             this.globalSendMsgToIos("handleDisConnect",address,"")
            
         }

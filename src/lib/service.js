@@ -39,4 +39,31 @@ let InterfaceService = {
 }
 } 
 
+const interMap = [
+    { method: 'testMsg', code: "ac010000" },
+    { method: 'getJywDetail', code: "yq01001" },
+    { method: 'getJywAcct', code: "yq01002" },
+
+    { method: 'miniProgramInnit', code: "1030004" },   //微信小程序初始化
+
+]
+
+let interAPI = {};
+
+interMap.forEach( m => {
+    interAPI[m.method] = (params, callback, errorCallback, loadingStartCb, loadingEndCb) => {
+        Common.request(m.code, params, (data) => {
+            typeof callback === 'function' && callback(data);
+        }, (data) => {
+            // if(m.showMsg && data.respData && data.respData.respMsg){
+            //     CommonAlert(data.respData.respMsg);
+            // }else if(m.showError && data.respData && data.respData.respCode === '9999' && data.respData.respMsg){
+            //     CommonAlert(data.respData.respMsg);
+            // }
+            typeof errorCallback === 'function' && errorCallback(data);
+        }, loadingStartCb, loadingEndCb); 
+    }
+});
+Object.assign(InterfaceService,interAPI);
+
 export { InterfaceService };

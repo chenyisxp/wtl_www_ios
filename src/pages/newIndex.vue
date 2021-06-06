@@ -73,7 +73,8 @@
 
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
-import Loading from "@/components/base/Loading";
+import Loading from "@/components/base/Loading"
+import {InterfaceService} from '@/services/api'
 import utils from '../lib/util'
 export default {
   name: '',
@@ -324,7 +325,7 @@ export default {
         //   iconClass: 'icon icon-success',
         //   duration: 2500
         // });
-       console.log(crcCode);
+       console.log(crcCode,'DA'+data+crcCode,crcCode);
        //测试模式that
        if(this.GLOBAL_CONFIG.TESTFLAG){
         //  alert('this.GLOBAL_CONFIG.TESTFLAG'+this.modelType);
@@ -375,7 +376,9 @@ export default {
                 }
               }
           }else{
-            this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
+            // this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
+            // this.$store.state.postDataList.push({type:'send',data:'0A03006400146105'});
+            this.callSendDataToBleUtil('newIndex','0A03006400146105','6105');
           }
           
        }
@@ -783,6 +786,18 @@ export default {
       //     // @click="newChangeFuc(1,1)"
       //   console.log('level11莫名被点击了');
       // }
+    },
+    initMSG(){
+      var param={};
+      console.log(InterfaceService)
+      InterfaceService.testMsg(param,(data)=>{
+        if(data.respData && data.respData.respCode!='0000'){
+            
+        }else{
+            
+        }
+      },function(data){
+      });
     }
   },
   mounted: function () {
@@ -924,6 +939,7 @@ export default {
         that.$store.state.getConnectStatus=data;
         
       }
+      that.initMSG();
   },
   created () {
       this.pageHeight=window.innerHeight+'px';

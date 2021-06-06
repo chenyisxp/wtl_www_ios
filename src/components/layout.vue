@@ -15,6 +15,15 @@
       <Loading :is-loading="isLoading"></Loading>
       <Connecting v-show="displayType" :displayType="displayType"></Connecting>
       <VUpModal v-show="updateVersionModal" :vuPType="vuPType"></VUpModal>
+      <div style="position:fixed;top:100px;background:rgba(0,0,0,0.4);color:#fff;padding:5px 5px;height:200px;overflow:auto;z-index:999;">
+        {{envType}}
+          <div v-for="(item,index) in postDataList" :key="index">
+              <span>{{index+1}}、</span>
+              <span v-if="item.type=='send'">发送</span>
+              <span v-if="item.type=='receive'">接收</span>
+              <span>{{item.data}}</span>
+          </div>
+      </div>
   </div>
 </template>
 
@@ -55,6 +64,10 @@ export default {
   },
   data: function () {
     return {
+      // postDataList:[
+        // {type:'send',data:'dadadadada'},
+        // {type:'receive',data:'rrrrrr'}
+      // ],
       updateVersionModal:false,
       vuPType:0,
       iosVersion:'',
@@ -274,7 +287,10 @@ export default {
   mounted () {
     console.log('layout=====')
     var userAgent = navigator.userAgent.toLowerCase();
-    if (/iphone|ipad|ipod|apple|webkit/.test(userAgent )) {
+    if (/android/.test(userAgent )) {
+        // alert("Android客户端");
+        this.$store.state.envType = 'env_android'
+    }else if (/iphone|ipad|ipod|apple|webkit/.test(userAgent )) {
       // Toast({
       //       message: "Ios客户端",
       //       position: 'middle',
@@ -283,12 +299,9 @@ export default {
       // });
         // alert("Ios客户端");
         this.iosVersonCenter();
-       this.$store.state.envType = 'env_ios'
+       this.$store.state.envType = 'env_ios'//
        this.globalSendMsgToIos("handleStartScan","","");
-    } else if (/android/.test(userAgent )) {
-        // alert("Android客户端");
-        this.$store.state.envType = 'env_android'
-    }else{
+    } else {
         this.$store.state.envType = 'env_pc'
     }
     // history.pushState(null, null, document.URL); 
@@ -370,6 +383,9 @@ export default {
       },
       envType(){
         return this.$store.state.envType;　　//需要监听的数据
+      },
+      postDataList(){
+        return this.$store.state.postDataList;
       }
     },
   watch: {

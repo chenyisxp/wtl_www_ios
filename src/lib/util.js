@@ -1267,6 +1267,7 @@ Array.prototype.in_array = function (element) {
            
             // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
+                store.state.postDataList.push({type:'send',data:sendData});
                 console.log(sendData)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
                 
@@ -1295,10 +1296,11 @@ Array.prototype.in_array = function (element) {
                             var message = {"method":"handleSendData","sendDt":sendData}
                             window.webkit.messageHandlers.interOp.postMessage(message);
                             if("FF"!=directive){//响应不需要开启定时器
-                                // console.log('initTimer=========')
+                                
                                 //异步操作
                                 setTimeout(() => {
-                                    initTimer();
+                                    //调试modbus关闭
+                                    // initTimer();
                                 }, 20);
                             }
                         } catch (error) {
@@ -1412,6 +1414,10 @@ Array.prototype.in_array = function (element) {
                 // }
                 // iosBleDataLayoutFuc(bleReponseData)
             // }
+             //ios监听蓝牙返回数据 重要！！！ 
+            window['androidBleDataLayoutFuc']= (bleReponseData) => {
+                store.state.postDataList.push({type:'receive',data:sendData});
+            }
             //ios监听蓝牙返回数据 重要！！！ 
             window['iosBleDataLayoutFuc']= (bleReponseData) => {
                 console.log(store.state.rizhiListFlag)
