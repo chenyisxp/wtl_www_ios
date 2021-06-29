@@ -2,6 +2,13 @@
   <!-- <div class="newIndex"  :style="{height:this.screenHeight+'px'}"> -->
     <div class="newIndex" :class="envType=='env_ios'?'env_ios_class':''">
        <!-- {{showRespData}} -->
+       <div >
+         <ul>
+           <li v-for="(item,index) in aa.object.list" :key="index">
+             {{item.name}}
+           </li>
+         </ul>
+       </div>
     <div class="header">
         <div class="blue-icon" @click="go('/blueToothManage')"></div>
         <div class="connectedstatus">Bluetooth {{nowConnectStatus=='connected'?nowConnectStatus:'Ready'}}</div>
@@ -117,7 +124,8 @@ export default {
       nowMainIndex:1,//当前在c位显示的的index 默认值在mounted里设置
       modelType:'',//模式用于消息的发送和获取
       comfromFlag:false,//是否是按钮
-      unconnectedTimer:{}//未连接时延时跳转
+      unconnectedTimer:{},//未连接时延时跳转
+      aa:[]
      } 
   },
 
@@ -788,6 +796,12 @@ export default {
       // }
     },
     initMSG(){
+     this.aa = {"code":1,"object":{"list":[{name:11},{name:22},{name:33}],"totalCount":0},"error":null,"message":null,"exception":null,"result":null};
+      
+
+
+
+
       var param={};
       console.log(InterfaceService)
       InterfaceService.testMsg(param,(data)=>{

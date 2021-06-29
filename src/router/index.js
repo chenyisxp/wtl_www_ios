@@ -8,7 +8,10 @@ import HisWeldInfo from '@/pages/historyWeld/hisWeldInfo'
 import Weld_common from '@/pages/weld/weld_common'
 import NewIndex from '@/pages/newIndex';
 import LoadApp from '@/pages/loadApp.vue';
-import {Toast  } from 'mint-ui'
+import Login from '@/pages/userCenter/login';
+import Register from '@/pages/userCenter/register';
+import BeforeRegister from '@/pages/userCenter/beforeRegister';
+import ForgotPassword from '@/pages/userCenter/forgotPassword';
 
 import store from '../store/index'
 Vue.use(Router)
@@ -114,10 +117,34 @@ const router = new Router({
 			name: 'loadApp',
 			meta:{index:23},
 			component:LoadApp
+		},{ 
+			path: '/login',
+			name: 'login',
+			meta:{index:24},
+			component:Login
+		},
+		{ 
+			path: '/register',
+			name: 'register',
+			meta:{index:24},
+			component:Register
+		},
+		{ 
+			path: '/beforeRegister',
+			name: 'beforeRegister',
+			meta:{index:24},
+			component:BeforeRegister
+		},
+		{ 
+			path: '/forgotPassword',
+			name: 'forgotPassword',
+			meta:{index:24},
+			component:ForgotPassword
 		},
 		{
 			path: '*',
-			component:NewIndex
+			component:Register
+			// component:NewIndex
 			// component: LoadApp
 			// component: resolve => require(['@/pages/testPage.vue'],resolve)
 			// component:resolve => require(['@/pages/test07.vue'],resolve)//测试接收数据处理结果
@@ -126,10 +153,11 @@ const router = new Router({
 			// component:resolve => require(['@/pages/blueToothManage.vue'],resolve)
 			// component:resolve => require(['@/pages/weld/welding.vue'],resolve)
 			// component:resolve => require(['@/pages/weld/weld_tig_man.vue'],resolve)
+			// component:resolve => require(['@/pages/testJ.vue'],resolve)
 		}
 	]
 })
-const normalPath = ['/develeperManage','/blueToothManage','/testPage','/setmanage','/newIndex','/modelList','loadApp']; //不需要蓝牙的页面
+const normalPath = ['/login','/register','/beforeRegister','/forgotPassword','/develeperManage','/blueToothManage','/testPage','/setmanage','/newIndex','/modelList','loadApp']; //不需要蓝牙的页面
 const normalPathStr = normalPath.join('') && (normalPath.join('')).toLocaleLowerCase();
 const parentRouter =['/newIndex','/saveManage','/hisWeldList','/memoryManage'];
 const parentRouterSrt =parentRouter.join('') && (parentRouter.join('')).toLocaleLowerCase();

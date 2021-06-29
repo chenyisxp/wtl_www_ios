@@ -40,15 +40,15 @@ Array.prototype.in_array = function (element) {
                 // }
             ];
             let TimerTask ={};
+            // 增加节流函数
+            var delayTimer={};
+            var lastTimesReceiveData='';
             // private static HashMap<String, String> checkPage=new HashMap<String, String>();
             // private static HashMap<String, Boolean> checkStatus=new HashMap<String, Boolean>();
             // private static HashMap<String, Long> checkTime=new HashMap<String, Long>();
             // private static HashMap<String, Integer> checkSendTimes=new HashMap<String, Integer>();
             // private static HashMap<String, Integer> mayTooLong=new HashMap<String, Integer>();
             // private static ArrayList<BleTooLongBean> mayTooLongList =new  ArrayList<BleTooLongBean>();
-            // 增加节流函数
-            var delayTimer={};
-            var lastTimesReceiveData=''; 
 
             var weldParam ={
                 //inch单位下的直径
@@ -456,17 +456,16 @@ Array.prototype.in_array = function (element) {
                        break;
                     case weldDirctive.tigSyn:
                         rstInfo.nowTypeList=weldParam.tigsynList;
-                        console.log(rstInfo.nowTypeList)
                         rstInfo.weldType='TIGSYN';
                         rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.newIndex;//这个和首页里的配对
                        //确认指令
-                       
+                       console.log('arrayList.length'+arrayList.length)
                        if((arrayList[1]=='227'||arrayList[1]=='211'||arrayList[1]=='195') &&arrayList.length==11){
                            //赋值开始  ......
                            var byte1Bean = num16To2Arr(arrayList[2],'',pageFrom);
                            //拆解成
                            var  arrtwo= num16To2ArrSpecial02(arrayList[3]);
-                           
+                           console.log(rstInfo,arrayList)
                            rstInfo.nowTypeList.forEach(element => {
                                 switch (element.typeName) {
                                     case 'MODE':
@@ -481,15 +480,10 @@ Array.prototype.in_array = function (element) {
                                     case 'THICKNESS':
                                         element.chooseKey=arrayList[4]?arrayList[4]:0;
                                         break;
-                                    case 'POLATRITY':
-                                        element.chooseKey=arrtwo.material==1?0:1;//只有al是ac
-                                        break;
                                     default:
                                         break;
                                 }
                             });
-                            console.log(rstInfo,arrayList)
-                            
                             // arrayList[3];//钨棒直径+金属
                             // arrayList[4];//板厚
                             // arrayList[5];//电流推荐值
@@ -608,9 +602,9 @@ Array.prototype.in_array = function (element) {
                //全局存储
                if(pageFrom=='memory'){
                 //    alert(JSON.stringify(rstInfo))
-                store.state.memoryInfo =JSON.parse(JSON.stringify(rstInfo));//深度复制
+                store.state.memoryInfo = rstInfo;
                }else{
-                store.state.rstInfo = JSON.parse(JSON.stringify(rstInfo));//深度复制
+                store.state.rstInfo = rstInfo;
                }
             //    alert(JSON.stringify(rstInfo));
                console.log(rstInfo);
@@ -700,6 +694,7 @@ Array.prototype.in_array = function (element) {
                 // data =data.replace(' ', '');
                 console.log(weldParam.migsynTypeList,pageFrom,dirctiveType,data);
                 // alert(dirctiveType+'||'+store.state.nowModelDirectice+'||'+pageFrom)
+               
                 
                 var rstInfo ={};
                 if(!pageFrom){
@@ -725,7 +720,7 @@ Array.prototype.in_array = function (element) {
                         //  alert(JSON.stringify(rstInfo))
                         break;
                     case 'hisweldlist':
-                        rstInfo =buidDataByPagefrom(pageFrom,dirctiveType,data,this);
+                        rstInfo =buidDataByPagefrom('newIndex',dirctiveType,data,this);
                         break;
                     default:
                         break;
@@ -811,9 +806,7 @@ Array.prototype.in_array = function (element) {
                     temp10.push(parseInt(("0x"+strArr[11]),16).toString(10));//板厚最大值
                     //转成10进制
                     rstInfo = setWeldDataByType(temp10,weldDirctive.mma,pageFrom,_this);
-                }
-                // else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='memory'){
-                else  if(compareString(dirctiveType,weldDirctive.tigMan) && (pageFrom=='memory' || pageFrom=='hisweldlist')){
+                }else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='memory'){
                     var strArr =data.split(' ');
                     console.log(strArr)
                     var temp10 =[];
@@ -846,7 +839,7 @@ Array.prototype.in_array = function (element) {
                     temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//MODE+ADCD+2T4T+PULSE 2
                     temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//count 对应当前选中哪个参数 4
                     temp10.push(parseInt(("0x"+strArr[6]+strArr[5]),16).toString(10));//数值 0
-                    // ["218", "228", "66", "2", "4", "0"]
+                    // ["218", "228", "66", "2", "4", "0"]
                     //转成10进制
                     console.log(temp10)
                     rstInfo = newTigmanDataBuild(temp10,weldDirctive.tigMan,pageFrom,_this);
@@ -1267,7 +1260,6 @@ Array.prototype.in_array = function (element) {
            
             // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
-                store.state.postDataList.push({type:'send',data:sendData});
                 console.log(sendData)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
                 
@@ -1296,11 +1288,10 @@ Array.prototype.in_array = function (element) {
                             var message = {"method":"handleSendData","sendDt":sendData}
                             window.webkit.messageHandlers.interOp.postMessage(message);
                             if("FF"!=directive){//响应不需要开启定时器
-                                
+                                // console.log('initTimer=========')
                                 //异步操作
                                 setTimeout(() => {
-                                    //调试modbus关闭
-                                    // initTimer();
+                                    initTimer();
                                 }, 20);
                             }
                         } catch (error) {
@@ -1359,7 +1350,7 @@ Array.prototype.in_array = function (element) {
             function initTimer(){
                var shutDownFlag =false;//终止的标识
                
-               	//检查是否需要重发
+                //检查是否需要重发
                 for(let crcCode  in checkStatus){
                     // console.log(crcCode + '---' + checkStatus[crcCode]);
                     if(checkStatus[crcCode]!=1){
@@ -1391,50 +1382,29 @@ Array.prototype.in_array = function (element) {
                 if(shutDownFlag){
                     //有未完成的任务开启
                     clearInterval(TimerTask);//清除旧的定时器！！会造成内存溢出
-		    		TimerTask =setInterval(()=>{
+            TimerTask =setInterval(()=>{
                         initTimer();
                     },1500);
-		    	}else{
+          }else{
                     clearInterval(TimerTask);
                 }
             }
             //ios监听蓝牙返回数据 重要！！！ 
-            // window['iosBleDataLayoutFuc']= (bleReponseData) => {
-                // if(lastTimesReceiveData==bleReponseData){
-                //     //返回响应
-                //     //延迟一阵子再执行 机器上发频率0.5s
-                //     delayTimer = setTimeout(() => {
-                //         iosBleDataLayoutFuc(bleReponseData)
-                //     }, 400);
-                //     return;
-                // }else{
-                //     lastTimesReceiveData=bleReponseData;
-                //     clearTimeout(delayTimer);
-                //     iosBleDataLayoutFuc(bleReponseData)
-                // }
-                // iosBleDataLayoutFuc(bleReponseData)
-            // }
-             //ios监听蓝牙返回数据 重要！！！ 
-            window['androidBleDataLayoutFuc']= (bleReponseData) => {
-                store.state.postDataList.push({type:'receive',data:sendData});
-            }
-            //ios监听蓝牙返回数据 重要！！！ 
             window['iosBleDataLayoutFuc']= (bleReponseData) => {
-                console.log(store.state.rizhiListFlag)
-                if(store.state.rizhiListFlag){
-                    //记录日志
-                    var oDay = new Date(); 
-                    var bean = {
-                        'sendTime':oDay.getFullYear()+'-'+(oDay.getMonth()+1)+'-'+oDay.getDate()+' '+oDay.getHours()+':'+oDay.getMinutes(),
-                        'bleReponseData':bleReponseData
-                    }
-                    let aa =store.state.rizhiList;
-                    if(aa.length>5000){
-                        aa=[];//清空
-                    }
-                    aa.unshift(bean);
-                    store.state.rizhiList = aa;
+                if(lastTimesReceiveData==bleReponseData){
+                    //延迟一阵子再执行 机器上发频率0.5s
+                    delayTimer = setTimeout(() => {
+                        iosBleDataLayoutFuc(bleReponseData)
+                    }, 400);
+                    return;
+                }else{
+                    lastTimesReceiveData=bleReponseData;
+                    clearTimeout(delayTimer);
+                    iosBleDataLayoutFuc(bleReponseData)
                 }
+            }
+            function iosBleDataLayoutFuc(bleReponseData){
+               
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',')
                 try {
@@ -1468,8 +1438,8 @@ Array.prototype.in_array = function (element) {
                                     return;
                                 }else{
                                     let oldcrc = data.substring(4, 8)
-                //					data.substring(2, 8);//原来的crc
-                //					data.substring(8, 12);//现在的crc
+                //          data.substring(2, 8);//原来的crc
+                //          data.substring(8, 12);//现在的crc
                                     let  tempMidData = "FF" +oldcrc.toString();//转字符串否则出错
                                     
                                     let newCrc = crcModelBusClacQuery(tempMidData, true);
@@ -1573,12 +1543,12 @@ Array.prototype.in_array = function (element) {
             
                     }
                 } catch (error) {
-                    // Toast({
-                    //     message: error,
-                    //     position: 'middle',
-                    //     iconClass: 'icon icon-success',
-                    //     duration: 2000
-                    // });
+                    Toast({
+                        message: error,
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 2000
+                    });
                 }
                 
             }
@@ -1670,7 +1640,66 @@ Array.prototype.in_array = function (element) {
                 //重新赋值
                 mayTooLongList =templist;
             }
+            // modbus data build center  || iosBleDataLayoutFuc || callSendDataToBleUtil
+            function modbusDataReceiveFuc(receiveBleData){
+                if(receiveBleData){
+                    //处理
+                    //不同模式数据、焊接中数据、存储、历史等数据 根据不同地址进行，区分
+                    // 0a 03 0064 0014 0014 0014 0014 0014 6105
+                    // 举个栗子
+                    //mig:modbus:0a 03 0064 0014 0014 0014 0014 0014 6105 => crc:dae1 82 04 01 04 05 35 2800 2800 c800 c800 020a 204c
+                    //还原成原来的数据格式，这样相对一个个重新赋值太难了，还能尝试兼容旧的。
+                    //但是，部分数据结构需要沟通，让他不变尤其小字节部分
+                }
+            }
+            // modbus data build center  || iosBleDataLayoutFuc 
+            // 地址 功能码 数据起始地址高位  数据起始地址低位  数据个数高位  数据个数低位  crc16高位 crc16低位
+            function modbusDataSendFuc(sendBleData,callType){
+                let newVal ="";
+                if(sendBleData){
+                    //整理一份映射表
+                    //模式类型数据 、存储的类型数据、历史的类型数据
+                    if(callType == 'modeType'){
+                        switch (modeType) {
+                            case 'migsyn':
+                                newVal = "0a 03 0064 0014 6105";
+                                break;
+                            case 'migman':
+                                newVal = "0a 03 0064 0014 6105";
+                                break;
+                            case 'tigsyn':
+                                newVal = "";
+                                break;
+                            case 'tigman':
+                                newVal = "";
+                                break;
+                            case 'mma':
+                                newVal = "";
+                                break;
+                            case 'cut':
+                                newVal = "";
+                                break;
+                            default:
+                                break;
+                        }
+                    }else if(callType == 'memoryManage'){
+
+                    }else if(callType == 'hisWeldList'){
+                        
+                    }else if(callType == 'saveManage'){
+                        
+                    }else if(callType == 'updateAction'){
+                        //细分到不同模式，不同参数
+                    }else if(callType == 'weldAction'){
+                        //一些控制指令 weld执行焊接
+
+                    }
+                    newVal = newVal.replaceAll(" ","");
+                }
+            }
+            //数据上发
+            function modbusDataSendFuc(sendBleData,callType){
+
+            }
         }
     }
-    
-    
