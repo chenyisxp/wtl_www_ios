@@ -1,21 +1,20 @@
 <template>
     <div class="loginIndex">
         <div class="logoBox"><img src="../../assets/images/jian.png"></div>
-        <div class="attenWord">Sign in with your Email</div>
+        <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
-            <input placeholder="email" v-model="email"/>
+            <input placeholder="Please enter your Email" v-model="email"/>
         </div>
         <div class="inBox i-2">
-            <input placeholder="password"  v-model="password"/>
+            <input placeholder="Enter the password"  v-model="password"/>
         </div>
-        <div class="wordBox" @click.stop="handleGo">Forgot your password?</div>
+        <div class="inBox i-2">
+            <input placeholder="Repeat the password"  v-model="password2"/>
+        </div>
+        <!-- <div class="wordBox">Forgot your password?</div> -->
         <div class="btnBox b-1">
-            <div class="signBox" @click="handleSubmit">Sign in</div>
+            <div class="signBox" @click="handleSubmit">Sign up</div>
         </div>
-        <div class="btnBox b-2">
-            <div class="signBox">Sign Up</div>
-        </div>
-        <div class="lastWord">Use it without an account ></div>
     </div>
 </template>
 
@@ -25,17 +24,15 @@ export default {
   data() {
     return {
         email:'',
-        password:''
+        password:'',
+        password2:''
     };
   },
   methods: {
-    handleGo(){
-        // alert(11)
-        this.$router.push('/beforeRegister');
-    },
     handleSubmit(){
-        if(this.email && this.password){
+        if(this.email && this.password && this.password){
             Toast("Sign in successful")
+            this.go('/newIndex')
         }
     },
     go(url){
@@ -46,7 +43,6 @@ export default {
     }
   },
   mounted() {
-    //   this.$router.push('/forgotPassword');
   },created () {
    
   
@@ -71,7 +67,6 @@ export default {
         font-size: 24px;
         font-style: italic;
         font-weight: bold;
-        height: 1.6rem;
         margin-bottom: 1.5rem;
         background-image: linear-gradient(#04303d,#ffffff);//背景色渐变，默认从上到下
         -webkit-background-clip: text;//CSS3属性：设定背景的绘制范围为文字
@@ -104,12 +99,12 @@ export default {
             }
         }
         input{
-            background: #01303e;
             height: 2rem;
             width: 100%;
             border-bottom: 1px solid #13566a;
             padding-left: 1.5rem;
-            color:#fff;
+            color: #fff;
+            background: #01303e;
             &:focus{
                 border-bottom: 1px solid #13566a;
             }
@@ -119,7 +114,7 @@ export default {
     .wordBox{
         color: #03a2c0;
         text-align: right;
-        margin-top: 0.5rem;
+        margin-top: 0.3rem;
     }
     .btnBox{
         text-align: center;

@@ -3,7 +3,7 @@
         <div class="logoBox"><img src="../../assets/images/jian.png"></div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
-            <input placeholder="email" v-model="email"/>
+            <input placeholder="Please enter your Email" v-model="email"/>
         </div>
         <div class="inBox i-2">
             <input placeholder="Enter the password"  v-model="password"/>
@@ -13,7 +13,7 @@
         </div>
         <!-- <div class="wordBox">Forgot your password?</div> -->
         <div class="btnBox b-1">
-            <div class="signBox" @click="handleSubmit">Sign up/Reset</div>
+            <div class="signBox" @click="handleSubmit">Sign up</div>
         </div>
     </div>
 </template>
@@ -31,7 +31,8 @@ export default {
   methods: {
     handleSubmit(){
         if(this.email && this.password && this.password){
-            Toast("Sign in successful")
+            Toast("Reset password  successful");
+            this.go('/newIndex')
         }
     },
     go(url){

@@ -8,10 +8,14 @@ import HisWeldInfo from '@/pages/historyWeld/hisWeldInfo'
 import Weld_common from '@/pages/weld/weld_common'
 import NewIndex from '@/pages/newIndex';
 import LoadApp from '@/pages/loadApp.vue';
-import Login from '@/pages/userCenter/login';
-import Register from '@/pages/userCenter/register';
-import BeforeRegister from '@/pages/userCenter/beforeRegister';
-import ForgotPassword from '@/pages/userCenter/forgotPassword';
+// 记得加到免登陆 路由里
+import LoginIndex from '@/pages/userCenter/loginIndex';
+import RegisterStep1 from '@/pages/userCenter/registerStep1';
+import RegisterStep2 from '@/pages/userCenter/registerStep2';
+import RegisterStep3 from '@/pages/userCenter/registerStep3';
+import ResetPasswordStep1 from '@/pages/userCenter/resetPasswordStep1';
+import ResetPasswordStep2 from '@/pages/userCenter/resetPasswordStep2';
+import ResetPasswordStep3 from '@/pages/userCenter/resetPasswordStep3';
 
 import store from '../store/index'
 Vue.use(Router)
@@ -118,32 +122,51 @@ const router = new Router({
 			meta:{index:23},
 			component:LoadApp
 		},{ 
-			path: '/login',
-			name: 'login',
+			path: '/loginIndex',
+			name: 'loginIndex',
 			meta:{index:24},
-			component:Login
+			component:LoginIndex
 		},
 		{ 
-			path: '/register',
-			name: 'register',
-			meta:{index:24},
-			component:Register
+			path: '/registerStep1',
+			name: 'registerStep1',
+			meta:{index:25},
+			component:RegisterStep1
 		},
 		{ 
-			path: '/beforeRegister',
-			name: 'beforeRegister',
-			meta:{index:24},
-			component:BeforeRegister
+			path: '/registerStep2',
+			name: 'registerStep2',
+			meta:{index:26},
+			component:RegisterStep2
 		},
 		{ 
-			path: '/forgotPassword',
-			name: 'forgotPassword',
-			meta:{index:24},
-			component:ForgotPassword
+			path: '/registerStep3',
+			name: 'registerStep3',
+			meta:{index:26},
+			component:RegisterStep3
+		},
+		
+		{
+			path: '/resetPasswordStep1',
+			name: 'resetPasswordStep1',
+			meta:{index:27},
+			component:ResetPasswordStep1
+		},
+		{
+			path: '/resetPasswordStep2',
+			name: 'resetPasswordStep2',
+			meta:{index:28},
+			component:ResetPasswordStep2
+		},
+		{
+			path: '/resetPasswordStep3',
+			name: 'resetPasswordStep3',
+			meta:{index:29},
+			component:ResetPasswordStep3
 		},
 		{
 			path: '*',
-			component:Register
+			component:RegisterStep2
 			// component:NewIndex
 			// component: LoadApp
 			// component: resolve => require(['@/pages/testPage.vue'],resolve)
@@ -157,7 +180,7 @@ const router = new Router({
 		}
 	]
 })
-const normalPath = ['/login','/register','/beforeRegister','/forgotPassword','/develeperManage','/blueToothManage','/testPage','/setmanage','/newIndex','/modelList','loadApp']; //不需要蓝牙的页面
+const normalPath = ['/resetPasswordStep3','/resetPasswordStep2','/resetPasswordStep1','/loginIndex','/registerStep2','/RegisterStep1','/forgotPassword','/develeperManage','/blueToothManage','/testPage','/setmanage','/newIndex','/modelList','loadApp']; //不需要蓝牙的页面
 const normalPathStr = normalPath.join('') && (normalPath.join('')).toLocaleLowerCase();
 const parentRouter =['/newIndex','/saveManage','/hisWeldList','/memoryManage'];
 const parentRouterSrt =parentRouter.join('') && (parentRouter.join('')).toLocaleLowerCase();

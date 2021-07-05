@@ -56,7 +56,8 @@ const state = {
     saveManagePageTo:'',
     saveManagePageToName:'',
     testModalDoorFlag:false,
-    postDataList:[]
+    postDataList:[],
+    nowLoginStauts:'',
 }
 
 const mutations = {

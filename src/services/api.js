@@ -161,6 +161,16 @@ let InterfaceService = {
             }) 
         
     },
+    getCheckCode:(url,callback) => {
+        axios.get(url)
+            .then(response=>{
+                console.log(response)
+                if(response.status===200){
+                    typeof callback === 'function' && callback(response.data);
+                }
+            }) 
+        
+    },
     //境外公司 用上面的
     // getOverseasCompanyList:(callback) => {
     //     axios.get(BASE_CONFIG.OSS_SERVICE_ADDRESS+"lws/overseasCompaniesConfig.json?v="+version)

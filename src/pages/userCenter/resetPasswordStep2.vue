@@ -3,7 +3,7 @@
         <div class="logoBox"><img src="../../assets/images/jian.png"></div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
-            <input placeholder="email" v-model="email"/>
+            <input placeholder="Please enter your Email" v-model="email"/>
         </div>
         <div class="pc_in">
             <div>
@@ -64,7 +64,7 @@ export default {
     handleSubmit(){
         if(this.email && this.registerCodeValue.length>3){
             Toast("Sign in successful");
-            this.go('/forgotPassword');
+            this.go('/resetPasswordStep3');
         }
     },
     go(url){
