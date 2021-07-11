@@ -72,6 +72,11 @@ let BASE_CONFIG = {
    },
    modbusWriteCode:'06',
    callMobusEditDirect:{
+        '10000':{
+            parentName:'migsyn',
+            name:'migsyn',
+            modbusAdr:'0a',//数据起始地址高位+数据起始地址低位
+        },
         'A0':{
             parentName:'migsyn',
             name:'mode',

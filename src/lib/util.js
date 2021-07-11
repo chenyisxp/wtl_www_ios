@@ -1670,7 +1670,7 @@ Array.prototype.in_array = function (element) {
             //更新指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据高位  数据低位  crc16高位 crc16低位
             function modbusDataSendFuc(pageFrom,sendData,crc){
                 let newVal ="";
-                // DAB15c00E718 =12长
+                // DAB15c00E718 =12长 首页模式数据：DA 100000 0570
                 if(sendData && sendData.length>11){
                     let directive = sendData.substring(2,4);//指令值
                     let num = sendData.substring(4,8);//数值

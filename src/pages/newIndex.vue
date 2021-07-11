@@ -333,7 +333,7 @@ export default {
         //   iconClass: 'icon icon-success',
         //   duration: 2500
         // });
-       console.log(crcCode,'DA'+data+crcCode,crcCode);
+       console.log("还在newIndex：",crcCode,'DA'+data+crcCode,crcCode);
        //测试模式that
        if(this.GLOBAL_CONFIG.TESTFLAG){
         //  alert('this.GLOBAL_CONFIG.TESTFLAG'+this.modelType);
@@ -384,9 +384,10 @@ export default {
                 }
               }
           }else{
-            // this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
+            this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
+            
             // this.$store.state.postDataList.push({type:'send',data:'0A03006400146105'});
-            this.callSendDataToBleUtil('newIndex','0A03006400146105','6105');
+            // this.callSendDataToBleUtil('newIndex','0A03006400146105','6105');
           }
           
        }
