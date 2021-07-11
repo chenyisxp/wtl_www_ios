@@ -70,6 +70,70 @@ let BASE_CONFIG = {
         tigman:{data:'dae4 04 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 0073'},
         mma:{data:'dae5 04 00 01 09 6400 6400  01 09 708F'}
    },
+   modbusWriteCode:'06',
+   callMobusEditDirect:{
+        'A0':{
+            parentName:'migsyn',
+            name:'mode',
+            modbusAdr:'08',//数据起始地址高位+数据起始地址低位
+
+        },
+        'A1':{
+            parentName:'migsyn',
+            name:'material',
+            modbusAdr:'09'//数据起始地址高位+数据起始地址低位
+        },
+        'A2':{
+            parentName:'migsyn',
+            name:'gas',
+            modbusAdr:'0a'//数据起始地址高位+数据起始地址低位
+        },
+        'A3':{
+            parentName:'migsyn',
+            name:'diameter',
+            modbusAdr:'0b'//数据起始地址高位+数据起始地址低位
+        },
+        'A4':{
+            parentName:'migsyn',
+            name:'thickness',
+            modbusAdr:'0c'//数据起始地址高位+数据起始地址低位
+        },
+        'A5':{
+            parentName:'migsyn',
+            name:'speed',
+            modbusAdr:'0d'//数据起始地址高位+数据起始地址低位
+        },
+        'A6':{
+            parentName:'migsyn',
+            name:'v_welding',
+            modbusAdr:'0f'//数据起始地址高位+数据起始地址低位
+        },
+        'AE':{
+            parentName:'migsyn',
+            name:'getready',
+            modbusAdr:'00'//数据起始地址高位+数据起始地址低位
+        },
+        'B0':{
+            parentName:'migman',
+            name:'mode',
+            modbusAdr:'08'//数据起始地址高位+数据起始地址低位
+        },
+        'B1':{
+            parentName:'migman',
+            name:'speed',
+            modbusAdr:'09'//数据起始地址高位+数据起始地址低位
+        },
+        'B2':{
+            parentName:'migman',
+            name:'v_welding',
+            modbusAdr:'0a'//数据起始地址高位+数据起始地址低位
+        },
+        'BE':{
+            parentName:'migsyn',
+            name:'getready',
+            modbusAdr:'00'//数据起始地址高位+数据起始地址低位
+        }
+    },
    callEditDirect:{
        migsyn:{
             mode:'A0',

@@ -119,10 +119,10 @@
     <input v-model="cameraRstName" placeholder="测试输入2"> -->
     
     <!-- 测试入口 -->
-    <div v-if="testModalDoorFlag">
+    <!-- <div v-if="testModalDoorFlag"> -->
         <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
         <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 

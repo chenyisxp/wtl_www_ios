@@ -1260,9 +1260,9 @@ Array.prototype.in_array = function (element) {
            
             // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
-                console.log(sendData)
+                console.log(pageFrom,'sendData='+sendData+',crc='+crc)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
-                
+                modbusDataSendFuc(pageFrom,sendData,crc);
                 if(!this.GLOBAL_CONFIG.TESTFLAG){
                     // Toast({
                     //     message: this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
@@ -1271,8 +1271,14 @@ Array.prototype.in_array = function (element) {
                     //     duration: 2500
                     //   });
                     if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                        
                         //ios 逻辑需借鉴后端的
                         let directive =sendData.substring(2,4);
+                        //新逻辑modbus西协议20210711
+                        if("FF"!=directive){
+                            modbusDataSendFuc(pageFrom,sendData,crc);
+                        }
+                        return;
                         //0、初始化 开始定时器
                         if("FF"!=directive){//不是响应的需要开启定时器
                             // MainActivity.requestFromHtmlInit(pageFrom, data, crcCode);
@@ -1303,6 +1309,11 @@ Array.prototype.in_array = function (element) {
                               });
                         }
                     }else{
+                        //新逻辑modbus西协议20210711
+                        if("FF"!=directive){
+                            modbusDataSendFuc(pageFrom,sendData,crc);
+                        }
+                        return;
                         store.state.nowPageFrom=pageFrom;
                         window.android.callSendDataToBle(pageFrom,sendData,crc);
                     }
@@ -1650,56 +1661,36 @@ Array.prototype.in_array = function (element) {
                     //mig:modbus:0a 03 0064 0014 0014 0014 0014 0014 6105 => crc:dae1 82 04 01 04 05 35 2800 2800 c800 c800 020a 204c
                     //还原成原来的数据格式，这样相对一个个重新赋值太难了，还能尝试兼容旧的。
                     //但是，部分数据结构需要沟通，让他不变尤其小字节部分
+                    //拼接+根据地址、功能取值
                 }
             }
+            // callSendDataToBleUtil
             // modbus data build center  || iosBleDataLayoutFuc 
-            // 地址 功能码 数据起始地址高位  数据起始地址低位  数据个数高位  数据个数低位  crc16高位 crc16低位
-            function modbusDataSendFuc(sendBleData,callType){
+            //查询指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据个数高位  数据个数低位  crc16高位 crc16低位
+            //更新指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据高位  数据低位  crc16高位 crc16低位
+            function modbusDataSendFuc(pageFrom,sendData,crc){
                 let newVal ="";
-                if(sendBleData){
-                    //整理一份映射表
-                    //模式类型数据 、存储的类型数据、历史的类型数据
-                    if(callType == 'modeType'){
-                        switch (modeType) {
-                            case 'migsyn':
-                                newVal = "0a 03 0064 0014 6105";
-                                break;
-                            case 'migman':
-                                newVal = "0a 03 0064 0014 6105";
-                                break;
-                            case 'tigsyn':
-                                newVal = "";
-                                break;
-                            case 'tigman':
-                                newVal = "";
-                                break;
-                            case 'mma':
-                                newVal = "";
-                                break;
-                            case 'cut':
-                                newVal = "";
-                                break;
-                            default:
-                                break;
-                        }
-                    }else if(callType == 'memoryManage'){
-
-                    }else if(callType == 'hisWeldList'){
+                // DAB15c00E718 =12长
+                if(sendData && sendData.length>11){
+                    let directive = sendData.substring(2,4);//指令值
+                    let num = sendData.substring(4,8);//数值
+                    let modbusInfo = BASE_CONFIG.callMobusEditDirect[directive] || '';
+                    //重新构建协议值
+                    if(modbusInfo && modbusInfo.name){
                         
-                    }else if(callType == 'saveManage'){
-                        
-                    }else if(callType == 'updateAction'){
-                        //细分到不同模式，不同参数
-                    }else if(callType == 'weldAction'){
-                        //一些控制指令 weld执行焊接
+                        // 先来简单分析一条MODBUS-RTU报文，例如：01  06  00 01  00 17  98 04 只有一个从机所以地址一样
+                        // 01             06            00 01           00 17          98 04 
+                        // 从机地址        功能号          数据地址          数据         CRC校验
+                        let tempData = modbusInfo.modbusAdr+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
+                        let crc = crcModelBusClacQuery(tempData);
+                        console.log('modebus协议数据：',tempData,crc);
+                        //发送
 
+                    }else{
+                        return;
                     }
-                    newVal = newVal.replaceAll(" ","");
+                    
                 }
-            }
-            //数据上发
-            function modbusDataSendFuc(sendBleData,callType){
-
             }
         }
     }

@@ -366,9 +366,9 @@ export default {
             var message = {"method":"handleSendData","sendDt":"da1000000570"}
             window.webkit.messageHandlers.interOp.postMessage(message);
       },
-      handleTestClick2(){
-           this.callSendDataToBleUtil('weld_common',"da1000000570","0570");
-      },
+    //   handleTestClick2(){
+    //        this.callSendDataToBleUtil('weld_common',"da1000000570","0570");
+    //   },
        initWeldingAutoRouter(){
              let self =this;
               //是不是焊接中....
@@ -692,15 +692,15 @@ export default {
     buildSliderChangeData(value,type){
         // var aa = (Array(2).join('0') + parseInt(positionNum*10,10).toString(16)).slice(-2);
         //计算 查找 发送请求给ble告知 修改了
-        var dirctCode = this.getDirective(this.typeName,type);
+        var directCode = this.getDirective(this.typeName,type);
         var num ='';
             //新规则占两个字节的字段需要特殊处理
             num =this.jinzhiChangeFuc(value*10);
             //num =(Array(4).join('0') + parseInt(value*10,10).toString(16)).slice(-4);
             //num= num.substring(2,4)+num.substring(0,2);
             
-        var crc =this.crcModelBusClacQuery(dirctCode+num, true);
-        var sendData ="DA"+dirctCode+num+crc;
+        var crc =this.crcModelBusClacQuery(directCode+num, true);
+        var sendData ="DA"+directCode+num+crc;
         this.callSendDataToBleUtil('weld_common',sendData,crc);
     },
     delFuc(){
@@ -789,15 +789,15 @@ export default {
                 element.chooseKey=value;
                
                 //计算 查找 发送请求给ble告知 修改了
-                var dirctCode = this.getDirective(this.typeName,type);
+                var directCode = this.getDirective(this.typeName,type);
                 
             //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
                 //new 新规则
                 var num =this.jinzhiChangeFuc(value);
-                var crc =this.crcModelBusClacQuery(dirctCode+num, true);
-                var sendData =this.GLOBAL_CONFIG.DirectStart+dirctCode+num+crc;
+                var crc =this.crcModelBusClacQuery(directCode+num, true);
+                var sendData =this.GLOBAL_CONFIG.DirectStart+directCode+num+crc;
                 // if(!this.GLOBAL_CONFIG.TESTFLAG){
-                    this.callSendDataToBleUtil('weld_common',sendData,crc);
+                this.callSendDataToBleUtil('weld_common',sendData,crc);
                 // }
                 // if(!this.GLOBAL_CONFIG.TESTFLAG){
                 //     window.android.callSendDataToBle('weld_common',sendData,crc);
@@ -991,12 +991,12 @@ export default {
         this.nowTypeList.forEach(element => {
             if(element.typeName==type){
                 element.chooseKey=this.nowTouchIndex;//修改当前选中的数值 改造为以index为记录值 兼容不同单位
-                var dirctCode = this.getDirective(this.typeName,type);
+                var directCode = this.getDirective(this.typeName,type);
                 // var num = (Array(4).join('0') + parseInt(this.nowThinknessSendIndex,10).toString(16)).slice(-4);
                 //new 新规则
                 var num =this.jinzhiChangeFuc(this.nowThinknessSendIndex);
-               var crc =this.crcModelBusClacQuery(dirctCode+num, true);
-               var sendData ="DA"+dirctCode+num+crc;
+               var crc =this.crcModelBusClacQuery(directCode+num, true);
+               var sendData ="DA"+directCode+num+crc;
                this.callSendDataToBleUtil('weld_common',sendData,crc);
             }
         });

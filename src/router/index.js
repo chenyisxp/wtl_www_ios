@@ -166,7 +166,8 @@ const router = new Router({
 		},
 		{
 			path: '*',
-			component:RegisterStep2
+			component:NewIndex
+			// component:RegisterStep2
 			// component:NewIndex
 			// component: LoadApp
 			// component: resolve => require(['@/pages/testPage.vue'],resolve)
