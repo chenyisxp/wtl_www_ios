@@ -1662,6 +1662,8 @@ Array.prototype.in_array = function (element) {
                     //还原成原来的数据格式，这样相对一个个重新赋值太难了，还能尝试兼容旧的。
                     //但是，部分数据结构需要沟通，让他不变尤其小字节部分
                     //拼接+根据地址、功能取值
+                    //20210712 需要两个
+
                 }
             }
             // callSendDataToBleUtil
@@ -1677,18 +1679,59 @@ Array.prototype.in_array = function (element) {
                     let modbusInfo = BASE_CONFIG.callMobusEditDirect[directive] || '';
                     //重新构建协议值
                     if(modbusInfo && modbusInfo.name){
-                        
+                        let tempData='';
+                        let crc ='';
                         // 先来简单分析一条MODBUS-RTU报文，例如：01  06  00 01  00 17  98 04 只有一个从机所以地址一样
                         // 01             06            00 01           00 17          98 04 
                         // 从机地址        功能号          数据地址          数据         CRC校验
-                        let tempData = modbusInfo.modbusAdr+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
-                        let crc = crcModelBusClacQuery(tempData);
+                        if(modbusInfo && modbusInfo.type && modbusInfo.type=='1'){
+                            //来自主模式数据需要分成几段数据，循环请求
+                            let sendIndexList = [];
+                            Object.keys(modbusInfo.modbusAdrMap).forEach(pAdr => {
+                                tempData =  pAdr+BASE_CONFIG.modbusWriteCode+'00'+pAdr+modbusInfo.modbusAdrMap[pAdr];
+                                crc = crcModelBusClacQuery(tempData);
+                                //放到 请求堆栈里
+                                sendIndexList.push({
+                                    directive:directive,
+                                    pAdr:pAdr,
+                                    sendData:tempData,
+                                    crc:crc
+                                });
+                            });
+                            //发送数据
+                            if(sendIndexList.length>0){
+                                circleDataSendFuc(sendIndexList[0])
+                            }
+                        }else{
+                            tempData = modbusInfo.modbusAdr+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
+                            crc = crcModelBusClacQuery(tempData);
+                        }
                         console.log('modebus协议数据：',tempData,crc);
                         //发送
 
                     }else{
                         return;
                     }
+                    
+                }
+            }
+            function circleDataSendFuc(indexInfo){
+                let sendDt = indexInfo.sendData+indexInfo.crc;
+                if(!this.GLOBAL_CONFIG.TESTFLAG){
+                    if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                        var message = {"method":"handleSendData","sendDt":sendDt};
+                        window.webkit.messageHandlers.interOp.postMessage(message);
+                    }else{
+                        store.state.nowPageFrom=pageFrom;
+                        window.android.callSendDataToBle(pageFrom,sendDt,indexInfo.crc);
+                    }
+                    
+                }
+            }
+            //新modbus返回处理区
+            window['bleModbusDataLayoutFuc']= (bleReponseData) => {
+                //不在指令集里就走旧的逻辑
+                if(bleReponseData){
                     
                 }
             }

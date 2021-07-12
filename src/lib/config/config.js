@@ -73,15 +73,29 @@ let BASE_CONFIG = {
    modbusWriteCode:'06',
    callMobusEditDirect:{
         '10000':{
+            type:'1',//类型1代表模式数据
             parentName:'migsyn',
             name:'migsyn',
-            modbusAdr:'0a',//数据起始地址高位+数据起始地址低位
+            modbusAdrMap:{
+                '0A':'0003',//地址50  0-2   数量3字节  16进制03
+                '3A':'0003',//地址58  8-10  数量3字节  16进制03
+                '3D':'000a',//地址61  11-20 数量10字节 16进制0a
+                '47':'000a'// 地址71  21-30 数量10字节 16进制0a
+            }//数据起始地址高位+数据起始地址低位
+        },
+        '10010':{
+            type:'1',//类型1代表模式数据
+            parentName:'migman',
+            name:'migman',
+            modbusAdrMap:{
+                '0A':'0003',//地址50 0-2
+                '3A':'0007',//地址58 8-14
+            },//数据起始地址高位+数据起始地址低位
         },
         'A0':{
             parentName:'migsyn',
             name:'mode',
-            modbusAdr:'08',//数据起始地址高位+数据起始地址低位
-
+            modbusAdr:'08'//数据起始地址高位+数据起始地址低位
         },
         'A1':{
             parentName:'migsyn',
