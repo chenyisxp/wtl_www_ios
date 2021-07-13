@@ -336,6 +336,8 @@ export default {
        console.log("还在newIndex：",crcCode,'DA'+data+crcCode,crcCode);
        //测试模式that
        if(this.GLOBAL_CONFIG.TESTFLAG){
+         //为了测试modbus打开
+         this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
         //  alert('this.GLOBAL_CONFIG.TESTFLAG'+this.modelType);
          switch (this.modelType) {
             case this.GLOBAL_CONFIG.callWeldTypeData.migsyn.crcCode://migsyn

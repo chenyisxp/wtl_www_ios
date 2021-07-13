@@ -1263,14 +1263,14 @@ Array.prototype.in_array = function (element) {
                 console.log(pageFrom,'sendData='+sendData+',crc='+crc)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
                 modbusDataSendFuc(pageFrom,sendData,crc);
-                if(!this.GLOBAL_CONFIG.TESTFLAG){
+                if(!BASE_CONFIG.TESTFLAG){
                     // Toast({
-                    //     message: this.GLOBAL_CONFIG.ENV_IOS_FLAG+sendData,
+                    //     message: BASE_CONFIG.ENV_IOS_FLAG+sendData,
                     //     position: 'middle',
                     //     iconClass: 'icon icon-success',
                     //     duration: 2500
                     //   });
-                    if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                    if(BASE_CONFIG.ENV_IOS_FLAG){
                         
                         //ios 逻辑需借鉴后端的
                         let directive =sendData.substring(2,4);
@@ -1676,7 +1676,12 @@ Array.prototype.in_array = function (element) {
                 if(sendData && sendData.length>11){
                     let directive = sendData.substring(2,4);//指令值
                     let num = sendData.substring(4,8);//数值
+                    //来自首页信息
+                    if(directive == 10){
+                        directive = sendData.substring(2,8);//指令值
+                    }
                     let modbusInfo = BASE_CONFIG.callMobusEditDirect[directive] || '';
+                    console.log('modbusInfo配置信息：',modbusInfo,directive);
                     //重新构建协议值
                     if(modbusInfo && modbusInfo.name){
                         let tempData='';
@@ -1686,26 +1691,29 @@ Array.prototype.in_array = function (element) {
                         // 从机地址        功能号          数据地址          数据         CRC校验
                         if(modbusInfo && modbusInfo.type && modbusInfo.type=='1'){
                             //来自主模式数据需要分成几段数据，循环请求
-                            let sendIndexList = [];
-                            Object.keys(modbusInfo.modbusAdrMap).forEach(pAdr => {
-                                tempData =  pAdr+BASE_CONFIG.modbusWriteCode+'00'+pAdr+modbusInfo.modbusAdrMap[pAdr];
-                                crc = crcModelBusClacQuery(tempData);
-                                //放到 请求堆栈里
-                                sendIndexList.push({
-                                    directive:directive,
-                                    pAdr:pAdr,
-                                    sendData:tempData,
-                                    crc:crc
-                                });
-                            });
-                            //发送数据
-                            if(sendIndexList.length>0){
-                                circleDataSendFuc(sendIndexList[0])
-                            }
+                            // let sendIndexList = [];
+                            // Object.keys(modbusInfo.modbusAdrMap).forEach(pAdr => {
+                            //     tempData =  pAdr+BASE_CONFIG.modbusWriteCode+'00'+pAdr+modbusInfo.modbusAdrMap[pAdr];
+                            //     crc = crcModelBusClacQuery(tempData);
+                            //     //放到 请求堆栈里
+                            //     sendIndexList.push({
+                            //         directive:directive,
+                            //         pAdr:pAdr,
+                            //         sendData:tempData,
+                            //         crc:crc
+                            //     });
+                            // });
+                            // //发送数据
+                            // if(sendIndexList.length>0){
+                            //     circleDataSendFuc(sendIndexList[0])
+                            // }
+                            tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+'00'+modbusInfo.modbusNum;
                         }else{
-                            tempData = modbusInfo.modbusAdr+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
-                            crc = crcModelBusClacQuery(tempData);
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                         }
+                        crc = crcModelBusClacQuery(tempData);
+                        let self =this;
+                        onlySendFuc(tempData+crc)
                         console.log('modebus协议数据：',tempData,crc);
                         //发送
 
@@ -1715,10 +1723,22 @@ Array.prototype.in_array = function (element) {
                     
                 }
             }
+            function onlySendFuc(sendDt){
+                if(!BASE_CONFIG.TESTFLAG){
+                    if(BASE_CONFIG.ENV_IOS_FLAG){
+                        var message = {"method":"handleSendData","sendDt":sendDt};
+                        window.webkit.messageHandlers.interOp.postMessage(message);
+                    }else{
+                        store.state.nowPageFrom=pageFrom;
+                        window.android.callSendDataToBle(pageFrom,sendDt,indexInfo.crc);
+                    }
+                    
+                }
+            }
             function circleDataSendFuc(indexInfo){
                 let sendDt = indexInfo.sendData+indexInfo.crc;
-                if(!this.GLOBAL_CONFIG.TESTFLAG){
-                    if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
+                if(!BASE_CONFIG.TESTFLAG){
+                    if(BASE_CONFIG.ENV_IOS_FLAG){
                         var message = {"method":"handleSendData","sendDt":sendDt};
                         window.webkit.messageHandlers.interOp.postMessage(message);
                     }else{
