@@ -1653,7 +1653,12 @@ Array.prototype.in_array = function (element) {
             }
             // modbus data build center  || iosBleDataLayoutFuc || callSendDataToBleUtil
             function modbusDataReceiveFuc(receiveBleData){
-                if(receiveBleData){
+                //migsyn模拟数据 31个数据=1f crc = 0C5D
+                receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
+                //migman模拟数据 15个数据=0f crc = 23EE 总长74
+                receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 23EE";
+                receiveBleData.toUpperCase().replaceAll(" ","");
+                if(receiveBleData && receiveBleData.length>=10){
                     //处理
                     //不同模式数据、焊接中数据、存储、历史等数据 根据不同地址进行，区分
                     // 0a 03 0064 0014 0014 0014 0014 0014 6105
@@ -1663,7 +1668,17 @@ Array.prototype.in_array = function (element) {
                     //但是，部分数据结构需要沟通，让他不变尤其小字节部分
                     //拼接+根据地址、功能取值
                     //20210712 需要两个
-
+                    let headKey = receiveBleData.substring(0,10);
+                    switch (headKey) {
+                        case '0A0600321F'://migsyn
+                            changeToOldMigSynData(receiveBleData);
+                            break;
+                        case '0A0600320F'://migman
+                            changeToOldMigManData(receiveBleData);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
             // callSendDataToBleUtil
@@ -1722,6 +1737,162 @@ Array.prototype.in_array = function (element) {
                     }
                     
                 }
+            }
+            function migByte0Special(num){
+                let obj={
+                    'weldingStatus':''
+                }
+                let list =  ((Array(16).join(0) + parseInt(num,16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                let data =list.join("");
+                if(data.length>15){
+                    // 0： 引弧失败/断弧1： 引弧成功/电弧连续
+                    obj.weldingStatus = data.substring(0,1);//焊接状态
+                }
+                return obj;
+            }
+            function migByte8Special(num){
+                let obj={
+                    'migMan2T4T':'',
+                    'migSyn2T4T':'',
+                    'recommend_Inductance':'',
+                    'induncance':''
+                }
+                //005c
+                //0000000001011100 
+                //["0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1", "1", "1", "0", "0"]
+                //13~16	电感量		MIGSYN,MIGMAN
+               let list =  ((Array(16).join(0) + parseInt(num,16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+               let data =list.join("");
+                if(data.length>15){
+                    let a = parseInt(data.substring(13,16),2).toString(16);//2进制
+                    if(a.length==1){
+                        a=`0${a}`;
+                    }
+                    obj.induncance=a;
+                    let b = parseInt(data.substring(8,12),2).toString(16);//2进制
+                    if(b.length==1){
+                        a=`0${b}`;
+                    }
+                    obj.recommend_Inductance=b;//电感推荐值
+                    //2t4t
+                    if(data.substring(0,1) ==1){
+                        obj.migMan2T4T="1"
+                    }else{
+                        obj.migMan2T4T="0"
+                    }
+                    if(data.substring(1,2) ==1){
+                        obj.migSyn2T4T="1"
+                    }else{
+                        obj.migSyn2T4T="0"
+                    }
+                }
+                return obj;
+            }
+            function changeToOldMigManData(receiveBleData){
+                // receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 43EA";
+                let head = receiveBleData.substring(0,8);//这是头
+                let nums = receiveBleData.substring(8,10);//这是数据起始数据量
+                let datas =receiveBleData.substring(10,parseInt(("0x"+nums),16).toString(10));
+                var dataList = [];
+                for(var i=0;i<datas.length;i+=4){
+                    dataList.push(data.slice(i,i+4));
+                }
+                // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'};//20201028真实焊机上发 正常
+                let migmanOldHead ='dae2';
+                let byte0 ='';//集合字节 
+                let byte0_2 ='';//各种焊接状态 
+                let byte0_7 ='';//各种焊接状态 2T|4T :4A
+                let byte12 ='';//送丝速度:5B00 高位在前？
+                let byte34 ='';//电压 :BA00  高位在前？
+                let byte5 ='';//电感量 :0A
+                byte12 = dataList[3].substring(2,4)+dataList[3].substring(0,2);//0028转成高位在前
+                byte34 = dataList[10].substring(2,4)+dataList[10].substring(0,2);//00BB转成高位在前
+                let obj =migByte8Special(dataList[8]);//处理一些字节数据
+                let obj2 =migByte0Special(dataList[0]);
+                byte0_2=obj2.weldingStatus;//1焊接中
+                byte0_7 =obj.migMan2T4T;//各种焊接状态 2T|4T :4A
+                byte0=parseInt(`00${byte0_2}00000${byte0_7}`,2).toString(16);;
+                byte5 =obj.induncance;//电感量 :0A
+                let total =`${migmanOldHead}${byte0}${byte12}${byte34}${byte5}`;
+                let crc = crcModelBusClacQuery(total)
+                return `${total}${crc}`;
+            }
+            function changeToOldMigSynData(receiveBleData){
+                // receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
+                let head = receiveBleData.substring(0,8);//这是头
+                let nums = receiveBleData.substring(8,10);//这是数据起始数据量
+                let datas =receiveBleData.substring(10,parseInt(("0x"+nums),16).toString(10));
+                var dataList = [];
+                for(var i=0;i<datas.length;i+=4){
+                    dataList.push(data.slice(i,i+4));
+                }
+                // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'};//20201028真实焊机上发 正常
+               
+                //     0	单位		0：mm、1：inch
+                //     1	PFC	PFC	
+                //     2	焊接		0：非焊接、1：焊接
+                //     3	过热		1：过热
+                //     4	过流		1：过流
+                //     5
+                // 6	空		
+                //     7	2T4T	MIG_2T_4T_mode	0：2T、1：4T
+                // 1		材料	MIG_material	
+                // 2		气体	MIG_gas	
+                // 3		直径	MIG_diameter	
+                // 4		板厚	MIG_thickness	
+                // 5	0~3	电感量推荐值	recommend_Inductance	
+                //     4~7	电感量	Inductance	
+                // 6
+                // 7		送丝速度推荐值	recommend_speed_display	
+                // 8
+                // 9		送丝速度	speed_display	
+                // 10
+                // 11		电压推荐值	recommend_V_wilding	
+                // 12
+                // 13		电压	V_welding	
+                // 14		板厚最小值	MIG_min_thickness	
+                // 15		板厚最大值	MIG_min_thickness	
+                let migmanOldHead ='dae1';
+                let byte0 ='';//集合字节 
+                let byte0_2 ='';//各种焊接状态 
+                let byte0_7 ='';//各种焊接状态 2T|4T :4A
+                let byte1 ='';//MIG_material
+                let byte2 ='';//MIG_gas
+                let byte3 ='';//MIG_diameter
+                let byte4 ='';//MIG_thickness
+                let byte5 ='';
+                let byte5_0_3="";//电感推荐值 recommend_Inductance
+                let byte5_4_7 ='';//电感量 :0A Inductance
+                let byte67 ='';//recommend_speed_display
+                let byte89 ='';//speed_display
+                let byte1011 ='';//recommend_V_wilding
+                let byte1213 ='';//V_welding
+                let byte14 = "";//MIG_min_thickness
+                let byte15 = '';//MIG_max_thickness
+                //开始处理及赋值
+                let obj =migByte8Special(dataList[8]);//处理一些字节数据
+                let obj2 =migByte0Special(dataList[0]);
+                byte0_2=obj2.weldingStatus;//1焊接中
+                byte0_7 =obj.migSyn2T4T;//各种焊接状态 2T|4T :4A
+                byte0=parseInt(`00${byte0_2}00000${byte0_7}`,2).toString(16);;
+                byte1=dataList[25].substring(2,4);//直接截取 2字节转一个字节
+                byte5_4_7 =obj.induncance;//电感量 :0A
+                byte5_0_3=obj.recommend_Inductance;//电感推荐值
+                byte5 =dataList[8].substring(2,4);//直接截取 2字节转一个字节
+                byte2=dataList[26].substring(2,4);//直接截取 2字节转一个字节
+                byte3=dataList[27].substring(2,4);//直接截取 2字节转一个字节
+                byte4=dataList[28].substring(2,4);//直接截取 2字节转一个字节
+                byte67=dataList[23];
+                byte89=dataList[29];
+                byte1011=dataList[24];
+                byte1213=dataList[30];
+                byte14=dataList[22];
+                byte15=dataList[23];
+                let total =`${migmanOldHead}${byte0}${byte1}${byte2}${byte3}${byte4}${byte67}${byte89}${byte1011}${byte1213}${byte14}${byte15}`;
+                let crc = crcModelBusClacQuery(total)
+                return `${total}${crc}`;
+
+
             }
             function onlySendFuc(sendDt){
                 if(!BASE_CONFIG.TESTFLAG){
