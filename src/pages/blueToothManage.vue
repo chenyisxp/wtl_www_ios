@@ -816,12 +816,20 @@ export default {
             // }
             if('connected'==scanStatus){
                 clearInterval(this.timeInterval1)
+                if(this.modbusSendTimes == 0){
+                    //发出系统信息请求
+                    this.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+                }
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
             }
         }
         window['handleGetBleStateThenToNewIndex']= () => {
             this.$store.state.getConnectStatus='connected';
-            clearInterval(this.timerInterval )
+            clearInterval(this.timerInterval)
+            if(this.modbusSendTimes == 0){
+                //发出验证请求
+                this.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+            }
             setTimeout(() => {
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
             }, 100);
@@ -934,6 +942,9 @@ export default {
         },
         testModalDoorFlag(){
             return this.$store.state.testModalDoorFlag;　　//需要监听的数据
+        },
+        modbusSendTimes(){
+            return this.$store.state.modbusSendTimes;
         }
         
   },watch:{

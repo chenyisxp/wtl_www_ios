@@ -10,9 +10,9 @@ let BASE_CONFIG = {
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/minfront/mainactivity',
    ONLY_CONNECT_STATUS_TOAST:false,
-   DEVELOPERMODEFLAG:true,//开发者模式本地完全不和安卓交互
-   LOGFLAG:false,
-   TESTFLAG : true,//测试开关
+   DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
+   LOGFLAG:true,
+   TESTFLAG : false,//测试开关
    TESTDEEPTH:0,//深度
    autoRouterTime:5000,//自动前往焊接中页面的时间：ms
    scaningDuring:15000,//扫描时间

@@ -509,13 +509,12 @@ export default {
       }
       // alert("mainNew"+data)
       this.wtlLog('layout','broastFromAndroid='+data);
-        this.modelType=this.getModelType(data.substring(2,4));
-        // alert('layout::'+this.modelType+'|||'+tempType);
-       
-          // this.broastFromAndroid(data);
-        
+      this.modelType=this.getModelType(data.substring(2,4));
+      //alert('layout::'+this.modelType+'|||'+tempType);
       
+      // this.broastFromAndroid(data);
     }
+   
     // this.GLOBAL_CONFIG.TESTFLAG=false;//重置s
     if(this.GLOBAL_CONFIG.TESTFLAG){
       //焊接中....migsyn
@@ -888,7 +887,7 @@ export default {
 user-select:none;
 }
 .app{
-  /* opacity: 0.2; */
+  opacity: 0.2;
   background: #01303e
 }
 </style>

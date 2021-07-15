@@ -1029,7 +1029,8 @@ Array.prototype.in_array = function (element) {
                 return crcModelBusClacQuery(data);
                     
             }
-            //crc16位数字处理 注意这里定义了两个相同的方法要改一起改 下
+            //crc16位数字处理 注意这里定义了两个相同的方法要改一起改 下 
+            //旧逻辑crc校验不包含 da
              function crcModelBusClacQuery(data){   
                 console.log('crcModelBusClacQuery开始')
                 var CRC = {};
@@ -1262,7 +1263,7 @@ Array.prototype.in_array = function (element) {
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
                 console.log(pageFrom,'sendData='+sendData+',crc='+crc)
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
-                modbusDataSendFuc(pageFrom,sendData,crc);
+                // modbusDataSendFuc(pageFrom,sendData,crc);
                 if(!BASE_CONFIG.TESTFLAG){
                     // Toast({
                     //     message: BASE_CONFIG.ENV_IOS_FLAG+sendData,
@@ -1274,11 +1275,12 @@ Array.prototype.in_array = function (element) {
                         
                         //ios 逻辑需借鉴后端的
                         let directive =sendData.substring(2,4);
-                        //新逻辑modbus西协议20210711
-                        if("FF"!=directive){
+                        //新逻辑modbus新协议20210711
+                        if("FF"!=directive && store.state.isModbusModal){
                             modbusDataSendFuc(pageFrom,sendData,crc);
+                            return;
                         }
-                        return;
+                        
                         //0、初始化 开始定时器
                         if("FF"!=directive){//不是响应的需要开启定时器
                             // MainActivity.requestFromHtmlInit(pageFrom, data, crcCode);
@@ -1309,15 +1311,19 @@ Array.prototype.in_array = function (element) {
                               });
                         }
                     }else{
+                        let directive =sendData.substring(2,4);
                         //新逻辑modbus西协议20210711
-                        if("FF"!=directive){
+                        if("FF"!=directive && store.state.isModbusModal){
                             modbusDataSendFuc(pageFrom,sendData,crc);
+                            return;
                         }
-                        return;
                         store.state.nowPageFrom=pageFrom;
-                        window.android.callSendDataToBle(pageFrom,sendData,crc);
+                        if(window.android){
+                            window.android.callSendDataToBle(pageFrom,sendData,crc);
+                        }else{
+                            console.log('warn:',pageFrom,sendData,crc);
+                        }
                     }
-                    
                 }
             } 
             //公共 ：10机制数转成 高低位按规则变动的 16进制数
@@ -1651,14 +1657,41 @@ Array.prototype.in_array = function (element) {
                 //重新赋值
                 mayTooLongList =templist;
             }
+            //负责接收来自 新modbus版本app信息
+            window['modbusBroastFromAndroid'] = (bleReponseData)=>{
+                store.state.postDataList.push({type:'receive',data:bleReponseData})
+                if(lastTimesReceiveData==bleReponseData){
+                    //延迟一阵子再执行 机器上发频率0.5s
+                    delayTimer = setTimeout(() => {
+                    modbusDataReceiveFuc(bleReponseData);
+                    }, 400);
+                    return;
+                }else{
+                    lastTimesReceiveData=bleReponseData;
+                    clearTimeout(delayTimer);
+                    modbusDataReceiveFuc(bleReponseData);
+                }
+            }
             // modbus data build center  || iosBleDataLayoutFuc || callSendDataToBleUtil
             function modbusDataReceiveFuc(receiveBleData){
+                //从机地址	功能码	数据起始地址	数据长度	CRC校验(前面全部数据)
                 //migsyn模拟数据 31个数据=1f crc = 0C5D
-                receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
+                // receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
                 //migman模拟数据 15个数据=0f crc = 23EE 总长74
-                receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 23EE";
-                receiveBleData.toUpperCase().replaceAll(" ","");
+                // receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 23EE";
+                receiveBleData = receiveBleData.toUpperCase().replaceAll(" ","");
                 if(receiveBleData && receiveBleData.length>=10){
+                    let before4 = receiveBleData.substring(0,4);
+                    let before8 = receiveBleData.substring(0,8);
+                    if(before8=='0A0303e8'){
+                        //通信成功
+                        store.state.modbusSendTimes=1;
+                        store.state.isModbusModal=true;//是否是modbus协议模式
+                    }else if(before4!='0A06'){
+                        //进入旧的通信区
+                        window.broastFromAndroid(receiveBleData);
+                        return;
+                    }
                     //处理
                     //不同模式数据、焊接中数据、存储、历史等数据 根据不同地址进行，区分
                     // 0a 03 0064 0014 0014 0014 0014 0014 6105
@@ -1669,23 +1702,36 @@ Array.prototype.in_array = function (element) {
                     //拼接+根据地址、功能取值
                     //20210712 需要两个
                     let headKey = receiveBleData.substring(0,10);
+                    let changeNewData ="";
                     switch (headKey) {
                         case '0A0600321F'://migsyn
-                            changeToOldMigSynData(receiveBleData);
+                            changeNewData =changeToOldMigSynData(receiveBleData);
+                            window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         case '0A0600320F'://migman
-                            changeToOldMigManData(receiveBleData);
+                            changeNewData =changeToOldMigManData(receiveBleData);
+                            window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         default:
                             break;
                     }
                 }
             }
+            //请求一个模式确认是不是modbus协议版本机器
+            Vue.prototype.callSendModbusSystemData = (sendData,pageFrom) =>{
+                let crc = crcModelBusClacQuery(sendData);
+                onlySendFuc(sendData+crc,pageFrom,crc);
+            }
             // callSendDataToBleUtil
             // modbus data build center  || iosBleDataLayoutFuc 
             //查询指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据个数高位  数据个数低位  crc16高位 crc16低位
             //更新指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据高位  数据低位  crc16高位 crc16低位
             function modbusDataSendFuc(pageFrom,sendData,crc){
+                store.state.postDataList.push({type:'send',data:sendData})
+                if(store.state.modbusSendTimes==0 || !store.state.modbusSendTimes){
+                    //通信验证失败
+                    return;
+                }
                 let newVal ="";
                 // DAB15c00E718 =12长 首页模式数据：DA 100000 0570
                 if(sendData && sendData.length>11){
@@ -1728,7 +1774,7 @@ Array.prototype.in_array = function (element) {
                         }
                         crc = crcModelBusClacQuery(tempData);
                         let self =this;
-                        onlySendFuc(tempData+crc)
+                        onlySendFuc(tempData+crc,pageFrom,crc)
                         console.log('modebus协议数据：',tempData,crc);
                         //发送
 
@@ -1788,17 +1834,19 @@ Array.prototype.in_array = function (element) {
                 }
                 return obj;
             }
+            // migman数据转换机制
             function changeToOldMigManData(receiveBleData){
                 // receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 43EA";
-                let head = receiveBleData.substring(0,8);//这是头
-                let nums = receiveBleData.substring(8,10);//这是数据起始数据量
-                let datas =receiveBleData.substring(10,parseInt(("0x"+nums),16).toString(10));
+                let head = receiveBleData.substring(0,8);//这是头从机地址+功能码+起始地址位
+                let nums = receiveBleData.substring(8,10);//这是数据量
+                let datas =receiveBleData.substring(10,receiveBleData.length);
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
-                    dataList.push(data.slice(i,i+4));
+                    dataList.push(datas.slice(i,i+4));
                 }
                 // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'};//20201028真实焊机上发 正常
-                let migmanOldHead ='dae2';
+                let migOldHead1 ='da';
+                let migOldHead2 ='e2';
                 let byte0 ='';//集合字节 
                 let byte0_2 ='';//各种焊接状态 
                 let byte0_7 ='';//各种焊接状态 2T|4T :4A
@@ -1811,20 +1859,24 @@ Array.prototype.in_array = function (element) {
                 let obj2 =migByte0Special(dataList[0]);
                 byte0_2=obj2.weldingStatus;//1焊接中
                 byte0_7 =obj.migMan2T4T;//各种焊接状态 2T|4T :4A
-                byte0=parseInt(`00${byte0_2}00000${byte0_7}`,2).toString(16);;
+                let tempByte0 = parseInt(`00${byte0_2}0000${byte0_7}`,2).toString(16);
+                byte0 =tempByte0.length>1?tempByte0:`0${tempByte0}`;
                 byte5 =obj.induncance;//电感量 :0A
-                let total =`${migmanOldHead}${byte0}${byte12}${byte34}${byte5}`;
+                console.log('来自changeToOldMigManData：',migOldHead1+migOldHead2,byte0,byte12,byte34,byte5)
+                let total =`${migOldHead2}${byte0}${byte12}${byte34}${byte5}`;
                 let crc = crcModelBusClacQuery(total)
-                return `${total}${crc}`;
+                return `${migOldHead1}${total}${crc}`;
             }
+            // migsyn数据转换机制
             function changeToOldMigSynData(receiveBleData){
                 // receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
                 let head = receiveBleData.substring(0,8);//这是头
                 let nums = receiveBleData.substring(8,10);//这是数据起始数据量
-                let datas =receiveBleData.substring(10,parseInt(("0x"+nums),16).toString(10));
+                // let datas =receiveBleData.substring(10,10+parseInt(parseInt(("0x"+nums),16).toString(10))*4);
+                let datas =receiveBleData.substring(10,receiveBleData.length);
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
-                    dataList.push(data.slice(i,i+4));
+                    dataList.push(datas.slice(i,i+4));
                 }
                 // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'};//20201028真实焊机上发 正常
                
@@ -1852,7 +1904,8 @@ Array.prototype.in_array = function (element) {
                 // 13		电压	V_welding	
                 // 14		板厚最小值	MIG_min_thickness	
                 // 15		板厚最大值	MIG_min_thickness	
-                let migmanOldHead ='dae1';
+                let migOldHead1 ='da';
+                let migOldHead2 ='e1';
                 let byte0 ='';//集合字节 
                 let byte0_2 ='';//各种焊接状态 
                 let byte0_7 ='';//各种焊接状态 2T|4T :4A
@@ -1860,9 +1913,9 @@ Array.prototype.in_array = function (element) {
                 let byte2 ='';//MIG_gas
                 let byte3 ='';//MIG_diameter
                 let byte4 ='';//MIG_thickness
+                // let byte5_0_3="";//电感推荐值 recommend_Inductance
+                // let byte5_4_7 ='';//电感量 :0A Inductance
                 let byte5 ='';
-                let byte5_0_3="";//电感推荐值 recommend_Inductance
-                let byte5_4_7 ='';//电感量 :0A Inductance
                 let byte67 ='';//recommend_speed_display
                 let byte89 ='';//speed_display
                 let byte1011 ='';//recommend_V_wilding
@@ -1874,34 +1927,42 @@ Array.prototype.in_array = function (element) {
                 let obj2 =migByte0Special(dataList[0]);
                 byte0_2=obj2.weldingStatus;//1焊接中
                 byte0_7 =obj.migSyn2T4T;//各种焊接状态 2T|4T :4A
-                byte0=parseInt(`00${byte0_2}00000${byte0_7}`,2).toString(16);;
+                let tempByte0 = parseInt(`00${byte0_2}0000${byte0_7}`,2).toString(16);
+                byte0 =tempByte0.length>1?tempByte0:`0${tempByte0}`;
                 byte1=dataList[25].substring(2,4);//直接截取 2字节转一个字节
-                byte5_4_7 =obj.induncance;//电感量 :0A
-                byte5_0_3=obj.recommend_Inductance;//电感推荐值
-                byte5 =dataList[8].substring(2,4);//直接截取 2字节转一个字节
                 byte2=dataList[26].substring(2,4);//直接截取 2字节转一个字节
                 byte3=dataList[27].substring(2,4);//直接截取 2字节转一个字节
                 byte4=dataList[28].substring(2,4);//直接截取 2字节转一个字节
+                byte5 =dataList[8].substring(2,4);//直接截取 2字节转一个字节
                 byte67=dataList[23];
                 byte89=dataList[29];
                 byte1011=dataList[24];
                 byte1213=dataList[30];
-                byte14=dataList[22];
-                byte15=dataList[23];
-                let total =`${migmanOldHead}${byte0}${byte1}${byte2}${byte3}${byte4}${byte67}${byte89}${byte1011}${byte1213}${byte14}${byte15}`;
+                byte14=dataList[22].substring(2,4);//直接截取 2字节转一个字节
+                byte15=dataList[23].substring(2,4);//直接截取 2字节转一个字节
+                //旧逻辑crc校验不包含 da
+                let total =`${migOldHead2}${byte0}${byte1}${byte2}${byte3}${byte4}${byte5}${byte67}${byte89}${byte1011}${byte1213}${byte14}${byte15}`;
                 let crc = crcModelBusClacQuery(total)
-                return `${total}${crc}`;
-
-
+                console.log('来自changeToOldMigSynData：',migOldHead1+migOldHead2,byte0,byte1,byte2,byte3,byte4,byte5,byte67,byte89,byte1011,byte1213,byte14,byte15,crc)
+                return `${migOldHead1}${total}${crc}`;
             }
-            function onlySendFuc(sendDt){
+            function onlySendFuc(sendDt,pageFrom){
                 if(!BASE_CONFIG.TESTFLAG){
                     if(BASE_CONFIG.ENV_IOS_FLAG){
                         var message = {"method":"handleSendData","sendDt":sendDt};
-                        window.webkit.messageHandlers.interOp.postMessage(message);
+                        if(window.webkit){
+                            window.webkit.messageHandlers.interOp.postMessage(message);
+                        }else{
+                            console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom)
+                        }
+                        
                     }else{
-                        store.state.nowPageFrom=pageFrom;
-                        window.android.callSendDataToBle(pageFrom,sendDt,indexInfo.crc);
+                        store.state.nowPageFrom=pageFrom?pageFrom:'';
+                        if(window.android){
+                            window.android.callSendDataToBle(pageFrom,sendDt,crc);
+                        }else{
+                            console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom)
+                        }
                     }
                     
                 }

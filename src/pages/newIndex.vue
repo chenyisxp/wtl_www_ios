@@ -2,13 +2,13 @@
   <!-- <div class="newIndex"  :style="{height:this.screenHeight+'px'}"> -->
     <div class="newIndex" :class="envType=='env_ios'?'env_ios_class':''">
        <!-- {{showRespData}} -->
-       <div >
+       <!-- <div >
          <ul>
            <li v-for="(item,index) in aa.object.list" :key="index">
              {{item.name}}
            </li>
          </ul>
-       </div>
+       </div> -->
     <div class="header">
         <div class="blue-icon" @click="go('/blueToothManage')"></div>
         <div class="connectedstatus">Bluetooth {{nowConnectStatus=='connected'?nowConnectStatus:'Ready'}}</div>
@@ -337,11 +337,11 @@ export default {
        //测试模式that
        if(this.GLOBAL_CONFIG.TESTFLAG){
          //为了测试modbus打开
-         this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
+        //  this.callSendDataToBleUtil('newIndex','DA'+data+crcCode,crcCode);
         //  alert('this.GLOBAL_CONFIG.TESTFLAG'+this.modelType);
          switch (this.modelType) {
             case this.GLOBAL_CONFIG.callWeldTypeData.migsyn.crcCode://migsyn
-            // alert(33)
+                // alert(33)
                 this.broastFromAndroid3(this.GLOBAL_CONFIG.testData.migsyn.heade+this.GLOBAL_CONFIG.testData.migsyn.data,'newIndex');
                 // this.go('/weld_common?type=MIGSYN');
                 break;
@@ -358,7 +358,6 @@ export default {
                 // this.go('/weld_tig_man');//最复杂
                 break;
             case this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode://mma
-              
                 this.broastFromAndroid3(this.GLOBAL_CONFIG.testData.mma.heade+this.GLOBAL_CONFIG.testData.mma.data,'newIndex');
                 // this.go('/weld_mma');
                 break;
@@ -800,11 +799,6 @@ export default {
     },
     initMSG(){
      this.aa = {"code":1,"object":{"list":[{name:11},{name:22},{name:33}],"totalCount":0},"error":null,"message":null,"exception":null,"result":null};
-      
-
-
-
-
       var param={};
       console.log(InterfaceService)
       InterfaceService.testMsg(param,(data)=>{
@@ -887,7 +881,7 @@ export default {
         //     iconClass: 'icon icon-success',
         //     duration: 11500
         //   });
-         console.log('newindex_broastFromAndroid')
+         console.log('newindex_broastFromAndroid',data)
             // 20190623 比较大的改动主调这两个不知道会不会有影响
             // this.$store.state.memoryInfo ={};//清空
             // this.$store.state.rstInfo={};
@@ -907,7 +901,7 @@ export default {
           // that.modelType='0570';
           // that.comfromFlag=true;
           var tempType=that.getModelType(data.substring(2,4));
-          // alert(that.modelType,tempType)
+          alert(that.modelType,tempType)
           if(that.modelType!=tempType){
             return;
           }

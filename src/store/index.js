@@ -58,6 +58,8 @@ const state = {
     testModalDoorFlag:false,
     postDataList:[],
     nowLoginStauts:'',
+    isModbusModal:false,
+    modbusSendTimes:0,
 }
 
 const mutations = {
