@@ -760,7 +760,7 @@ export default {
         }
   },
   created () {
-        
+        //ios
         window['sendToHtmlConnectedFail'] = () =>{
             let address =this.$store.state.nowConnectAddress
             that.globalSendMsgToIos("handleDisConnect",address,"")
@@ -805,7 +805,7 @@ export default {
             }
            
         }
-        //获取ble蓝牙状态
+        //获取ble蓝牙状态 ios 
         window['sendToHtmlBleState']= (scanStatus) => {
             // if('scaning'==scanStatus){
             //     self.scaningFlag=true;

@@ -11,7 +11,7 @@ let BASE_CONFIG = {
     SERVICE_ADDRESS : ROOT_URL + '/minfront/mainactivity',
    ONLY_CONNECT_STATUS_TOAST:false,
    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
-   LOGFLAG:true,
+   LOGFLAG:false,
    TESTFLAG : false,//测试开关
    TESTDEEPTH:0,//深度
    autoRouterTime:5000,//自动前往焊接中页面的时间：ms
@@ -55,7 +55,8 @@ let BASE_CONFIG = {
         // migsyn:{heade:'dae',headm:'dad',headc:'dac',data:'1 40 00 00 00 02 00 3C00 3D00 b400 c800 02 09 DE46'},
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 40 3D00 c800 00 F53B'},
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 42 6a00 ac00 03 054e'},
-        migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'},//20201028真实焊机上发 正常
+        // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'},//20201028真实焊机上发 正常
+        migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 CB 5B00 BA00 0A 5A0D'},//模拟MODE=4T
         // tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'3 40 00 03 6400 6400 02 09 50 05  8F81'},
         tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'34A0A0AC300C300060A460AFA07'},
         

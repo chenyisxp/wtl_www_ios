@@ -60,6 +60,8 @@ const state = {
     nowLoginStauts:'',
     isModbusModal:false,
     modbusSendTimes:0,
+    modbusSendDataTimes:0,
+    logFaceFlag:false//面板信息
 }
 
 const mutations = {

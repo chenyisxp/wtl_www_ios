@@ -39,6 +39,7 @@ Array.prototype.in_array = function (element) {
                 // value:''
                 // }
             ];
+            var modbusTooLongList=[];
             let TimerTask ={};
             // 增加节流函数
             var delayTimer={};
@@ -1262,6 +1263,7 @@ Array.prototype.in_array = function (element) {
             // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
                 console.log(pageFrom,'sendData='+sendData+',crc='+crc)
+                store.state.postDataList.push({type:'callSendDataToBleUtil',data:sendData})
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
                 // modbusDataSendFuc(pageFrom,sendData,crc);
                 if(!BASE_CONFIG.TESTFLAG){
@@ -1657,33 +1659,60 @@ Array.prototype.in_array = function (element) {
                 //重新赋值
                 mayTooLongList =templist;
             }
-            //负责接收来自 新modbus版本app信息
-            window['modbusBroastFromAndroid'] = (bleReponseData)=>{
+            //负责接收来自app的 新modbus版本ble信息
+            window['modbusBroastFromApp'] = (bleReponseData)=>{
                 store.state.postDataList.push({type:'receive',data:bleReponseData})
-                if(lastTimesReceiveData==bleReponseData){
+                if(bleReponseData){
+                    bleReponseData=bleReponseData.replace(/\s+/g,"");
+                    bleReponseData=bleReponseData.toLocaleUpperCase();
+                }
+                let oldCrc = bleReponseData.substring(bleReponseData.length-4,bleReponseData.length);
+                let tempMidData =bleReponseData.substring(0,bleReponseData.length-4);
+                let newCrc = crcModelBusClacQuery(tempMidData, true);
+                let newData="";
+                if(oldCrc != newCrc){
+                    //可能是太长的
+                    modbusTooLongList.push(bleReponseData);
+                    //拼接是否crc校验一致
+                    let temp = modbusTooLongList.join("");
+                    let mid =temp.substring(0,temp.length-4);
+                    let ncrc = crcModelBusClacQuery(mid, true);
+                    let ocrc = temp.substring(temp.length-4,temp.length);
+                    if(ncrc!=ocrc){
+                        //返回继续等待最后一个含crc校验数据的的到来
+                        return;
+                    }else{
+                        modbusTooLongList=[];//清空
+                        newData=temp;
+                    }
+                }else{
+                    newData=bleReponseData;
+                }
+                if(lastTimesReceiveData==newData){
                     //延迟一阵子再执行 机器上发频率0.5s
                     delayTimer = setTimeout(() => {
-                    modbusDataReceiveFuc(bleReponseData);
+                        modbusDataReceiveFuc(newData);
                     }, 400);
                     return;
                 }else{
-                    lastTimesReceiveData=bleReponseData;
+                    lastTimesReceiveData=newData;
                     clearTimeout(delayTimer);
-                    modbusDataReceiveFuc(bleReponseData);
+                    modbusDataReceiveFuc(newData);
                 }
             }
             // modbus data build center  || iosBleDataLayoutFuc || callSendDataToBleUtil
             function modbusDataReceiveFuc(receiveBleData){
                 //从机地址	功能码	数据起始地址	数据长度	CRC校验(前面全部数据)
                 //migsyn模拟数据 31个数据=1f crc = 0C5D
-                // receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
+                // receiveBleData = "0A 06 32 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
                 //migman模拟数据 15个数据=0f crc = 23EE 总长74
-                // receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 23EE";
-                receiveBleData = receiveBleData.toUpperCase().replaceAll(" ","");
+                // receiveBleData = "0A 06 32 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 23EE";
+                receiveBleData = receiveBleData.toUpperCase();
+                receiveBleData = receiveBleData.replace(/\s+/g,"");;
                 if(receiveBleData && receiveBleData.length>=10){
                     let before4 = receiveBleData.substring(0,4);
-                    let before8 = receiveBleData.substring(0,8);
-                    if(before8=='0A0303e8'){
+                    let before6 = receiveBleData.substring(0,6);
+                    if(before6 == '0A0302'){
                         //通信成功
                         store.state.modbusSendTimes=1;
                         store.state.isModbusModal=true;//是否是modbus协议模式
@@ -1719,7 +1748,8 @@ Array.prototype.in_array = function (element) {
             }
             //请求一个模式确认是不是modbus协议版本机器
             Vue.prototype.callSendModbusSystemData = (sendData,pageFrom) =>{
-                let crc = crcModelBusClacQuery(sendData);
+                store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
+                var crc = crcModelBusClacQuery(sendData);
                 onlySendFuc(sendData+crc,pageFrom,crc);
             }
             // callSendDataToBleUtil
@@ -1727,7 +1757,8 @@ Array.prototype.in_array = function (element) {
             //查询指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据个数高位  数据个数低位  crc16高位 crc16低位
             //更新指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据高位  数据低位  crc16高位 crc16低位
             function modbusDataSendFuc(pageFrom,sendData,crc){
-                store.state.postDataList.push({type:'send',data:sendData})
+                store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
+                store.state.postDataList.push({type:'modbusDataSendFuc',data:sendData})
                 if(store.state.modbusSendTimes==0 || !store.state.modbusSendTimes){
                     //通信验证失败
                     return;
@@ -1853,13 +1884,21 @@ Array.prototype.in_array = function (element) {
                 let byte12 ='';//送丝速度:5B00 高位在前？
                 let byte34 ='';//电压 :BA00  高位在前？
                 let byte5 ='';//电感量 :0A
-                byte12 = dataList[3].substring(2,4)+dataList[3].substring(0,2);//0028转成高位在前
+                byte12 = dataList[9].substring(2,4)+dataList[9].substring(0,2);//0028转成高位在前
                 byte34 = dataList[10].substring(2,4)+dataList[10].substring(0,2);//00BB转成高位在前
                 let obj =migByte8Special(dataList[8]);//处理一些字节数据
                 let obj2 =migByte0Special(dataList[0]);
                 byte0_2=obj2.weldingStatus;//1焊接中
                 byte0_7 =obj.migMan2T4T;//各种焊接状态 2T|4T :4A
-                let tempByte0 = parseInt(`00${byte0_2}0000${byte0_7}`,2).toString(16);
+                // 0	单位
+                // 1	PFC
+                // 2	焊接
+                // 3	过热
+                // 4	过流
+                // 5
+                // 6	空
+                // 7	2T4T
+                let tempByte0 = parseInt(`${byte0_7}0000${byte0_2}00`,2).toString(16);
                 byte0 =tempByte0.length>1?tempByte0:`0${tempByte0}`;
                 byte5 =obj.induncance;//电感量 :0A
                 console.log('来自changeToOldMigManData：',migOldHead1+migOldHead2,byte0,byte12,byte34,byte5)
@@ -1927,17 +1966,17 @@ Array.prototype.in_array = function (element) {
                 let obj2 =migByte0Special(dataList[0]);
                 byte0_2=obj2.weldingStatus;//1焊接中
                 byte0_7 =obj.migSyn2T4T;//各种焊接状态 2T|4T :4A
-                let tempByte0 = parseInt(`00${byte0_2}0000${byte0_7}`,2).toString(16);
+                let tempByte0 = parseInt(`${byte0_7}0000${byte0_2}00`,2).toString(16);
                 byte0 =tempByte0.length>1?tempByte0:`0${tempByte0}`;
                 byte1=dataList[25].substring(2,4);//直接截取 2字节转一个字节
                 byte2=dataList[26].substring(2,4);//直接截取 2字节转一个字节
                 byte3=dataList[27].substring(2,4);//直接截取 2字节转一个字节
                 byte4=dataList[28].substring(2,4);//直接截取 2字节转一个字节
                 byte5 =dataList[8].substring(2,4);//直接截取 2字节转一个字节
-                byte67=dataList[23];
-                byte89=dataList[29];
-                byte1011=dataList[24];
-                byte1213=dataList[30];
+                byte67=dataList[23].substring(2,4)+dataList[23].substring(0,2);//0028转成高位在前;
+                byte89=dataList[29].substring(2,4)+dataList[29].substring(0,2);//0028转成高位在前;;
+                byte1011=dataList[24].substring(2,4)+dataList[24].substring(0,2);//0028转成高位在前;;;
+                byte1213=dataList[30].substring(2,4)+dataList[30].substring(0,2);//0028转成高位在前;;;
                 byte14=dataList[22].substring(2,4);//直接截取 2字节转一个字节
                 byte15=dataList[23].substring(2,4);//直接截取 2字节转一个字节
                 //旧逻辑crc校验不包含 da
@@ -1946,7 +1985,7 @@ Array.prototype.in_array = function (element) {
                 console.log('来自changeToOldMigSynData：',migOldHead1+migOldHead2,byte0,byte1,byte2,byte3,byte4,byte5,byte67,byte89,byte1011,byte1213,byte14,byte15,crc)
                 return `${migOldHead1}${total}${crc}`;
             }
-            function onlySendFuc(sendDt,pageFrom){
+            function onlySendFuc(sendDt,pageFrom,crc){
                 if(!BASE_CONFIG.TESTFLAG){
                     if(BASE_CONFIG.ENV_IOS_FLAG){
                         var message = {"method":"handleSendData","sendDt":sendDt};
@@ -1977,13 +2016,6 @@ Array.prototype.in_array = function (element) {
                         store.state.nowPageFrom=pageFrom;
                         window.android.callSendDataToBle(pageFrom,sendDt,indexInfo.crc);
                     }
-                    
-                }
-            }
-            //新modbus返回处理区
-            window['bleModbusDataLayoutFuc']= (bleReponseData) => {
-                //不在指令集里就走旧的逻辑
-                if(bleReponseData){
                     
                 }
             }

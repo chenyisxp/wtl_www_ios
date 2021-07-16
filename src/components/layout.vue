@@ -15,9 +15,10 @@
       <Loading :is-loading="isLoading"></Loading>
       <Connecting v-show="displayType" :displayType="displayType"></Connecting>
       <VUpModal v-show="updateVersionModal" :vuPType="vuPType"></VUpModal>
-      <div style="position:fixed;top:100px;background:rgba(0,0,0,0.4);color:#fff;padding:5px 5px;height:200px;overflow:auto;z-index:999;">
+      <div style="position:fixed;top:100px;background:rgba(0,0,0,0.4);color:#fff;padding:5px 5px;height:200px;overflow:auto;z-index:999;width:30%;" v-if="logFaceFlag">
         {{envType}}
-          <div v-for="(item,index) in postDataList" :key="index">
+          <div v-for="(item,index) in postDataList" :key="index" style="
+    word-break: break-word;">
               <span>{{index+1}}、</span>
               <span v-if="item.type=='send'">发送</span>
               <span v-if="item.type=='receive'">接收</span>
@@ -299,7 +300,7 @@ export default {
       // });
         // alert("Ios客户端");
         this.iosVersonCenter();
-       this.$store.state.envType = 'env_ios'//
+       this.$store.state.envType = 'env_android'//env_ios
        this.globalSendMsgToIos("handleStartScan","","");
     } else {
         this.$store.state.envType = 'env_pc'
@@ -325,7 +326,12 @@ export default {
              
               this.globalSendMsgToIos("handleGetBleStateByLayout","","");
             }else{
-              this.$store.state.getConnectStatus =  window.android.getConStatus();
+              let status = window.android.getConStatus();
+              this.$store.state.getConnectStatus = status;
+              if(status == 'connected' && this.modbusSendTimes == 0 && this.modbusSendDataTimes<5){
+                  //发出系统信息请求
+                  this.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+              }
             }
             if(this.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
               //  Toast({
@@ -386,6 +392,15 @@ export default {
       },
       postDataList(){
         return this.$store.state.postDataList;
+      },
+      logFaceFlag(){
+        return this.$store.state.logFaceFlag;
+      },
+      modbusSendTimes(){
+        return this.$store.state.modbusSendTimes;
+      },
+      modbusSendDataTimes(){
+        return this.$store.state.modbusSendDataTimes;
       }
     },
   watch: {
@@ -887,7 +902,7 @@ export default {
 user-select:none;
 }
 .app{
-  opacity: 0.2;
+  /* opacity: 0.2; */
   background: #01303e
 }
 </style>

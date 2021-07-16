@@ -42,6 +42,7 @@
             <img v-if="chooseModel==4" @click="goDevleper" src="../../assets/images/weld_setting_mig.jpg">
           </div>
           <div class="resetBtn" @click="handleRestore">Restore  settings</div>
+          <div class="resetBtn" @click="handleOpen">打开面板信息</div>
       </div>
 
     </div>
@@ -62,6 +63,9 @@ export default {
   },
 
   methods: {
+    handleOpen(){
+      this.$store.state.logFaceFlag=true;
+    },
     handleRestore(){
       this.chooseModel=4;
       this.callSendDataToBleUtil('setmanage','DA4000001470','1470');

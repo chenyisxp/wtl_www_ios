@@ -826,8 +826,12 @@ export default {
           if(that.envType=='env_ios'){
             that.globalSendMsgToIos("handleGetBleStateByIndex","","");
           }else{
-            that.$store.state.getConnectStatus =  window.android.getConStatus();
+            that.$store.state.getConnectStatus = window.android.getConStatus()// window.android.getConStatus();
             that.nowConnectStatus =that.$store.state.getConnectStatus;
+            if(that.nowConnectStatus=='connected' && that.modbusSendTimes == 0 && that.modbusSendDataTimes<5){
+                //发出系统信息请求
+                that.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+            }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
             Toast({
@@ -901,7 +905,7 @@ export default {
           // that.modelType='0570';
           // that.comfromFlag=true;
           var tempType=that.getModelType(data.substring(2,4));
-          alert(that.modelType,tempType)
+          
           if(that.modelType!=tempType){
             return;
           }
@@ -970,6 +974,12 @@ export default {
       },
       isConnectStatus () {
         return this.$store.state.getConnectStatus;　　//需要监听的数据
+      },
+      modbusSendTimes(){
+            return this.$store.state.modbusSendTimes;
+      },
+      modbusSendDataTimes(){
+        return this.$store.state.modbusSendDataTimes;
       }
   },watch: {
     isConnectStatus (newVal, oldVal) {
