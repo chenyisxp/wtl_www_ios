@@ -716,7 +716,7 @@ export default {
             if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
                 lastBle = '11221||本地开发模拟的数据';
             }else{
-                lastBle = window.android.getLastConnectBleAddress();
+                lastBle = window.android?window.android.getLastConnectBleAddress():'';
             }
             //  alert(lastBle)
             if(lastBle){
@@ -731,7 +731,7 @@ export default {
             if(self.GLOBAL_CONFIG.DEVELOPERMODEFLAG){
                 rsst = '';
             }else{
-                rsst = window.android.getBleEditNames();
+                rsst = window.android?window.android.getBleEditNames():'';
             }
         
             self.wtlLog('blueToothManage','TESTFLAG='+self.GLOBAL_CONFIG.TESTFLAG+',lastBle='+lastBle+',rsst='+rsst);

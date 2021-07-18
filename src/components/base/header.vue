@@ -108,7 +108,7 @@ export default {
             font-size: 20px;
             position: fixed;
             left: 15px;
-            top: 30px;
+            top: 0px;
         }
         .setupyi{
             padding-left: 10px;

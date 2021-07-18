@@ -277,7 +277,8 @@ Array.prototype.in_array = function (element) {
                     migMan:'9571',//mig非一元化
                     tigSyn:'6571',//Tig一元化
                     tigMan:'F570',//Tig非一元化
-                    mma:'C572'
+                    mma:'C572',
+                    cut:'5573'
             }
             //定义常量map数组  改数据结构没用了
             // const MODE_MAP = new Map([['0', '2T'], ['1', '4T']]);
@@ -737,7 +738,7 @@ Array.prototype.in_array = function (element) {
                 console.log(data)
                 var rstInfo ={};
                 //请求mig syn模式数据
-                if(compareString(dirctiveType,weldDirctive.migSyn)){
+                if(compareString(dirctiveType,weldDirctive.migSyn) || compareString(dirctiveType,weldDirctive.cut)){
                     var strArr =data.split(' ');
                     console.log(1111112222333);
                     console.log(strArr);
@@ -1659,8 +1660,9 @@ Array.prototype.in_array = function (element) {
                 //重新赋值
                 mayTooLongList =templist;
             }
-            //负责接收来自app的 新modbus版本ble信息
+            //负责接收来自app的 新modbus版本ble信息 注意modbus的返回crc是反的
             window['modbusBroastFromApp'] = (bleReponseData)=>{
+                console.log('modbusSendTimes:'+store.state.modbusSendTimes)
                 store.state.postDataList.push({type:'receive',data:bleReponseData})
                 if(bleReponseData){
                     bleReponseData=bleReponseData.replace(/\s+/g,"");
@@ -1669,16 +1671,18 @@ Array.prototype.in_array = function (element) {
                 let oldCrc = bleReponseData.substring(bleReponseData.length-4,bleReponseData.length);
                 let tempMidData =bleReponseData.substring(0,bleReponseData.length-4);
                 let newCrc = crcModelBusClacQuery(tempMidData, true);
+                let reverseCrc = newCrc.substring(2,4)+newCrc.substring(0,2);
                 let newData="";
-                if(oldCrc != newCrc){
+                if(oldCrc != reverseCrc){
                     //可能是太长的
                     modbusTooLongList.push(bleReponseData);
                     //拼接是否crc校验一致
                     let temp = modbusTooLongList.join("");
                     let mid =temp.substring(0,temp.length-4);
                     let ncrc = crcModelBusClacQuery(mid, true);
+                    let reverseNcrc =  ncrc.substring(2,4)+ncrc.substring(0,2);
                     let ocrc = temp.substring(temp.length-4,temp.length);
-                    if(ncrc!=ocrc){
+                    if(reverseNcrc!=ocrc){
                         //返回继续等待最后一个含crc校验数据的的到来
                         return;
                     }else{
@@ -1687,6 +1691,7 @@ Array.prototype.in_array = function (element) {
                     }
                 }else{
                     newData=bleReponseData;
+                    modbusTooLongList=[];//清空
                 }
                 if(lastTimesReceiveData==newData){
                     //延迟一阵子再执行 机器上发频率0.5s
@@ -1708,15 +1713,21 @@ Array.prototype.in_array = function (element) {
                 //migman模拟数据 15个数据=0f crc = 23EE 总长74
                 // receiveBleData = "0A 06 32 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 23EE";
                 receiveBleData = receiveBleData.toUpperCase();
-                receiveBleData = receiveBleData.replace(/\s+/g,"");;
+                receiveBleData = receiveBleData.replace(/\s+/g,"");
+
                 if(receiveBleData && receiveBleData.length>=10){
+                    //注意modebus的crc是反的
+                    let midData = receiveBleData.substring(0,receiveBleData.length-4);
+                    let crcData = receiveBleData.substring(receiveBleData.length-4,receiveBleData.length);
+                    receiveBleData=midData+crcData.substring(2,4)+crcData.substring(0,2);
+
                     let before4 = receiveBleData.substring(0,4);
                     let before6 = receiveBleData.substring(0,6);
                     if(before6 == '0A0302'){
                         //通信成功
                         store.state.modbusSendTimes=1;
                         store.state.isModbusModal=true;//是否是modbus协议模式
-                    }else if(before4!='0A06'){
+                    }else if(before4!='0A03'){
                         //进入旧的通信区
                         window.broastFromAndroid(receiveBleData);
                         return;
@@ -1730,14 +1741,14 @@ Array.prototype.in_array = function (element) {
                     //但是，部分数据结构需要沟通，让他不变尤其小字节部分
                     //拼接+根据地址、功能取值
                     //20210712 需要两个
-                    let headKey = receiveBleData.substring(0,10);
+                    let headKey = receiveBleData.substring(0,6);
                     let changeNewData ="";
                     switch (headKey) {
-                        case '0A0600321F'://migsyn
+                        case '0A031F'://migsyn
                             changeNewData =changeToOldMigSynData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
-                        case '0A0600320F'://migman
+                        case '0A030F'://migman
                             changeNewData =changeToOldMigManData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
@@ -1799,7 +1810,7 @@ Array.prototype.in_array = function (element) {
                             // if(sendIndexList.length>0){
                             //     circleDataSendFuc(sendIndexList[0])
                             // }
-                            tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+'00'+modbusInfo.modbusNum;
+                            tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+'00'+modbusInfo.modbusAdr+'00'+modbusInfo.modbusNum;
                         }else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                         }
@@ -1868,9 +1879,9 @@ Array.prototype.in_array = function (element) {
             // migman数据转换机制
             function changeToOldMigManData(receiveBleData){
                 // receiveBleData = "0A 06 0032 0F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 43EA";
-                let head = receiveBleData.substring(0,8);//这是头从机地址+功能码+起始地址位
-                let nums = receiveBleData.substring(8,10);//这是数据量
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                // let head = receiveBleData.substring(0,8);//这是头从机地址+功能码+起始地址位
+                // let nums = receiveBleData.substring(8,10);//这是数据量
+                let datas =receiveBleData.substring(6,receiveBleData.length);
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));
@@ -1908,11 +1919,11 @@ Array.prototype.in_array = function (element) {
             }
             // migsyn数据转换机制
             function changeToOldMigSynData(receiveBleData){
-                // receiveBleData = "0A 06 0032 1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
-                let head = receiveBleData.substring(0,8);//这是头
-                let nums = receiveBleData.substring(8,10);//这是数据起始数据量
+                // receiveBleData = "0A 06  1F 0000 0028 0028 00 00 00 00 00 00 0000 0000 0000 005C 00BB 00a4 000f 0104 0064 0003 0000 0001 0000 0003 0000 000c 0000 003c 00b4 0000 0000 0000 0000 0000 0000 0C5D";
+                // let head = receiveBleData.substring(0,4);//这是头
+                // let nums = receiveBleData.substring(4,6);//这是数据起始数据量
                 // let datas =receiveBleData.substring(10,10+parseInt(parseInt(("0x"+nums),16).toString(10))*4);
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                let datas =receiveBleData.substring(6,receiveBleData.length);
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));
@@ -1987,23 +1998,26 @@ Array.prototype.in_array = function (element) {
             }
             function onlySendFuc(sendDt,pageFrom,crc){
                 if(!BASE_CONFIG.TESTFLAG){
+                    sendDt=sendDt.toLocaleUpperCase();
+                    //对sendDt的crc进行反向操作
+                    sendDt = sendDt.substring(0,sendDt.length-4);
+                    sendDt=sendDt+crc.substring(2,4)+crc.substring(0,2);
                     if(BASE_CONFIG.ENV_IOS_FLAG){
                         var message = {"method":"handleSendData","sendDt":sendDt};
                         if(window.webkit){
                             window.webkit.messageHandlers.interOp.postMessage(message);
                         }else{
-                            console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom)
+                            console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom,crc)
                         }
-                        
                     }else{
                         store.state.nowPageFrom=pageFrom?pageFrom:'';
                         if(window.android){
+                            //注意这个modbuscrc是倒过来的
                             window.android.callSendDataToBle(pageFrom,sendDt,crc);
                         }else{
-                            console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom)
+                            console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom,crc)
                         }
                     }
-                    
                 }
             }
             function circleDataSendFuc(indexInfo){

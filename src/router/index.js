@@ -90,6 +90,11 @@ const router = new Router({
 			name: 'weld_tig_syn',
 			meta:{index:18},
 			component: resolve => require(['@/pages/weld/weld_tig_syn.vue'],resolve)
+		},{ //cut模式
+			path: '/weld_cut',
+			name: 'weld_cut',
+			meta:{index:19},
+			component: resolve => require(['@/pages/weld/weld_cut.vue'],resolve)
 		},{ //点击savee去的存储列表
 			path: '/saveManage',
 			name: 'saveManage',

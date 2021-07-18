@@ -23,7 +23,8 @@ let BASE_CONFIG = {
        migman:{data:'100100',crcCode:'9571',name:'MIG MAN',modelKey:'MIGMAN',url:'/weld_common?type=MIGMAN',newIndex:1},
        tigsyn:{data:'100200',crcCode:'6571',name:'TIG SYN',modelKey:'TIGSYN',url:'/weld_tig_syn',newIndex:2},
        tigman:{data:'100300',crcCode:'F570',name:'TIG MAN',modelKey:'TIGMAN',url:'/weld_tig_man',newIndex:3},
-          mma:{data:'100400',crcCode:'C572',name:'MMA',modelKey:'MMA',url:'/weld_mma',newIndex:4}
+          mma:{data:'100400',crcCode:'C572',name:'MMA',modelKey:'MMA',url:'/weld_mma',newIndex:4},
+          cut:{data:'100500',crcCode:'5573',name:'CUT',modelKey:'CUT',url:'/weld_cut',newIndex:5}
    },
    testData:{
         //1、常规的模拟
@@ -71,6 +72,7 @@ let BASE_CONFIG = {
         tigman:{data:'dae4 04 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 0073'},
         mma:{data:'dae5 04 00 01 09 6400 6400  01 09 708F'}
    },
+   modbusReadCode:'03',
    modbusWriteCode:'06',
    modbusSlave:'0A',//从机地址
    callMobusEditDirect:{

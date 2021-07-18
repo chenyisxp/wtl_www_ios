@@ -326,7 +326,7 @@ export default {
              
               this.globalSendMsgToIos("handleGetBleStateByLayout","","");
             }else{
-              let status = window.android.getConStatus();
+              let status = window.android?window.android.getConStatus():'';
               this.$store.state.getConnectStatus = status;
               if(status == 'connected' && this.modbusSendTimes == 0 && this.modbusSendDataTimes<5){
                   //发出系统信息请求

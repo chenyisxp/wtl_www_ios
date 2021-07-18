@@ -35,6 +35,9 @@
             <div class="c-img i-0" v-bind:class="classAtr[2].name"  @click.stop="newChangeFuc(4,1)">
                 <img src="../assets/images/weld_mma.png" :style="{height:this.imgHeight,width:this.imgWidth}">
             </div>
+            <div class="c-img i-0" v-bind:class="classAtr[3].name"  @click.stop="newChangeFuc(5,1)">
+                <img src="../assets/images/cut.png" :style="{height:this.imgHeight,width:this.imgWidth}">
+            </div>
         </div>
         <div class="btn-list">
             <div class="list-contain">
@@ -93,7 +96,7 @@ export default {
   data () {
     return {
       showRespData:'',
-      arrChooseBtn:[0,2,4],
+      arrChooseBtn:[0,2,4,5],
       hideFlag: false,
       closeClass: false,
       upshowFlag:false,
@@ -111,8 +114,8 @@ export default {
 	  nowConnectStatus:'',
       changePosition:false,
       modelNumIdx:4,//最大索引也就是总的图片数减一
-      originClassAtr:[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}],
-      classAtr:[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}],
+      // originClassAtr:[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}],
+      classAtr:[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}],
       screenWidth:'',//宽度
       screenHeight:'',//高度
       classContain:{height:''},
@@ -361,6 +364,10 @@ export default {
                 this.broastFromAndroid3(this.GLOBAL_CONFIG.testData.mma.heade+this.GLOBAL_CONFIG.testData.mma.data,'newIndex');
                 // this.go('/weld_mma');
                 break;
+            case this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode://cut
+                this.broastFromAndroid3(this.GLOBAL_CONFIG.testData.migsyn.heade+this.GLOBAL_CONFIG.testData.migsyn.data,'newIndex');
+                // this.go('/weld_cut');
+                break;
             default:
               break;
          }
@@ -403,7 +410,7 @@ export default {
           // alert(11)
           return;
         }else{
-          // alert(22)
+          // alert(that.modelType)
              that.$store.state.nowModelDirectice=that.modelType;
               // Toast({
               //       message: 'this.mo222delType'+data,
@@ -460,6 +467,9 @@ export default {
                 }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode){
                   that.$store.state.saveManagePageTo='/weld_mma';
                   that.go('/weld_mma');
+                }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode){
+                  that.$store.state.saveManagePageTo='/weld_cut';
+                  that.go('/weld_cut?type=MIGSYN');
                 }else{
                   that.$store.state.saveManagePageTo='/weld_common';
                   that.$store.state.saveManagePageToName=rst.weldType
@@ -497,7 +507,7 @@ export default {
       // alert(that.touchStartNum)
       // alert(that.touchStartNum-e.changedTouches[0].pageX)
       if(that.touchStartNum-e.changedTouches[0].pageX>30){
-        // alert('左滑'+nowChooseIndex)
+        console.log('左滑'+nowChooseIndex,that.reClacClass())
         //左滑
         
         if(that.reClacClass()==0){
@@ -505,17 +515,22 @@ export default {
         }else if(that.reClacClass()==2){
           that.choose(4);
         }else if(that.reClacClass()==4){
+          // that.choose(0);
+          that.choose(5);
+        }else if(that.reClacClass()==5){
           that.choose(0);
         }
       }else if(  that.touchStartNum-e.changedTouches[0].pageX<-30){
-        // alert('又滑')
+        console.log('右滑'+nowChooseIndex,that.reClacClass())
         //右滑
         if(that.reClacClass()==0){
-          that.choose(4);
+          that.choose(5);
         }else if(that.reClacClass()==2){
           that.choose(0);
         }else if(that.reClacClass()==4){
           that.choose(2);
+        }else if(that.reClacClass()==5){
+          that.choose(4);
         }
       }
       that.touchStartNum='';
@@ -527,16 +542,20 @@ export default {
                 this.nowMainIndex =index;
                 //classAtr 数组每个index代表不同主页的id id=0在主位置
                 // this.classAtr=[{name:'cla_2',value:2},{name:'cla_0',value:1},{name:'cla_1',value:3}]
-                 this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3}]
+                 this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3},{name:'cla_3',value:4}]
                 
             }
             if(index==2 || index==3){
                this.nowMainIndex =index;
-               this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0}]
+               this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0},{name:'cla_3',value:4}]
             }
              if(index==4){
-               this.nowMainIndex =4;
-                this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2}]
+              this.nowMainIndex =4;
+              this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2},{name:'cla_3',value:4}]
+            }
+            if(index==5){
+              this.nowMainIndex =5;
+              this.classAtr=[{name:'cla_2',value:1},{name:'cla_3',value:2},{name:'cla_0',value:0},{name:'cla_1',value:3}]
             }
         },
         reClacClass(){
@@ -555,18 +574,21 @@ export default {
           if(this.nowMainIndex==4){
             return 4;
           }
-        },
-         reClacExit(val){
-          if(val==0 || val==1){
-            return 0;
-          }
-          if(val==2 || val==3){
-            return 2;
-          }
-          if(val==4){
-            return 4;
+          if(this.nowMainIndex==5){
+            return 5;
           }
         },
+        //  reClacExit(val){
+        //   if(val==0 || val==1){
+        //     return 0;
+        //   }
+        //   if(val==2 || val==3){
+        //     return 2;
+        //   }
+        //   if(val==4){
+        //     return 4;
+        //   }
+        // },
         go(url){
           
             if(url=='/blueToothManage'){
@@ -711,6 +733,9 @@ export default {
                   //调用安卓方法告诉需要的数据
                   this.newIndexToAndroid(this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.data,this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.crcCode);
               // this.go('/weld_common?type=TIGSYN');
+            }else if(index==5){
+              this.modelType =this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode;//cut等离子切割
+              this.newIndexToAndroid(this.GLOBAL_CONFIG.callWeldTypeData.cut.data,this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode);
             }
           // }else{
            
@@ -826,7 +851,7 @@ export default {
           if(that.envType=='env_ios'){
             that.globalSendMsgToIos("handleGetBleStateByIndex","","");
           }else{
-            that.$store.state.getConnectStatus = window.android.getConStatus()// window.android.getConStatus();
+            that.$store.state.getConnectStatus = window.android?window.android.getConStatus():''// window.android.getConStatus();
             that.nowConnectStatus =that.$store.state.getConnectStatus;
             if(that.nowConnectStatus=='connected' && that.modbusSendTimes == 0 && that.modbusSendDataTimes<5){
                 //发出系统信息请求
@@ -1207,7 +1232,7 @@ export default {
             margin-top: 20px;
             .list-contain{
               margin: 0 auto;
-              width: 50px;
+              width: 70px;
               height: 20px;
               position: relative;
                 .btn{
@@ -1228,6 +1253,9 @@ export default {
                 left:20px; 
               }
               .btn.btn_2{
+                right: 20px; 
+              }
+              .btn.btn_3{
                 right: 0px; 
               }
             }
