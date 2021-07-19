@@ -48,7 +48,7 @@
                 <!-- 电流 -->
                 <div class="electricCurrent">
                     <div class="up">
-                        <div class="u-left"><img  src="../../assets/images/speed.png"></div>
+                        <div class="u-left"><img  src="../../assets/images/weld_icon_current.png"></div>
                         <div class="u-right">
                             <div class="bt del" @click="delFuc()"></div>
                                   
@@ -74,9 +74,9 @@
                     </div>
                 </div>
                 <!-- 电压 -->
-                <div class="electricCurrent Voltage">
+                <!-- <div class="electricCurrent Voltage">
                     <div class="up">
-                        <div class="u-left"><img  src="../../assets/images/voltage.png"></div>
+                        <div class="u-left"><img  src="../../assets/images/weld_icon_current.png"></div>
                         <div class="u-right">
                             <div class="bt del" @click="delFuc2()"></div>
                             <div class="value" :class="nowPosionX2<diffMin2 || nowPosionX2>diffMax2?'dangerColor':''">{{nowPosionX2}}</div>
@@ -86,7 +86,6 @@
                     <div class="slider" ref="mySlider2">
                         <div class="bgSlider"></div>
                         <div class="dangerRange" ref="dangerRange2"></div>
-                        <!-- <div class="sliderBtn" @touchstart="tStart()" @touchmove="tmove()" @touchend="tEnd()" ref="silderBtnId" :style="{left:nowPosionX+'px'}"></div> -->
                         <div class="sliderBtn" ref="sbtn2">
                             <div class="left"></div>
                             <div class="right"></div>
@@ -95,10 +94,10 @@
                     <div class="rdown">
                         {{min2}}~{{max2}}V
                     </div>
-                </div>
-                <div class="inducance">
+                </div> -->
+                <!-- <div class="inducance">
                     <div class="showna">Inducance:<span :class="overInducanceFlag?'red':''">{{inducanceValue}}</span></div>
-                </div>
+                </div> -->
         </div>
    <div class="footers">
                         <!-- <div class="inducance">
@@ -1148,6 +1147,7 @@ export default {
     },
     //数组 滑动 数组构造
     buildRulerArrRange(min,max){
+        console.log(min,max)
         // var tempArr =[];
         // var tempInchArr =[];
         this.rulerInchNumAtr=[];
@@ -1216,70 +1216,7 @@ export default {
     //滑动弹层应该是关闭的
     this.downshowFlag=false;
     this.hideFlag=false;
-   if( this.typeName=='MIGMAN'){
-       this.$route.query.nowModalTypeId=1;
-        // var list ={"nowTypeList":[{"typeName":"MODE","chooseKey":"0","comList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}]}],"weldType":"migman","SPEED_DISPLAY":"61","V_WELDING":"200","INDUCTANCE":"0","initBean":{"unit":"0","pfc":"0","weldStatus":"0","hotStatus":"0","flowStatus":"0","empty1":"0","empty2":"0","mode":"0"},"MAX_SPEED_DISPLAY":10,"MIN_SPEED_DISPLAY":1.5,"MAX_WELD_V_DISPLAY":23};
-        // var list ={"nowTypeList":[{"typeName":"MODE","chooseKey":"0","comList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}],"inchComList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}]}],"weldType":"migman","weldTypeNum":3,"SPEED_DISPLAY":"61","V_WELDING":"200","INDUCTANCE":"0","initBean":{"unit":"1","pfc":"0","weldStatus":"0","hotStatus":"0","flowStatus":"0","empty1":"0","empty2":"1","mode":"0"},"MAX_SPEED_DISPLAY":40,"MIN_SPEED_DISPLAY":1.5,"MAX_WELD_V_DISPLAY":23}
-        var list  ={};
-        if(this.pageBackTo=='/memoryManage'){//来自momery页
-            list  =this.$store.state.memoryInfo;
-            console.log(list)
-        }else{
-            list  =this.$store.state.rstInfo;
-        }
-       
-        if(list.initBean.unit==1){
-                this.UnitFlag=1;
-                this.rulerNumAtr =this.rulerInchNumAtr;
-                this.actualNum = '24GA'
-        }else{
-            this.actualNum = '0.6mm'
-            this.UnitFlag=0;
-        }
-        this.isReadyFlag =list.initBean.isReadyFlag;//是否焊接准备完毕
-         //电感量
-        this.inducanceValue = list.INDUCTANCE;
-        if(list.RECOMMEND_INDUCTANCE<=this.inducanceValue){
-            this.overInducanceFlag=true;
-        }
-        // alert('list.weldTypeNum'+list.weldTypeNum);
-        this.nowModalTypeId =list.weldTypeNum;//后退回去时用
-        this.nowTypeList =list.nowTypeList;
-        this.min = list.MIN_SPEED_DISPLAY;//最小送丝速度
-        this.max = list.MAX_SPEED_DISPLAY;//要根据单位区分
-        this.nowPosionX=list.SPEED_DISPLAY/10;
-        this.oldPosionX =this.nowPosionX;
-             //送丝速度初始化  推荐值正负10即可
-            // this.diffMin =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)-9))/10;
-            // this.diffMax =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)+9))/10;
-            this.diffMin =this.min;
-            this.diffMax =this.max;
-            if(this.diffMax>this.max){
-                this.diffMax=this.max;
-            }else if(this.diffMin< this.min){
-                this.diffMin= this.min;
-            }
-            this.block =this.max-this.min;
-        //电压初始化  推荐值正负10即可
-        this.min2=10;
-        this.max2 =list.MAX_WELD_V_DISPLAY;
-        this.nowPosionX2 =list.V_WELDING/10;
-        // alert(this.nowPosionX2)
-        this.oldNowPosionX2 =this.nowPosionX2;
-             //电压初始化  推荐值正负20即可
-            // this.diffMin2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)-20))/10;
-            // this.diffMax2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)+20))/10;
-            this.diffMin2 =this.min2;
-            this.diffMax2 =this.max2;
-            if(this.diffMax2>this.max2){
-                this.diffMax2=this.max2;
-            }else if(this.diffMin2< this.min2){
-                this.diffMin2= this.min2;
-            }
-            this.block2 =this.max2-this.min2;
-            
-    }
-    else if(this.typeName=='MIGSYN'){
+   if(this.typeName=='MIGSYN'){
         this.$route.query.nowModalTypeId =0;
         // var list ={"nowTypeList":[{"typeName":"MODE","chooseKey":"0","comList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}],"inchComList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}]},{"typeName":"MATERIAL","chooseKey":"0","comList":[{"id":0,"key":"FE","value":"FE"},{"id":1,"key":"SS","value":"SS"},{"id":2,"key":"AL","value":"AL"},{"id":3,"key":"FCAW-S","value":"FCAW-S"},{"id":4,"key":"FCAW-G","value":"FCAW-G"}],"inchComList":[{"id":0,"key":"FE","value":"FE"},{"id":1,"key":"SS","value":"SS"},{"id":2,"key":"AL","value":"AL"},{"id":3,"key":"FCAW-S","value":"FCAW-S"},{"id":4,"key":"FCAW-G","value":"FCAW-G"}]},{"typeName":"GAS","chooseKey":"0","comList":[{"id":0,"key":"CO2","value":"CO2"},{"id":1,"key":"MIX","value":"MIX"}],"inchComList":[{"id":0,"key":"CO2","value":"CO2"},{"id":1,"key":"MIX","value":"MIX"}]},{"typeName":"DIAMETER","chooseKey":"0","comList":[{"id":0,"key":"6MM","value":"0.6mm"},{"id":1,"key":"8MM","value":"0.8mm"},{"id":2,"key":"9MM","value":"0.9mm"},{"id":3,"key":"10MM","value":"1.0mm"},{"id":4,"key":"12MM","value":"1.2mm"}],"inchComList":[{"id":0,"key":"6MM","value":".023\""},{"id":1,"key":"8MM","value":".030\""},{"id":2,"key":"9MM","value":".035\""},{"id":3,"key":"10MM","value":".040\""},{"id":4,"key":"12MM","value":".045\""}]},{"typeName":"THICKNESS","chooseKey":"0","comList":[{"id":0,"key":"6MM","value":"0.6mm"},{"id":1,"key":"7MM","value":"0.7mm"},{"id":2,"key":"9MM","value":"0.9mm"},{"id":3,"key":"12MM","value":"1.2mm"},{"id":4,"key":"16MM","value":"1.6mm"},{"id":5,"key":"21MM","value":"2.1mm"},{"id":6,"key":"28MM","value":"2.8mm"},{"id":7,"key":"34MM","value":"3.4mm"},{"id":8,"key":"48MM","value":"4.8mm"},{"id":9,"key":"64MM","value":"6.4mm"},{"id":10,"key":"80MM","value":"8.0mm"},{"id":11,"key":"95MM","value":"9.5mm"},{"id":12,"key":"110MM","value":"11mm"},{"id":13,"key":"127MM","value":"12.7mm"}],"inchComList":[{"id":0,"key":"6MM","value":"24GA"},{"id":1,"key":"7MM","value":"22GA"},{"id":2,"key":"9MM","value":"20GA"},{"id":3,"key":"12MM","value":"18GA"},{"id":4,"key":"16MM","value":"16GA"},{"id":5,"key":"21MM","value":"14GA"},{"id":6,"key":"28MM","value":"12GA"},{"id":7,"key":"34MM","value":"1/8\""},{"id":8,"key":"48MM","value":"3/16\""},{"id":9,"key":"64MM","value":"1/4\""},{"id":10,"key":"80MM","value":"5/16\""},{"id":11,"key":"95MM","value":"3/8\""},{"id":12,"key":"110MM","value":"7/16\""},{"id":13,"key":"127MM","value":"1/2\""}]}],"weldType":"migSyn","INDUCTANCE":"0","RECOMMEND_INDUCTANCE":"0","RECOMMEND_SPEED_DISPLAY":"60","SPEED_DISPLAY":"61","RECOMMEND_V_WELDING":"180","V_WELDING":"200","MIG_MIN_THICHNESS":"0","MIG_MAX_THICHNESS":"13","initBean":{"unit":"0","pfc":"0","weldStatus":"0","hotStatus":"0","flowStatus":"0","empty1":"0","empty2":"0","mode":"0"},"MAX_SPEED_DISPLAY":10,"MIN_SPEED_DISPLAY":1.5,"MAX_WELD_V_DISPLAY":23,"MIG_MATERIAL":"0"};
         // var list ={"nowTypeList":[{"typeName":"MODE","chooseKey":"2T","comList":[{"key":"2T","value":"2T"},{"key":"4T","value":"4T"}],"inchComList":[{"key":"2T","value":"2T"},{"key":"4T","value":"4T"}]},{"typeName":"MATERIAL","chooseKey":"FE","comList":[{"key":"FE","value":"FE"},{"key":"SS","value":"SS"},{"key":"AL","value":"AL"},{"key":"FCAW-S","value":"FCAW-S"},{"key":"FCAW-G","value":"FCAW-G"}],"inchComList":[{"key":"FE","value":"FE"},{"key":"SS","value":"SS"},{"key":"AL","value":"AL"},{"key":"FCAW-S","value":"FCAW-S"},{"key":"FCAW-G","value":"FCAW-G"}]},{"typeName":"GAS","chooseKey":"CO2","comList":[{"key":"MIX","value":"MIX"},{"key":"CO2","value":"CO2"}],"inchComList":[{"key":"MIX","value":"MIX"},{"key":"CO2","value":"CO2"}]},{"typeName":"DIAMETER","chooseKey":"6MM","comList":[{"key":"6MM","value":"0.6mm"},{"key":"8MM","value":"0.8mm"},{"key":"9MM","value":"0.9mm"},{"key":"10MM","value":"1.0mm"},{"key":"12MM","value":"1.2mm"}],"inchComList":[{"key":"6MM","value":".023\""},{"key":"8MM","value":".030\""},{"key":"9MM","value":".035\""},{"key":"10MM","value":".040\""},{"key":"12MM","value":".045\""}]},{"typeName":"THICKNESS","chooseKey":"0","comList":[{"id":0,"key":"6MM","value":"0.6mm"},{"id":1,"key":"7MM","value":"0.7mm"},{"id":2,"key":"9MM","value":"0.9mm"},{"id":3,"key":"12MM","value":"1.2mm"},{"id":4,"key":"16MM","value":"1.6mm"},{"id":5,"key":"21MM","value":"2.1mm"},{"id":6,"key":"28MM","value":"2.8mm"},{"id":7,"key":"34MM","value":"3.4mm"},{"id":8,"key":"48MM","value":"4.8mm"},{"id":9,"key":"64MM","value":"6.4mm"},{"id":10,"key":"80MM","value":"8.0mm"},{"id":11,"key":"95MM","value":"9.5mm"},{"id":12,"key":"110MM","value":"11mm"},{"id":13,"key":"127MM","value":"12.7mm"}],"inchComList":[{"id":0,"key":"6MM","value":"24GA"},{"id":1,"key":"7MM","value":"22GA"},{"id":2,"key":"9MM","value":"20GA"},{"id":3,"key":"12MM","value":"18GA"},{"id":4,"key":"16MM","value":"16GA"},{"id":5,"key":"21MM","value":"14GA"},{"id":6,"key":"28MM","value":"12GA"},{"id":7,"key":"34MM","value":"1/8\""},{"id":8,"key":"48MM","value":"3/16\""},{"id":9,"key":"64MM","value":"1/4\""},{"id":10,"key":"80MM","value":"5/16\""},{"id":11,"key":"95MM","value":"3/8\""},{"id":12,"key":"110MM","value":"7/16\""},{"id":13,"key":"127MM","value":"1/2\""}]}],"weldType":"migSyn","MIG_MIN_THICHNESS":"2","MIG_MAX_THICHNESS":"5","INDUCTANCE":"10","RECOMMEND_INDUCTANCE":"15","SPEED_DISPLAY":"20","RECOMMEND_SPEED_DISPLAY":"40","V_WELDING":"150","RECOMMEND_V_WELDING":"189","initBean":{"unit":"1","pfc":"0","weldStatus":"0","hotStatus":"0","flowStatus":"0","empty1":"0","empty2":"1","mode":"0"},"MAX_SPEED_DISPLAY":40,"MIN_SPEED_DISPLAY":1.5,"MAX_WELD_V_DISPLAY":23}
@@ -1289,6 +1226,7 @@ export default {
         }else{
             list  =this.$store.state.rstInfo;
         }
+        console.log('this.pageBackTo'+this.pageBackTo)
         //电感量
         this.inducanceValue = list.INDUCTANCE;
         if(list.RECOMMEND_INDUCTANCE<=this.inducanceValue){
@@ -1297,6 +1235,7 @@ export default {
         if(true){
             this.firstInit=false;
             //滑动thinkness赋值
+            console.log(list)
             this.buildRulerArrRange(list.MIG_MIN_THICHNESS,list.MIG_MAX_THICHNESS);
             
             //最新的
@@ -1363,7 +1302,7 @@ export default {
     //初始化 电流控制器
     this.initElecticCurrent();
     //初始化 电压控制器
-    this.initVotalage();
+    // this.initVotalage();
     //初始化滑动选择器 不在这里初始化
     // this.sliderParentInit();
     },

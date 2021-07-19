@@ -269,6 +269,57 @@ Array.prototype.in_array = function (element) {
                         ]
 
                     }
+                ],
+                /** CUT模式**/
+                cutTypeList:[
+                    {
+                        typeName:'MODE',
+                        chooseKey:'Normal',//默认选中
+                        comList:[
+                            {id:0,key:'Normal',value:'Normal'},{id:1,key:'Grid',value:'Grid'},
+                            {id:2,key:'Gouging',value:'Gouging'},{id:3,key:'Marking',value:'Marking'}
+                        ],
+                        inchComList:[
+                            {id:0,key:'Normal',value:'Normal'},{id:1,key:'Grid',value:'Grid'},
+                            {id:2,key:'Gouging',value:'Gouging'},{id:3,key:'Marking',value:'Marking'}
+                        ]
+                    },{
+                        typeName:'MATERIAL',
+                        chooseKey:'FE',//默认选中
+                        comList:[
+                            {id:0,key:'Fe',value:'Fe'},{id:1,key:'Ss',value:'Ss'},{id:2,key:'AI',value:'AI'}
+                        ],
+                        inchComList:[
+                            {id:0,key:'Fe',value:'Fe'},{id:1,key:'Ss',value:'Ss'},{id:2,key:'AI',value:'AI'}
+                        ]
+                    },{
+                        // typeName:'GAS',
+                        // chooseKey:'Ar',//默认选中
+                        // comList:[
+                        //     {key:'Ar',value:'Ar'},{key:'MIX',value:'MIX'},{key:'CO2',value:'CO2'}
+                        // ]
+                        //和设计稿有出入
+                        typeName:'GAS',
+                        chooseKey:'BAR',//默认选中
+                        comList:[
+                            {id:0,key:'BAR',value:'BAR'},{id:1,key:'MPA',value:'MPA'},{id:2,key:'PSI',value:'PSI'}
+                        ],
+                        inchComList:[
+                            {id:0,key:'BAR',value:'BAR'},{id:1,key:'MPA',value:'MPA'},{id:2,key:'PSI',value:'PSI'}
+                        ]
+                    },{
+                        typeName:'THICKNESS',
+                        chooseKey:0,//默认选中
+                        comList:[
+                            {id:0,key:'6mm',value:'0.6mm'},{id:1,key:'7mm',value:'0.7mm'},{id:2,key:'9mm',value:'0.9mm'},{id:3,key:'12mm',value:'1.2mm'},{id:4,key:'16mm',value:'1.6mm'},{id:5,key:'21mm',value:'2.1mm'},{id:6,key:'28mm',value:'2.8mm'},{id:7,key:'34mm',value:'3.4mm'},{id:8,key:'48mm',value:'4.8mm'},{id:9,key:'64mm',value:'6.4mm'},{id:10,key:'80mm',value:'8.0mm'},{id:11,key:'95mm',value:'9.5mm'}
+                            ,{id:12,key:'110mm',value:'11mm'},{id:13,key:'127mm',value:'12.7mm'}
+                        ],
+                        //单位切换inch
+                        inchComList:[
+                            {id:0,key:'6mm',value:'24GA'},{id:1,key:'7mm',value:'22GA'},{id:2,key:'9mm',value:'20GA'},{id:3,key:'12mm',value:'18GA'},{id:4,key:'16mm',value:'16GA'},{id:5,key:'21mm',value:'14GA'},{id:6,key:'28mm',value:'12GA'},{id:7,key:'34mm',value:'1/8"'},{id:8,key:'48mm',value:'3/16"'},{id:9,key:'64mm',value:'1/4"'},{id:10,key:'80mm',value:'5/16"'},{id:11,key:'95mm',value:'3/8"'}
+                            ,{id:12,key:'110mm',value:'7/16"'},{id:13,key:'127mm',value:'1/2"'}
+                        ]
+                    }
                 ]
             }
             //焊接指令集合 crc值
@@ -738,7 +789,7 @@ Array.prototype.in_array = function (element) {
                 console.log(data)
                 var rstInfo ={};
                 //请求mig syn模式数据
-                if(compareString(dirctiveType,weldDirctive.migSyn) || compareString(dirctiveType,weldDirctive.cut)){
+                if(compareString(dirctiveType,weldDirctive.migSyn)){
                     var strArr =data.split(' ');
                     console.log(1111112222333);
                     console.log(strArr);
@@ -846,7 +897,61 @@ Array.prototype.in_array = function (element) {
                     console.log(temp10)
                     rstInfo = newTigmanDataBuild(temp10,weldDirctive.tigMan,pageFrom,_this);
                     console.log(rstInfo)
+                    
+                }else if(compareString(dirctiveType,weldDirctive.cut)){
+                    
+                    //等离子新模式modbus
+                    rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
+                    rstInfo.weldType='MIGSYN';
+                    rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.migsyn.newIndex;//这个和首页里的配对
+                    rstInfo.nowTypeList.forEach(element => {
+                        switch (element.typeName) {
+                            case 'MODE':
+                                // element.chooseKey=setWeldParams('MODE',byte1Bean.mode);
+                                element.chooseKey=0;
+                                break;
+                            case 'MATERIAL':
+                                element.chooseKey=0;
+                                // element.chooseKey=setWeldParams('MATERIAL',arrayList[3]);
+                                break;
+                            case 'GAS':
+                                // element.chooseKey=setWeldParams('GAS',arrayList[4]);
+                                element.chooseKey=0;
+                                break;
+                            case 'THICKNESS':
+                                element.chooseKey=0;
+                                // element.chooseKey=setWeldParams('THICKNESS',arrayList[6]);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                    rstInfo.INDUCTANCE =10;//机器上发不能改 不知道干嘛的
+                    //bit0-3
+                    rstInfo.RECOMMEND_INDUCTANCE =10;//机器上发不能改 不知道干嘛的
+                    rstInfo.RECOMMEND_SPEED_DISPLAY=12;//推荐值
+                    rstInfo.SPEED_DISPLAY =16;//送丝速度
+                    rstInfo.RECOMMEND_V_WELDING=15;
+                    rstInfo.V_WELDING=20;
+                    //其他属性不需要 赋值直接赋值 到时再取
+                    rstInfo.THINKNESS_VALUE = 0;
+                    rstInfo.MIG_MIN_THICHNESS=0;//最小厚度值
+                    rstInfo.MIG_MAX_THICHNESS=5;//最小厚度值
+                    //最大送丝速度
+                    rstInfo.MAX_SPEED_DISPLAY=100;
+                    //最小送丝速度
+                    rstInfo.MIN_SPEED_DISPLAY=17;
+                    //最大电压值
+                    rstInfo.MAX_WELD_V_DISPLAY=150;
+                    //mig_material 值 ==0 显示gas选项否则隐藏
+                    rstInfo.MIG_MATERIAL =0;
+
+                    rstInfo.initBean={
+                        unit:0,
+
+                    };//包含很多焊接状态和单位等
                 }
+                console.log(rstInfo)
                 return rstInfo;
             }
             //获取指令
