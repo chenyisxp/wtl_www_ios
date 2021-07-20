@@ -926,31 +926,26 @@ Array.prototype.in_array = function (element) {
                                 break;
                         }
                     });
-                    rstInfo.INDUCTANCE =10;//机器上发不能改 不知道干嘛的
-                    //bit0-3
-                    rstInfo.RECOMMEND_INDUCTANCE =10;//机器上发不能改 不知道干嘛的
-                    rstInfo.RECOMMEND_SPEED_DISPLAY=12;//推荐值
-                    rstInfo.SPEED_DISPLAY =16;//送丝速度
-                    rstInfo.RECOMMEND_V_WELDING=15;
-                    rstInfo.V_WELDING=20;
+                    rstInfo.INDUCTANCE =10;//机器上发不能改 不知道干嘛的                    
+
+
                     //其他属性不需要 赋值直接赋值 到时再取
                     rstInfo.THINKNESS_VALUE = 0;
                     rstInfo.MIG_MIN_THICHNESS=0;//最小厚度值
                     rstInfo.MIG_MAX_THICHNESS=5;//最小厚度值
-                    //最大送丝速度
-                    rstInfo.MAX_SPEED_DISPLAY=100;
-                    //最小送丝速度
-                    rstInfo.MIN_SPEED_DISPLAY=17;
-                    //最大电压值
-                    rstInfo.MAX_WELD_V_DISPLAY=150;
                     //mig_material 值 ==0 显示gas选项否则隐藏
                     rstInfo.MIG_MATERIAL =0;
-
+                    rstInfo.CUT_RECOMMEND_CURRENT =40;//推荐电流
+                    rstInfo.CUT_CURRENT_VAL=40;
+                    rstInfo.CUT_MIN_CUR=10;
+                    rstInfo.CUT_MAX_CUR=200;//2019.07.29
                     rstInfo.initBean={
                         unit:0,
 
                     };//包含很多焊接状态和单位等
                 }
+                
+                store.state.rstInfo = rstInfo;
                 console.log(rstInfo)
                 return rstInfo;
             }

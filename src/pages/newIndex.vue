@@ -469,7 +469,7 @@ export default {
                   that.go('/weld_mma');
                 }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode){
                   that.$store.state.saveManagePageTo='/weld_cut';
-                  that.go('/weld_cut?type=MIGSYN');
+                  that.go('/weld_cut');
                 }else{
                   that.$store.state.saveManagePageTo='/weld_common';
                   that.$store.state.saveManagePageToName=rst.weldType

@@ -5,7 +5,7 @@
             <span class="setupyi">SET UP</span>
         </div> -->
         <!-- :typeName="typeName" -->
-        <Head :wantTo="'/newIndex'" :typeName="'PLASMA'" :pageFrom="'/weld_common'" :nowModalTypeId="nowModalTypeId"></Head>
+        <Head :wantTo="'/newIndex'" :typeName="typeName" :pageFrom="'/weld_common'" :nowModalTypeId="nowModalTypeId"></Head>
         <div class="mmp" ref="mmpId" id="idid">    
                 <!-- <div style="height:100px;background: red;" @click="handleTestClick">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div> 
                 <div style="height:100px;background: blue;" @click="handleTestClick2">测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存测试请求内存</div>  -->
@@ -124,12 +124,12 @@
                 </Card> -->
                 <div class="title">
                     <div class="le">
-                        <img v-if="nowtypename=='MATERIAL'" src="../../assets/images/blue_weld_icon_new_meterial.png"> 
+                        <img v-if="nowtypename=='MATERIAL'" src="../../assets/images/cut_meterial.png"> 
                         <img v-if="nowtypename=='DIAMETER'" src="../../assets/images/blue_mig_weld_icon_new_diameter.png"> 
                         <img v-if="nowtypename=='POLATRITY'" src="../../assets/images/weld_icon_polatrity.png"> 
                         <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
                         
-                        <img v-if="nowtypename=='GAS'" src="../../assets/images/blue_weld_icon_new_gas.png"> 
+                        <img v-if="nowtypename=='GAS'" src="../../assets/images/cut_gas.png"> 
                     </div>
                     <div class="ri">{{changeStrShowName(nowtypename)}}</div>
                 </div>
@@ -148,7 +148,7 @@
             <div class="down thinkness"  v-if="downshowFlag && nowtypename=='THICKNESS'" ref="dth" :class="closeClass?'transdown':''">
                     <div class="d-t-name">
                         <div class="t-icon">
-                            <img src="../../assets/images/blue_weld_icon_new_thinkness.png">
+                            <img src="../../assets/images/cut_thinkness.png">
                         </div>
                         <div class="t-name">
                             Thinkness
@@ -1216,8 +1216,8 @@ export default {
     //滑动弹层应该是关闭的
     this.downshowFlag=false;
     this.hideFlag=false;
-   if(this.typeName=='MIGSYN'){
-        this.$route.query.nowModalTypeId =0;
+   if(true){
+        this.$route.query.nowModalTypeId =5;
         // var list ={"nowTypeList":[{"typeName":"MODE","chooseKey":"0","comList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}],"inchComList":[{"id":0,"key":"2T","value":"2T"},{"id":1,"key":"4T","value":"4T"}]},{"typeName":"MATERIAL","chooseKey":"0","comList":[{"id":0,"key":"FE","value":"FE"},{"id":1,"key":"SS","value":"SS"},{"id":2,"key":"AL","value":"AL"},{"id":3,"key":"FCAW-S","value":"FCAW-S"},{"id":4,"key":"FCAW-G","value":"FCAW-G"}],"inchComList":[{"id":0,"key":"FE","value":"FE"},{"id":1,"key":"SS","value":"SS"},{"id":2,"key":"AL","value":"AL"},{"id":3,"key":"FCAW-S","value":"FCAW-S"},{"id":4,"key":"FCAW-G","value":"FCAW-G"}]},{"typeName":"GAS","chooseKey":"0","comList":[{"id":0,"key":"CO2","value":"CO2"},{"id":1,"key":"MIX","value":"MIX"}],"inchComList":[{"id":0,"key":"CO2","value":"CO2"},{"id":1,"key":"MIX","value":"MIX"}]},{"typeName":"DIAMETER","chooseKey":"0","comList":[{"id":0,"key":"6MM","value":"0.6mm"},{"id":1,"key":"8MM","value":"0.8mm"},{"id":2,"key":"9MM","value":"0.9mm"},{"id":3,"key":"10MM","value":"1.0mm"},{"id":4,"key":"12MM","value":"1.2mm"}],"inchComList":[{"id":0,"key":"6MM","value":".023\""},{"id":1,"key":"8MM","value":".030\""},{"id":2,"key":"9MM","value":".035\""},{"id":3,"key":"10MM","value":".040\""},{"id":4,"key":"12MM","value":".045\""}]},{"typeName":"THICKNESS","chooseKey":"0","comList":[{"id":0,"key":"6MM","value":"0.6mm"},{"id":1,"key":"7MM","value":"0.7mm"},{"id":2,"key":"9MM","value":"0.9mm"},{"id":3,"key":"12MM","value":"1.2mm"},{"id":4,"key":"16MM","value":"1.6mm"},{"id":5,"key":"21MM","value":"2.1mm"},{"id":6,"key":"28MM","value":"2.8mm"},{"id":7,"key":"34MM","value":"3.4mm"},{"id":8,"key":"48MM","value":"4.8mm"},{"id":9,"key":"64MM","value":"6.4mm"},{"id":10,"key":"80MM","value":"8.0mm"},{"id":11,"key":"95MM","value":"9.5mm"},{"id":12,"key":"110MM","value":"11mm"},{"id":13,"key":"127MM","value":"12.7mm"}],"inchComList":[{"id":0,"key":"6MM","value":"24GA"},{"id":1,"key":"7MM","value":"22GA"},{"id":2,"key":"9MM","value":"20GA"},{"id":3,"key":"12MM","value":"18GA"},{"id":4,"key":"16MM","value":"16GA"},{"id":5,"key":"21MM","value":"14GA"},{"id":6,"key":"28MM","value":"12GA"},{"id":7,"key":"34MM","value":"1/8\""},{"id":8,"key":"48MM","value":"3/16\""},{"id":9,"key":"64MM","value":"1/4\""},{"id":10,"key":"80MM","value":"5/16\""},{"id":11,"key":"95MM","value":"3/8\""},{"id":12,"key":"110MM","value":"7/16\""},{"id":13,"key":"127MM","value":"1/2\""}]}],"weldType":"migSyn","INDUCTANCE":"0","RECOMMEND_INDUCTANCE":"0","RECOMMEND_SPEED_DISPLAY":"60","SPEED_DISPLAY":"61","RECOMMEND_V_WELDING":"180","V_WELDING":"200","MIG_MIN_THICHNESS":"0","MIG_MAX_THICHNESS":"13","initBean":{"unit":"0","pfc":"0","weldStatus":"0","hotStatus":"0","flowStatus":"0","empty1":"0","empty2":"0","mode":"0"},"MAX_SPEED_DISPLAY":10,"MIN_SPEED_DISPLAY":1.5,"MAX_WELD_V_DISPLAY":23,"MIG_MATERIAL":"0"};
         // var list ={"nowTypeList":[{"typeName":"MODE","chooseKey":"2T","comList":[{"key":"2T","value":"2T"},{"key":"4T","value":"4T"}],"inchComList":[{"key":"2T","value":"2T"},{"key":"4T","value":"4T"}]},{"typeName":"MATERIAL","chooseKey":"FE","comList":[{"key":"FE","value":"FE"},{"key":"SS","value":"SS"},{"key":"AL","value":"AL"},{"key":"FCAW-S","value":"FCAW-S"},{"key":"FCAW-G","value":"FCAW-G"}],"inchComList":[{"key":"FE","value":"FE"},{"key":"SS","value":"SS"},{"key":"AL","value":"AL"},{"key":"FCAW-S","value":"FCAW-S"},{"key":"FCAW-G","value":"FCAW-G"}]},{"typeName":"GAS","chooseKey":"CO2","comList":[{"key":"MIX","value":"MIX"},{"key":"CO2","value":"CO2"}],"inchComList":[{"key":"MIX","value":"MIX"},{"key":"CO2","value":"CO2"}]},{"typeName":"DIAMETER","chooseKey":"6MM","comList":[{"key":"6MM","value":"0.6mm"},{"key":"8MM","value":"0.8mm"},{"key":"9MM","value":"0.9mm"},{"key":"10MM","value":"1.0mm"},{"key":"12MM","value":"1.2mm"}],"inchComList":[{"key":"6MM","value":".023\""},{"key":"8MM","value":".030\""},{"key":"9MM","value":".035\""},{"key":"10MM","value":".040\""},{"key":"12MM","value":".045\""}]},{"typeName":"THICKNESS","chooseKey":"0","comList":[{"id":0,"key":"6MM","value":"0.6mm"},{"id":1,"key":"7MM","value":"0.7mm"},{"id":2,"key":"9MM","value":"0.9mm"},{"id":3,"key":"12MM","value":"1.2mm"},{"id":4,"key":"16MM","value":"1.6mm"},{"id":5,"key":"21MM","value":"2.1mm"},{"id":6,"key":"28MM","value":"2.8mm"},{"id":7,"key":"34MM","value":"3.4mm"},{"id":8,"key":"48MM","value":"4.8mm"},{"id":9,"key":"64MM","value":"6.4mm"},{"id":10,"key":"80MM","value":"8.0mm"},{"id":11,"key":"95MM","value":"9.5mm"},{"id":12,"key":"110MM","value":"11mm"},{"id":13,"key":"127MM","value":"12.7mm"}],"inchComList":[{"id":0,"key":"6MM","value":"24GA"},{"id":1,"key":"7MM","value":"22GA"},{"id":2,"key":"9MM","value":"20GA"},{"id":3,"key":"12MM","value":"18GA"},{"id":4,"key":"16MM","value":"16GA"},{"id":5,"key":"21MM","value":"14GA"},{"id":6,"key":"28MM","value":"12GA"},{"id":7,"key":"34MM","value":"1/8\""},{"id":8,"key":"48MM","value":"3/16\""},{"id":9,"key":"64MM","value":"1/4\""},{"id":10,"key":"80MM","value":"5/16\""},{"id":11,"key":"95MM","value":"3/8\""},{"id":12,"key":"110MM","value":"7/16\""},{"id":13,"key":"127MM","value":"1/2\""}]}],"weldType":"migSyn","MIG_MIN_THICHNESS":"2","MIG_MAX_THICHNESS":"5","INDUCTANCE":"10","RECOMMEND_INDUCTANCE":"15","SPEED_DISPLAY":"20","RECOMMEND_SPEED_DISPLAY":"40","V_WELDING":"150","RECOMMEND_V_WELDING":"189","initBean":{"unit":"1","pfc":"0","weldStatus":"0","hotStatus":"0","flowStatus":"0","empty1":"0","empty2":"1","mode":"0"},"MAX_SPEED_DISPLAY":40,"MIN_SPEED_DISPLAY":1.5,"MAX_WELD_V_DISPLAY":23}
         var list  ={};
@@ -1278,25 +1278,25 @@ export default {
             }
         });
        
-        //最小speed_display----送丝速度
-        this.min = list.MIN_SPEED_DISPLAY;
-        this.max = list.MAX_SPEED_DISPLAY;//要根据单位区分
-        this.nowPosionX=list.SPEED_DISPLAY/10;
+        //电流
+        this.min = list.CUT_MIN_CUR;
+        this.max = list.CUT_MAX_CUR;//要根据单位区分
+        this.nowPosionX=list.CUT_CURRENT_VAL;
         this.oldPosionX =this.nowPosionX;
              //送丝速度初始化  推荐值正负10即可
-            this.diffMin =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)-9))/10;
-            this.diffMax =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)+9))/10;
+            this.diffMin =Math.round((parseInt(list.CUT_RECOMMEND_CURRENT)-20));
+            this.diffMax =Math.round((parseInt(list.CUT_RECOMMEND_CURRENT)+20));
             this.block =this.max-this.min;
         //电压初始化  推荐值正负10即可
-        this.min2=10;
-        this.max2 =list.MAX_WELD_V_DISPLAY;
-        this.nowPosionX2 =list.V_WELDING/10;
-        this.oldNowPosionX2 =this.nowPosionX2;
-             //电压初始化  推荐值正负20即可
-            this.diffMin2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)-20))/10;
-            this.diffMax2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)+20))/10;
-            this.block2 =this.max2-this.min2; 
-       this.sepecialDiameter();    
+        // this.min2=10;
+        // this.max2 =list.MAX_WELD_V_DISPLAY;
+        // this.nowPosionX2 =list.V_WELDING/10;
+        // this.oldNowPosionX2 =this.nowPosionX2;
+        //      //电压初始化  推荐值正负20即可
+        //     this.diffMin2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)-20))/10;
+        //     this.diffMax2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)+20))/10;
+        //     this.block2 =this.max2-this.min2; 
+    //    this.sepecialDiameter();    
     }
   
     //初始化 电流控制器
@@ -1345,7 +1345,7 @@ export default {
         
     //   alert( this.$store.state.getConnectStatus);
     this.pageBackTo =this.$route.query.pageBackTo;
-    this.typeName =this.$route.query.type;
+    this.typeName ='CUT';
     //初始化
     this.initData();
     // if (window.history && window.history.pushState) {
@@ -1502,12 +1502,12 @@ export default {
             background-position: left center;
         }
         .typename.MATERIAL{
-            background: url(../../assets/images/weld_icon_new_meterial.png) no-repeat;
+            background: url(../../assets/images/cut_meterial.png) no-repeat;
             background-size: 40px;
             background-position: left center;
         }
         .typename.GAS{
-            background: url(../../assets/images/weld_icon_new_gas.png) no-repeat;
+            background: url(../../assets/images/cut_gas.png) no-repeat;
             background-size: 40px;
             background-position: left center;
         }
@@ -1517,7 +1517,7 @@ export default {
             background-position: left center;
         }
         .typename.THICKNESS{
-            background: url(../../assets/images/weld_icon_new_thinkness.png) no-repeat;
+            background: url(../../assets/images/cut_thinkness.png) no-repeat;
             background-size: 40px;
             background-position: left center;
         }

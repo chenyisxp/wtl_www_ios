@@ -69,6 +69,9 @@ export default {
             case self.GLOBAL_CONFIG.callWeldTypeData.mma.newIndex://mma
                 self.$router.push({ path: '/weld_mma', query:{type:'MMA',pageBackTo:'/newIndex'} });
                 break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.cut.newIndex://mma
+                self.$router.push({ path: '/weld_cut', query:{type:'CUT',pageBackTo:'/newIndex'} });
+                break;
             default:
                 break;
         }

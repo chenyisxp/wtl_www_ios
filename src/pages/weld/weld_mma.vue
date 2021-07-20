@@ -1183,7 +1183,7 @@ export default {
         }
   },
   mounted: function () {
-    this.$route.query.nowModalTypeId=4;
+    this.$route.query.nowModalTypeId=5;
     this.typeName ='MMA';
     this.pageBackTo =this.$route.query.pageBackTo;
     this.initFuc();
