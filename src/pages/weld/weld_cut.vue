@@ -67,10 +67,7 @@
                         </div>
                     </div>
                     <div class="rdown" v-if="UnitFlag==0">
-                        {{min}}~{{max}}m/min
-                    </div>
-                    <div class="rdown" v-if="UnitFlag==1">
-                        {{min}}~{{max}}inch/min
+                        {{min}}~{{max}}A
                     </div>
                 </div>
                 <!-- 电压 -->
@@ -804,7 +801,7 @@ export default {
                 // }
             }
         });
-       this.specialGasRule(type,this.MIG_MATERIAL);
+    //    this.specialGasRule(type,this.MIG_MATERIAL);
     },
     specialGasRule(type,chooseTempKey){
         console.log(type,chooseTempKey)
@@ -1271,12 +1268,12 @@ export default {
         this.MIG_MATERIAL =list.MIG_MATERIAL;
         this.nowTypeList =list.nowTypeList;
         //特殊处理过滤gas 显示
-        this.nowTypeList.forEach(element => {
-            console.log(element)
-            if(element.typeName=='MATERIAL'){
-               this.specialGasRule('MATERIAL',element.chooseKey);
-            }
-        });
+        // this.nowTypeList.forEach(element => {
+        //     console.log(element)
+        //     if(element.typeName=='MATERIAL'){
+        //        this.specialGasRule('MATERIAL',element.chooseKey);
+        //     }
+        // });
        
         //电流
         this.min = list.CUT_MIN_CUR;
