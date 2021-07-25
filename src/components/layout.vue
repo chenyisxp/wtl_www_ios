@@ -34,6 +34,7 @@ import Vue from 'vue'
 import { Toast } from 'mint-ui'
 import Loading from "@/components/base/Loading";
 import Connecting from "@/components/base/connectingPage";
+import { BASE_CONFIG } from '../lib/config/config'
 //安卓逻辑迁移 循环定时器 
 /**
  * 1、校验数据的当前状态
@@ -326,7 +327,7 @@ export default {
              
               this.globalSendMsgToIos("handleGetBleStateByLayout","","");
             }else{
-              let status = window.android?window.android.getConStatus():'';
+              let status = window.android?window.android.getConStatus():BASE_CONFIG.liulanqiConnect?'connected':'';
               this.$store.state.getConnectStatus = status;
               if(status == 'connected' && this.modbusSendTimes == 0 && this.modbusSendDataTimes<5){
                   //发出系统信息请求

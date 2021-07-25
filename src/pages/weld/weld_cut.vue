@@ -162,8 +162,8 @@
                         <div class="r-begin"></div>
                         <div class="r-end"></div>
                         <span class="snum" v-if="UnitFlag==0">0mm</span>
-                        <span class="enum" v-if="UnitFlag==0">13mm</span>
-                        <span class="snum" v-if="UnitFlag==1">12GA</span>
+                        <span class="enum" v-if="UnitFlag==0">21mm</span>
+                        <span class="snum" v-if="UnitFlag==1">0</span>
                         <span class="enum" v-if="UnitFlag==1">10/16"</span>
                     </div>
                     <div class="newContian" :style="{height:commonContainHeight+'px'}" ref="downLineSlider">
@@ -401,22 +401,26 @@ export default {
       sliderParentInit(){
         //初始化
         let self =this;
+        
     //    if(self.init()){
+        let vag =Math.round((self.commonContainHeight/210)*100)/100;
         if(true){
-          
+         
            if(this.UnitFlag==1){
+                
                 self.disNumAtr=[
-                    {num:'19GA',height:8.05},
-                    {num:'2/16"',height:37.95},
-                    {num:'5/16"',height:55.2},
-                    {num:'9/16"',height:36.8}
+                    {num:'ch01',height:Math.round((vag * 10)*10)/10},
+                    {num:'ch02',height:Math.round((vag * 50)*10)/10},
+                    {num:'ch03',height:Math.round((vag * 60)*10)/10},
+                    {num:'ch04',height:Math.round((vag * 60)*10)/10}
                 ]
            }else{
                 self.disNumAtr=[
-                   {num:'1mm',height:8.05},
-                    {num:'4mm',height:37.95},
-                    {num:'8mm',height:55.2},
-                    {num:'12mm',height:36.8}
+                    {num:'1mm',height:Math.round((vag * 10)*10)/10},
+                    {num:'6mm',height:Math.round((vag * 50)*10)/10},
+                    {num:'12mm',height:Math.round((vag * 60)*10)/10},
+                    {num:'18mm',height:Math.round((vag * 60)*10)/10}
+                    
                 ]
            }
             let mySlider = self.$refs.rulerMySlider;
@@ -498,17 +502,17 @@ export default {
        }else{
            if(this.UnitFlag==1){
                this.disNumAtr =[
-                    {num:'19GA',height:8.05},
-                    {num:'2/16"',height:37.95},
-                    {num:'5/16"',height:55.2},
-                    {num:'9/16"',height:36.8}
+                   {num:'ch01',height:Math.round((vag * 10)*10)/10},
+                    {num:'ch02',height:Math.round((vag * 50)*10)/10},
+                    {num:'ch03',height:Math.round((vag * 60)*10)/10},
+                    {num:'ch04',height:Math.round((vag * 60)*10)/10}
                ]
            }else {
                this.disNumAtr=[
-                    {num:'1mm',height:8.05},
-                    {num:'4mm',height:37.95},
-                    {num:'8mm',height:55.2},
-                    {num:'12mm',height:36.8}
+                     {num:'1mm',height:Math.round((vag * 10)*10)/10},
+                    {num:'6mm',height:Math.round((vag * 50)*10)/10},
+                    {num:'12mm',height:Math.round((vag * 60)*10)/10},
+                    {num:'18mm',height:Math.round((vag * 60)*10)/10}
                     
                 ]
            }
@@ -551,34 +555,6 @@ export default {
       change(){
            let cubeBox1 =  this.$refs.cubeBox1;
            cubeBox1.style.height =100+'px'
-      },
-      init(){
-          this.distanceBegin=0;
-          this.distanceEnd=13;
-          this.increaseNum=1;//增长的间隔数值
-          //控制显示的数值个数
-          var temp =0;
-          for(var i =0;i<30;i++){
-              if(temp==this.distanceBegin||temp==this.distanceEnd){
-                  temp+=this.increaseNum;
-                  continue;
-              }else{
-                if(this.increaseNum+temp>this.distanceEnd){
-                    break;
-                }else{
-                    this.disNumAtr.push(temp);
-                    temp+=this.increaseNum;
-                }
-              }
-             
-          }          
-           this.avgHeight =  Math.round(parseFloat(100/(this.disNumAtr.length+1)) * 100) / 100;
-           this.avgHeightValue =this.commonContainHeight*this.avgHeight/100;
-          //提示的文本居中 显示的计算
-          this.sTopValue =this.commonContainHeight * this.avgHeight/100 -7;
-          this.sTopCard=this.commonContainHeight * this.avgHeight/100-1;
-          return true;
-         
       },
       //滑动选择组件end
       modalChangeChecked(key){
@@ -681,7 +657,7 @@ export default {
             this.timerPosition1 = setTimeout(() => {
                     if(this.nowPosionX!=this.oldPosionX){
                         this.oldPosionX =this.nowPosionX;
-                        this.buildSliderChangeData(this.nowPosionX,'SPEED');
+                        this.buildSliderChangeData(this.nowPosionX,'WELDCUR');
                     }
             }, 1000);
         }
@@ -712,7 +688,7 @@ export default {
             this.timerPosition1 = setTimeout(() => {
                     if(this.nowPosionX!=this.oldPosionX){
                         this.oldPosionX =this.nowPosionX;
-                        this.buildSliderChangeData(this.nowPosionX,'SPEED');
+                        this.buildSliderChangeData(this.nowPosionX,'WELDCUR');
                     }
             }, 1000);
         }
@@ -916,9 +892,9 @@ export default {
             }
         }
         
-        if(type=='MATERIAL' || type=='GAS'){
-            this.sepecialDiameter();
-        }
+        // if(type=='MATERIAL' || type=='GAS'){
+        //     this.sepecialDiameter();
+        // }
        
 
     },
@@ -1064,7 +1040,7 @@ export default {
             })
             mySlider.addEventListener('touchend',(e)=>{//屏幕触摸结束事件
                 // 发送请求给ble告诉 修改了
-                this.buildSliderChangeData(this.nowPosionX,'SPEED');
+                this.buildSliderChangeData(this.nowPosionX,'WELDCUR');
             })
           
     },
@@ -1161,36 +1137,32 @@ export default {
             return;
         }else{
              let tempRulerNumAtrMap =  new Map([
-                [0,{num:'0.6mm',height:6,id:0}],
-                [1,{num:'0.7mm',height:7,id:1}],
-                [2,{num:'0.9mm',height:9,id:2}],
-                [3,{num:'1.2mm',height:12,id:3}],
-                [4,{num:'1.6mm',height:16,id:4}],
-                [5,{num:'2.1mm',height:21,id:5}],
-                [6,{num:'2.8mm',height:28,id:6}],
-                [7,{num:'3.4mm',height:34,id:7}],
-                [8,{num:'4.8mm',height:48,id:8}],
-                [9,{num:'6.4mm',height:64,id:9}],
-                [10,{num:'8.0mm',height:88,id:10}],
-                [11,{num:'9.5mm',height:95,id:11}],
-                [12,{num:'11.0mm',height:110,id:12}],
-                [13,{num:'12.7mm',height:127,id:13}]
+                [0,{num:'0.5mm',height:5,id:0}],
+                [1,{num:'1.0mm',height:10,id:1}],
+                [2,{num:'2.0mm',height:20,id:2}],
+                [3,{num:'3.0mm',height:30,id:3}],
+                [4,{num:'4.0mm',height:40,id:4}],
+                [5,{num:'5.0mm',height:50,id:5}],
+                [6,{num:'6.0mm',height:60,id:6}],
+                [7,{num:'8.0mm',height:80,id:7}],
+                [8,{num:'10.0mm',height:100,id:8}],
+                [9,{num:'12.0mm',height:120,id:9}],
+                [10,{num:'15.0mm',height:150,id:10}],
+                [11,{num:'20.0mm',height:200,id:11}]
             ]);
             let   tempRulerInchNumAtrMap=new Map([
-                [0,{num:'24GA',height:6,id:0}],
-                [1,{num:'22GA',height:7,id:1}],
-                [2,{num:'20GA',height:9,id:2}],
-                [3,{num:'18GA',height:12,id:3}],
-                [4,{num:'16GA',height:16,id:4}],
-                [5,{num:'14GA',height:21,id:5}],
-                [6,{num:'12GA',height:28,id:6}],
-                [7,{num:'1/8"',height:34,id:7}],
-                [8,{num:'3/16"',height:48,id:8}],
-                [9,{num:'1/4"',height:64,id:9}],
-                [10,{num:'5/16"',height:88,id:10}],
-                [11,{num:'3/8"',height:95,id:11}],
-                [12,{num:'7/16"',height:110,id:12}],
-                [13,{num:'1/2"',height:127,id:13}]
+                [0,{num:'24Ga',height:5,id:0}],
+                [1,{num:'18Ga',height:10,id:1}],
+                [2,{num:'14Ga',height:20,id:2}],
+                [3,{num:'12Ga',height:30,id:3}],
+                [4,{num:'10Ga',height:40,id:4}],
+                [5,{num:'3/16',height:50,id:5}],
+                [6,{num:'1/4',height:60,id:6}],
+                [7,{num:'5/16',height:80,id:7}],
+                [8,{num:'3/8',height:100,id:8}],
+                [9,{num:'1/2',height:120,id:9}],
+                [10,{num:'5/8',height:150,id:10}],
+                [11,{num:'3/4',height:200,id:11}]
             ]);
            while (i<=max)
             {
@@ -1202,10 +1174,11 @@ export default {
             }
         }
         
-      let vag =Math.round((this.commonContainHeight/130)*100)/100;
+      let vag =Math.round((this.commonContainHeight/210)*100)/100;
       this.rulerNumAtr.forEach(element => {
          element.height= Math.round((vag * element.height)*10)/10;
       });
+      console.log(this.rulerNumAtr)
     },
     initData(){
          this.wtlLog('weld_common','pageBackTo='+this.pageBackTo+',typeName'+this.typeName+',list'+JSON.stringify(this.$store.state.rstInfo));
@@ -1233,7 +1206,7 @@ export default {
             this.firstInit=false;
             //滑动thinkness赋值
             console.log(list)
-            this.buildRulerArrRange(list.MIG_MIN_THICHNESS,list.MIG_MAX_THICHNESS);
+            this.buildRulerArrRange(list.CUT_MIN_THICHNESS,list.CUT_MAX_THICHNESS);
             
             //最新的
             if(list.initBean.unit==1){

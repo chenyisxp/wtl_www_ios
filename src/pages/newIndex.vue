@@ -86,6 +86,7 @@ import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading"
 import {InterfaceService} from '@/services/api'
 import utils from '../lib/util'
+import { BASE_CONFIG } from '../lib/config/config'
 export default {
   name: '',
   components: {
@@ -788,6 +789,10 @@ export default {
               return this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode;
               // this.go('/weld_mma');
               break;
+          case 'E6'://cut
+              return this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode;
+              // this.go('/weld_mma');
+              break;
           default:
             break;
        }
@@ -851,7 +856,7 @@ export default {
           if(that.envType=='env_ios'){
             that.globalSendMsgToIos("handleGetBleStateByIndex","","");
           }else{
-            that.$store.state.getConnectStatus = window.android?window.android.getConStatus():''// window.android.getConStatus();
+            that.$store.state.getConnectStatus = window.android?window.android.getConStatus():BASE_CONFIG.liulanqiConnect?'connected':''// window.android.getConStatus();
             that.nowConnectStatus =that.$store.state.getConnectStatus;
             if(that.nowConnectStatus=='connected' && that.modbusSendTimes == 0 && that.modbusSendDataTimes<5){
                 //发出系统信息请求

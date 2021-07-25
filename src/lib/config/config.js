@@ -9,6 +9,7 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/minfront/mainactivity',
+    liulanqiConnect:true,
    ONLY_CONNECT_STATUS_TOAST:false,
    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
    LOGFLAG:false,
@@ -80,8 +81,8 @@ let BASE_CONFIG = {
             type:'1',//类型1代表模式数据
             parentName:'migsyn',
             name:'migsyn',
-            modbusAdr:'32',//起始地址 50
-            modbusNum:'1f',//数量 31个
+            modbusAdr:'0032',//起始地址 50
+            modbusNum:'001f',//数量 31个
             // modbusAdrMap:{
             //     '0A':'0003',//地址50  0-2   数量3字节  16进制03
             //     '3A':'0003',//地址58  8-10  数量3字节  16进制03
@@ -93,73 +94,101 @@ let BASE_CONFIG = {
             type:'1',//类型1代表模式数据
             parentName:'migman',
             name:'migman',
-            modbusAdr:'32',//起始地址 50
-            modbusNum:'0f',//数量 15个
+            modbusAdr:'0032',//起始地址 50
+            modbusNum:'000f',//数量 15个
             // modbusAdrMap:{
             //     '0A':'0003',//地址50 0-2
             //     '3A':'0007',//地址58 8-14
             // },//数据起始地址高位+数据起始地址低位
         },
+        '100500':{
+            type:'1',//类型1代表模式数据
+            parentName:'cut',
+            name:'cut',
+            modbusAdr:'0190',//起始地址 400
+            modbusNum:'0009'//数量 9个
+            // modbusNum:'002e'//数量 46个
+        },
         'A0':{
             parentName:'migsyn',
             name:'mode',
-            modbusAdr:'08'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'0008'//数据起始地址高位+数据起始地址低位
         },
         'A1':{
             parentName:'migsyn',
             name:'material',
-            modbusAdr:'09'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'0009'//数据起始地址高位+数据起始地址低位
         },
         'A2':{
             parentName:'migsyn',
             name:'gas',
-            modbusAdr:'0a'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'000a'//数据起始地址高位+数据起始地址低位
         },
         'A3':{
             parentName:'migsyn',
             name:'diameter',
-            modbusAdr:'0b'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'000b'//数据起始地址高位+数据起始地址低位
         },
         'A4':{
             parentName:'migsyn',
             name:'thickness',
-            modbusAdr:'0c'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'000c'//数据起始地址高位+数据起始地址低位
         },
         'A5':{
             parentName:'migsyn',
             name:'speed',
-            modbusAdr:'0d'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'000d'//数据起始地址高位+数据起始地址低位
         },
         'A6':{
             parentName:'migsyn',
             name:'v_welding',
-            modbusAdr:'0f'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'000f'//数据起始地址高位+数据起始地址低位
         },
         'AE':{
             parentName:'migsyn',
             name:'getready',
-            modbusAdr:'00'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'0000'//数据起始地址高位+数据起始地址低位
         },
         'B0':{
             parentName:'migman',
             name:'mode',
-            modbusAdr:'08'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'0008'//数据起始地址高位+数据起始地址低位
         },
         'B1':{
             parentName:'migman',
             name:'speed',
-            modbusAdr:'09'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'0009'//数据起始地址高位+数据起始地址低位
         },
         'B2':{
             parentName:'migman',
             name:'v_welding',
-            modbusAdr:'0a'//数据起始地址高位+数据起始地址低位
+            modbusAdr:'000a'//数据起始地址高位+数据起始地址低位
         },
         'BE':{
             parentName:'migsyn',
             name:'getready',
-            modbusAdr:'00'//数据起始地址高位+数据起始地址低位
-        }
+            modbusAdr:'0000'//数据起始地址高位+数据起始地址低位
+        },
+        'F0':{
+            parentName:'cut',
+            name:'mode',
+            modbusAdr:'0131'//数据起始地址高位+数据起始地址低位
+        },
+        'F1':{
+            parentName:'cut',
+            name:'material',
+            modbusAdr:'0132'// 306
+        },
+        'F2':{
+            parentName:'cut',
+            name:'thickness',
+            modbusAdr:'0133'// 307
+        },
+        'F3':{
+            parentName:'cut',
+            name:'weld_cur_val',
+            modbusAdr:'0130'// 300
+        },
     },
    callEditDirect:{
        migsyn:{

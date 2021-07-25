@@ -293,31 +293,25 @@ Array.prototype.in_array = function (element) {
                             {id:0,key:'Fe',value:'Fe'},{id:1,key:'Ss',value:'Ss'},{id:2,key:'AI',value:'AI'}
                         ]
                     },{
-                        // typeName:'GAS',
-                        // chooseKey:'Ar',//默认选中
-                        // comList:[
-                        //     {key:'Ar',value:'Ar'},{key:'MIX',value:'MIX'},{key:'CO2',value:'CO2'}
-                        // ]
-                        //和设计稿有出入
-                        typeName:'GAS',
-                        chooseKey:'BAR',//默认选中
-                        comList:[
-                            {id:0,key:'BAR',value:'BAR'},{id:1,key:'MPA',value:'MPA'},{id:2,key:'PSI',value:'PSI'}
-                        ],
-                        inchComList:[
-                            {id:0,key:'BAR',value:'BAR'},{id:1,key:'MPA',value:'MPA'},{id:2,key:'PSI',value:'PSI'}
-                        ]
-                    },{
+                        // {"0.5mm ","1.0mm ","2.0mm ","3.0mm ","4.0mm ","5.0mm ","6.0mm ",
+                        // "8.0mm ","10.0mm ","12.0mm ","15.0mm ","20.0mm ","11.0mm","12.7mm","      "},
+                        // {"24Ga  ","18Ga  ","14Ga  ","12Ga  ","10Ga  ", "3/16\" ","1/4\"  ",
+                        // "5/16\" ","3/8\"  ","1/2\"  ","5/8\"  ","3/4\"  ","3/4\"  ","1/2\"  ","      "},
                         typeName:'THICKNESS',
                         chooseKey:0,//默认选中
                         comList:[
-                            {id:0,key:'6mm',value:'0.6mm'},{id:1,key:'7mm',value:'0.7mm'},{id:2,key:'9mm',value:'0.9mm'},{id:3,key:'12mm',value:'1.2mm'},{id:4,key:'16mm',value:'1.6mm'},{id:5,key:'21mm',value:'2.1mm'},{id:6,key:'28mm',value:'2.8mm'},{id:7,key:'34mm',value:'3.4mm'},{id:8,key:'48mm',value:'4.8mm'},{id:9,key:'64mm',value:'6.4mm'},{id:10,key:'80mm',value:'8.0mm'},{id:11,key:'95mm',value:'9.5mm'}
-                            ,{id:12,key:'110mm',value:'11mm'},{id:13,key:'127mm',value:'12.7mm'}
+                            {id:0,key:'5mm',value:'0.5mm'},{id:1,key:'10mm',value:'1.0mm'},{id:2,key:'20mm',value:'2.0mm'},
+                            {id:3,key:'30mm',value:'3.0mm'},{id:4,key:'40mm',value:'4.0mm'},{id:5,key:'50mm',value:'5.0mm'},
+                            {id:6,key:'60mm',value:'6.0mm'},{id:7,key:'80mm',value:'8.0mm'},{id:8,key:'100mm',value:'10.0mm'},
+                            {id:9,key:'120mm',value:'12.0mm'},{id:10,key:'150mm',value:'15.0mm'},{id:11,key:'200mm',value:'20.0mm'}
+                            
                         ],
                         //单位切换inch
                         inchComList:[
-                            {id:0,key:'6mm',value:'24GA'},{id:1,key:'7mm',value:'22GA'},{id:2,key:'9mm',value:'20GA'},{id:3,key:'12mm',value:'18GA'},{id:4,key:'16mm',value:'16GA'},{id:5,key:'21mm',value:'14GA'},{id:6,key:'28mm',value:'12GA'},{id:7,key:'34mm',value:'1/8"'},{id:8,key:'48mm',value:'3/16"'},{id:9,key:'64mm',value:'1/4"'},{id:10,key:'80mm',value:'5/16"'},{id:11,key:'95mm',value:'3/8"'}
-                            ,{id:12,key:'110mm',value:'7/16"'},{id:13,key:'127mm',value:'1/2"'}
+                            {id:0,key:'5mm',value:'24Ga'},{id:1,key:'10mm',value:'18Ga'},{id:2,key:'20mm',value:'14Ga'},
+                            {id:3,key:'30mm',value:'12Ga'},{id:4,key:'40mm',value:'10Ga'},{id:5,key:'50mm',value:'3/16'},
+                            {id:6,key:'60mm',value:'1/4'},{id:7,key:'80mm',value:'5/16'},{id:8,key:'100mm',value:'3/8'},
+                            {id:9,key:'120mm',value:'1/2'},{id:10,key:'150mm',value:'5/8'},{id:11,key:'200mm',value:'3/4'}
                         ]
                     }
                 ]
@@ -343,6 +337,7 @@ Array.prototype.in_array = function (element) {
             const TIGSYN_DIRECTIVE_MAP=new Map([['DIAMETER','C0'],['MATERIAL','C1'],['THICKNESS','C2'],['POLATRITY','C3'],['WELDCUR','C4'],['slowDownTime','C5'],['MODE','C6'],['Getready','CE'],['Memory','CF']]);
             const MMA_DIRECTIVE_MAP = new Map([['POLATRITY','E0'],['ELECTRODE','E1'],['DIAMETER','E2'],['THICKNESS','E3'],['FORCE','E4'],['MMA_CURRENT','E5'],['Getready','EE'],['Memory','EF']]);
             const TIGMAN_DIRECTIVE_MAP =new Map([['TDCHFPULSE','D0'],['pre_gas','D1'],['start_cur_end','D2'], ['slop_up','D3'],['weld_cur','D4'],['base_cur','D5'],['pulse_fre','D6'],['pulse_duty','D7'],['slop_down','D8'],['crater_cur','D9'],['post_gas','DA'],['ac_fre','DB'],['ac_balance','DB'],['Getready','DE'],['Memory','DF']]);
+            const CUT_DIRECTIVE_MAP =new Map([['MODE','F0'],['MATERIAL','F1'],['THICKNESS','F2'], ['WELDCUR','F3']]);
            //特殊指令数组 存储、历史等
            const SPECIAL_DIRECTIVE_MAP =new Map([['CALL_MEMORY','20'],['APPY_MEMORY','21'],['CALL_LAST_WELD','30'],['APPY_LAST_WELD','31'],['EDIT_UNIT','40'],['OVERRIDE','22']]);
             //tigman映射关系
@@ -913,11 +908,7 @@ Array.prototype.in_array = function (element) {
                             case 'MATERIAL':
                                 element.chooseKey=0;
                                 // element.chooseKey=setWeldParams('MATERIAL',arrayList[3]);
-                                break;
-                            case 'GAS':
-                                // element.chooseKey=setWeldParams('GAS',arrayList[4]);
-                                element.chooseKey=0;
-                                break;
+                                break; 
                             case 'THICKNESS':
                                 element.chooseKey=0;
                                 // element.chooseKey=setWeldParams('THICKNESS',arrayList[6]);
@@ -931,8 +922,8 @@ Array.prototype.in_array = function (element) {
 
                     //其他属性不需要 赋值直接赋值 到时再取
                     rstInfo.THINKNESS_VALUE = 0;
-                    rstInfo.MIG_MIN_THICHNESS=0;//最小厚度值
-                    rstInfo.MIG_MAX_THICHNESS=5;//最小厚度值
+                    rstInfo.CUT_MIN_THICHNESS=0;//最小厚度值
+                    rstInfo.CUT_MAX_THICHNESS=11;//最小厚度值
                     //mig_material 值 ==0 显示gas选项否则隐藏
                     rstInfo.MIG_MATERIAL =0;
                     rstInfo.CUT_RECOMMEND_CURRENT =40;//推荐电流
@@ -966,6 +957,9 @@ Array.prototype.in_array = function (element) {
                         break;
                     case 'TIGMAN':
                         return TIGMAN_DIRECTIVE_MAP.get(paramKey);
+                        break;
+                    case 'CUT':
+                        return CUT_DIRECTIVE_MAP.get(paramKey);
                         break;
                     case 'CALL_MEMORY':
                         return SPECIAL_DIRECTIVE_MAP.get(paramKey);
@@ -1844,12 +1838,17 @@ Array.prototype.in_array = function (element) {
                     let headKey = receiveBleData.substring(0,6);
                     let changeNewData ="";
                     switch (headKey) {
-                        case '0A031F'://migsyn
+                        case '0A033E'://migsyn 返回31(1F)个数据*2=62个字节
                             changeNewData =changeToOldMigSynData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
-                        case '0A030F'://migman
+                        case '0A031E'://migman 返回15(0F)个数据*2=30个字节
                             changeNewData =changeToOldMigManData(receiveBleData);
+                            window.broastFromAndroid(changeNewData.toLocaleUpperCase());
+                            break;
+                        // case '0A032E'://cut 返回46个字节
+                        case '0A0312'://cut 返回9(09)个*2 =18个字节
+                            changeNewData ='DAE6'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         default:
@@ -1910,9 +1909,9 @@ Array.prototype.in_array = function (element) {
                             // if(sendIndexList.length>0){
                             //     circleDataSendFuc(sendIndexList[0])
                             // }
-                            tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+'00'+modbusInfo.modbusAdr+'00'+modbusInfo.modbusNum;
+                            tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusAdr+modbusInfo.modbusNum;
                         }else{
-                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+'00'+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                         }
                         crc = crcModelBusClacQuery(tempData);
                         let self =this;
