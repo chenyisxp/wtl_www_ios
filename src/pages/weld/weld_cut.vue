@@ -92,9 +92,9 @@
                         {{min2}}~{{max2}}V
                     </div>
                 </div> -->
-                <!-- <div class="inducance">
+                <div class="inducance">
                     <div class="showna">Inducance:<span :class="overInducanceFlag?'red':''">{{inducanceValue}}</span></div>
-                </div> -->
+                </div>
         </div>
    <div class="footers">
                         <!-- <div class="inducance">
@@ -338,7 +338,7 @@ export default {
         rulerNumAtr:[],
         rulerInchNumAtr:[],
         nowThinknessSendIndex:'',
-        inducanceValue:'',//电感量
+        inducanceValue:'',//气压值
         changeComList:
            {
             '0':{id:0,key:'6mm',value:'0.6mm'},
@@ -1198,10 +1198,10 @@ export default {
         }
         console.log('this.pageBackTo'+this.pageBackTo)
         //电感量
-        this.inducanceValue = list.INDUCTANCE;
-        if(list.RECOMMEND_INDUCTANCE<=this.inducanceValue){
-            this.overInducanceFlag=true;
-        }
+        this.inducanceValue = list.PRESSURSHOW;
+        // if(list.RECOMMEND_INDUCTANCE<=this.inducanceValue){
+        //     this.overInducanceFlag=true;
+        // }
         if(true){
             this.firstInit=false;
             //滑动thinkness赋值

@@ -894,42 +894,72 @@ Array.prototype.in_array = function (element) {
                     console.log(rstInfo)
                     
                 }else if(compareString(dirctiveType,weldDirctive.cut)){
-                    
+                    console.log(data)
+                    var strArr =data.split(' ');
+                    // DA E6 || 0A 03 12 00 00 00 00 00 00 00 00 00 3C 00 01 00 01 00 02 00 01 F8 04 ||55 73
                     //等离子新模式modbus
                     rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
-                    rstInfo.weldType='MIGSYN';
-                    rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.migsyn.newIndex;//这个和首页里的配对
+                    rstInfo.weldType='CUT';
+                    rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.cut.newIndex;//这个和首页里的配对
                     rstInfo.nowTypeList.forEach(element => {
                         switch (element.typeName) {
                             case 'MODE':
+                                let v1 = parseInt(("0x"+strArr[15]+""+strArr[16]),16).toString(10);
+                                rstInfo.modeKey=v1;
                                 // element.chooseKey=setWeldParams('MODE',byte1Bean.mode);
-                                element.chooseKey=0;
+                                element.chooseKey=v1;
                                 break;
                             case 'MATERIAL':
-                                element.chooseKey=0;
+                                element.chooseKey=parseInt(("0x"+strArr[17]+""+strArr[18]),16).toString(10);
                                 // element.chooseKey=setWeldParams('MATERIAL',arrayList[3]);
                                 break; 
                             case 'THICKNESS':
-                                element.chooseKey=0;
+                                element.chooseKey=parseInt(("0x"+strArr[19]+""+strArr[20]),16).toString(10);;
                                 // element.chooseKey=setWeldParams('THICKNESS',arrayList[6]);
                                 break;
                             default:
                                 break;
                         }
                     });
-                    rstInfo.INDUCTANCE =10;//机器上发不能改 不知道干嘛的                    
-
+                    
+                    rstInfo.PRESSUREKEY=parseInt(("0x"+strArr[21]+""+strArr[22]),16).toString(10);//机器上发不能改 气压值    
+                    //模式是normal的时候推荐值是3.5BAR，50PSI
+                    // 其他两个模式是4.2BAR，61PSI
+                    // 切割模式：
+                    // 1：Normal
+                    // 2：Grid
+                    // 3：Gouging
+                    // 4：Marking
+                    // 气压模式：
+                    // 1：BAR
+                    // 2：MPA
+                    // 3：PSI
+                    if(rstInfo.modeKey>0){
+                        if(rstInfo.PRESSUREKEY==0){
+                            rstInfo.PRESSURSHOW='4.2BAR';
+                        }else{
+                            rstInfo.PRESSURSHOW='61PSI';
+                        }
+                        
+                    }else{
+                        if(rstInfo.PRESSUREKEY==0){
+                            rstInfo.PRESSURSHOW='3.5BAR';
+                        }else{
+                            rstInfo.PRESSURSHOW='50PSI';
+                        }
+                    }
+                    
 
                     //其他属性不需要 赋值直接赋值 到时再取
-                    rstInfo.THINKNESS_VALUE = 0;
+                    rstInfo.THINKNESS_VALUE = parseInt(("0x"+strArr[19]+""+strArr[20]),16).toString(10);;;
                     rstInfo.CUT_MIN_THICHNESS=0;//最小厚度值
                     rstInfo.CUT_MAX_THICHNESS=11;//最小厚度值
                     //mig_material 值 ==0 显示gas选项否则隐藏
                     rstInfo.MIG_MATERIAL =0;
                     rstInfo.CUT_RECOMMEND_CURRENT =40;//推荐电流
-                    rstInfo.CUT_CURRENT_VAL=40;
+                    rstInfo.CUT_CURRENT_VAL=parseInt(("0x"+strArr[13]+""+strArr[14]),16).toString(10);;
                     rstInfo.CUT_MIN_CUR=10;
-                    rstInfo.CUT_MAX_CUR=200;//2019.07.29
+                    rstInfo.CUT_MAX_CUR=100;//2019.07.29
                     rstInfo.initBean={
                         unit:0,
 
@@ -1842,8 +1872,12 @@ Array.prototype.in_array = function (element) {
                             changeNewData =changeToOldMigSynData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
-                        case '0A031E'://migman 返回15(0F)个数据*2=30个字节
+                        case '0A031E'://migman 返回15(0F)个数据*2=30个字节(16:1e)
                             changeNewData =changeToOldMigManData(receiveBleData);
+                            window.broastFromAndroid(changeNewData.toLocaleUpperCase());
+                            break;
+                        case '0A0322'://mma 返回17(11)个数据*2=34个字节 (16:22)
+                            changeNewData =changeToOldMmaData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         // case '0A032E'://cut 返回46个字节
@@ -2094,6 +2128,53 @@ Array.prototype.in_array = function (element) {
                 let crc = crcModelBusClacQuery(total)
                 console.log('来自changeToOldMigSynData：',migOldHead1+migOldHead2,byte0,byte1,byte2,byte3,byte4,byte5,byte67,byte89,byte1011,byte1213,byte14,byte15,crc)
                 return `${migOldHead1}${total}${crc}`;
+            }
+            function changeToOldMmaData(receiveBleData){
+                console.log(receiveBleData)
+                // window.modbusBroastFromApp("0A 03 22 0000 0000 0000 0038 005a 0001 0001 0007 0005 0001 0000 0002 0000 000d 0004 00c8 0010 9ECE");
+                let datas =receiveBleData.substring(6,receiveBleData.length);
+                var dataList = [];
+                for(var i=0;i<datas.length;i+=4){
+                    dataList.push(datas.slice(i,i+4));
+                }
+                //旧
+                // 字节
+                // byte	位
+                // bit	功能定义	
+                // 0	0	单位	
+                //     1	PFC	
+                //     2	焊接	
+                //     3	过热	
+                //     4	过流	
+                //     5~6	空	
+                //     7	AC/DC	
+                // 1	0
+                // 1	焊条种类	MMA_electrode
+                //     2
+                // 
+                // 4	焊条直径	MMA_diameter
+                //         空	
+                // 2		板厚	MMA_thickness
+                // 3		电弧推力	arc_force_val
+                // 
+                // 5		电流推荐值	MMA_recommend_current
+                // 
+                // 7		电流	MMA_current_val
+                let migOldHead1 ='da';
+                let migOldHead2 ='e5';
+                let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
+                let tempByte0 = parseInt(`${t0List[15]}0000000`,2).toString(16);
+                let byte0 =tempByte0.length>1?tempByte0:`0${tempByte0}`;//集合字节
+                // temp10.push(parseInt(("0x"+strArr[2]),16).toString(10));//直流、交流类型及焊接状态
+                // temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//焊条类型+直径
+                // temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//板厚
+                // temp10.push(parseInt(("0x"+strArr[5]),16).toString(10));//电弧推力
+                // temp10.push(parseInt(("0x"+strArr[7]+strArr[6]),16).toString(10));//电流推荐值
+                // temp10.push(parseInt(("0x"+strArr[9]+strArr[8]),16).toString(10));//电流
+                // temp10.push(parseInt(("0x"+strArr[10]),16).toString(10));//板厚最小值
+                // temp10.push(parseInt(("0x"+strArr[11]),16).toString(10));//板厚最大值
+
+
             }
             function onlySendFuc(sendDt,pageFrom,crc){
                 if(!BASE_CONFIG.TESTFLAG){

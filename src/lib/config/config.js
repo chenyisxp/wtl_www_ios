@@ -52,7 +52,7 @@ let BASE_CONFIG = {
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 00 01 09 6400 6400 01 09 6F6F'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
-        mma:{heade:'dae',headm:'dad',headc:'dac',data:'54A0007055A00380004076134'},//20201028真实焊机上发
+        mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 4A 00 07 05 5A 0038 0004 07 6134'},//20201028真实焊机上发
         //2、焊接准备中的状态 参数模拟       
         // migsyn:{heade:'dae',headm:'dad',headc:'dac',data:'1 40 00 00 00 02 00 3C00 3D00 b400 c800 02 09 DE46'},
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 40 3D00 c800 00 F53B'},
@@ -96,6 +96,17 @@ let BASE_CONFIG = {
             name:'migman',
             modbusAdr:'0032',//起始地址 50
             modbusNum:'000f',//数量 15个
+            // modbusAdrMap:{
+            //     '0A':'0003',//地址50 0-2
+            //     '3A':'0007',//地址58 8-14
+            // },//数据起始地址高位+数据起始地址低位
+        },
+        '100400':{
+            type:'1',//类型1代表模式数据
+            parentName:'mma',
+            name:'mma',
+            modbusAdr:'00fa',//起始地址 250
+            modbusNum:'0011',//数量 17个
             // modbusAdrMap:{
             //     '0A':'0003',//地址50 0-2
             //     '3A':'0007',//地址58 8-14
