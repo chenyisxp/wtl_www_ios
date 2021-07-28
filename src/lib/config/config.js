@@ -52,7 +52,7 @@ let BASE_CONFIG = {
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 00 01 09 6400 6400 01 09 6F6F'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
-        mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 4A 00 07 05 5A 0038 0004 07 6134'},//20201028真实焊机上发
+        mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 4A 00 07 05 5A00 3800 04 07 6134'},//20201028真实焊机上发
         //2、焊接准备中的状态 参数模拟       
         // migsyn:{heade:'dae',headm:'dad',headc:'dac',data:'1 40 00 00 00 02 00 3C00 3D00 b400 c800 02 09 DE46'},
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 40 3D00 c800 00 F53B'},
@@ -60,7 +60,7 @@ let BASE_CONFIG = {
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 4A 5B00 BA00 0A 4B13'},//20201028真实焊机上发 正常
         migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 CB 5B00 BA00 0A 5A0D'},//模拟MODE=4T
         // tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'3 40 00 03 6400 6400 02 09 50 05  8F81'},
-        tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'34A0A0AC300C300060A460AFA07'},
+        tigsyn:{heade:'dae',headm:'dad',headc:'dac',data:'3 4A 0A 0A C300 C300 06 0A 46 0A FA07'},
         
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 40 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 FF97'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 c2 00 01 09 6400 6400 CD99'},
@@ -73,136 +73,8 @@ let BASE_CONFIG = {
         tigman:{data:'dae4 04 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 0073'},
         mma:{data:'dae5 04 00 01 09 6400 6400  01 09 708F'}
    },
-   modbusReadCode:'03',
-   modbusWriteCode:'06',
-   modbusSlave:'0A',//从机地址
-   callMobusEditDirect:{
-        '100000':{
-            type:'1',//类型1代表模式数据
-            parentName:'migsyn',
-            name:'migsyn',
-            modbusAdr:'0032',//起始地址 50
-            modbusNum:'001f',//数量 31个
-            // modbusAdrMap:{
-            //     '0A':'0003',//地址50  0-2   数量3字节  16进制03
-            //     '3A':'0003',//地址58  8-10  数量3字节  16进制03
-            //     '3D':'000a',//地址61  11-20 数量10字节 16进制0a
-            //     '47':'000a'// 地址71  21-30 数量10字节 16进制0a
-            // }//数据起始地址高位+数据起始地址低位
-        },
-        '100100':{
-            type:'1',//类型1代表模式数据
-            parentName:'migman',
-            name:'migman',
-            modbusAdr:'0032',//起始地址 50
-            modbusNum:'000f',//数量 15个
-            // modbusAdrMap:{
-            //     '0A':'0003',//地址50 0-2
-            //     '3A':'0007',//地址58 8-14
-            // },//数据起始地址高位+数据起始地址低位
-        },
-        '100400':{
-            type:'1',//类型1代表模式数据
-            parentName:'mma',
-            name:'mma',
-            modbusAdr:'00fa',//起始地址 250
-            modbusNum:'0011',//数量 17个
-            // modbusAdrMap:{
-            //     '0A':'0003',//地址50 0-2
-            //     '3A':'0007',//地址58 8-14
-            // },//数据起始地址高位+数据起始地址低位
-        },
-        '100500':{
-            type:'1',//类型1代表模式数据
-            parentName:'cut',
-            name:'cut',
-            modbusAdr:'0190',//起始地址 400
-            modbusNum:'0009'//数量 9个
-            // modbusNum:'002e'//数量 46个
-        },
-        'A0':{
-            parentName:'migsyn',
-            name:'mode',
-            modbusAdr:'0008'//数据起始地址高位+数据起始地址低位
-        },
-        'A1':{
-            parentName:'migsyn',
-            name:'material',
-            modbusAdr:'0009'//数据起始地址高位+数据起始地址低位
-        },
-        'A2':{
-            parentName:'migsyn',
-            name:'gas',
-            modbusAdr:'000a'//数据起始地址高位+数据起始地址低位
-        },
-        'A3':{
-            parentName:'migsyn',
-            name:'diameter',
-            modbusAdr:'000b'//数据起始地址高位+数据起始地址低位
-        },
-        'A4':{
-            parentName:'migsyn',
-            name:'thickness',
-            modbusAdr:'000c'//数据起始地址高位+数据起始地址低位
-        },
-        'A5':{
-            parentName:'migsyn',
-            name:'speed',
-            modbusAdr:'000d'//数据起始地址高位+数据起始地址低位
-        },
-        'A6':{
-            parentName:'migsyn',
-            name:'v_welding',
-            modbusAdr:'000f'//数据起始地址高位+数据起始地址低位
-        },
-        'AE':{
-            parentName:'migsyn',
-            name:'getready',
-            modbusAdr:'0000'//数据起始地址高位+数据起始地址低位
-        },
-        'B0':{
-            parentName:'migman',
-            name:'mode',
-            modbusAdr:'0008'//数据起始地址高位+数据起始地址低位
-        },
-        'B1':{
-            parentName:'migman',
-            name:'speed',
-            modbusAdr:'0009'//数据起始地址高位+数据起始地址低位
-        },
-        'B2':{
-            parentName:'migman',
-            name:'v_welding',
-            modbusAdr:'000a'//数据起始地址高位+数据起始地址低位
-        },
-        'BE':{
-            parentName:'migsyn',
-            name:'getready',
-            modbusAdr:'0000'//数据起始地址高位+数据起始地址低位
-        },
-        'F0':{
-            parentName:'cut',
-            name:'mode',
-            modbusAdr:'0131'//数据起始地址高位+数据起始地址低位
-        },
-        'F1':{
-            parentName:'cut',
-            name:'material',
-            modbusAdr:'0132'// 306
-        },
-        'F2':{
-            parentName:'cut',
-            name:'thickness',
-            modbusAdr:'0133'// 307
-        },
-        'F3':{
-            parentName:'cut',
-            name:'weld_cur_val',
-            modbusAdr:'0130'// 300
-        },
-    },
    callEditDirect:{
-       migsyn:{
+        migsyn:{
             mode:'A0',
             material:'A1',
             gas:'A2',
@@ -212,19 +84,20 @@ let BASE_CONFIG = {
             v_welding:'A6',
             getready:'AE',
             memory:'AF'
-       },
-       migman:{
+        },
+        migman:{
             mode:'B0',
             speed:'B1',
             v_welding:'B2',
             getready:'BE',
             memory:'BF'
         },
-       tigsyn:{
+        tigsyn:{
             diameter:'C0',
             material:'C1',
             thickness:'C2',
             polatrity:'C3',
+            weld_cur_val:'C4',//后发现20210728
             slowDownTime:'C5',
             mode:'C6',
             getready:'CE',
@@ -258,7 +131,226 @@ let BASE_CONFIG = {
             memory:'EF'
         }
 
-   },
+    },
+   modbusReadCode:'03',
+   modbusWriteCode:'06',
+   modbusSlave:'0A',//从机地址
+   callMobusEditDirect:{
+        '100000':{
+            type:'1',//类型1代表模式数据
+            parentName:'migsyn',
+            name:'migsyn',
+            modbusAdr:'0032',//起始地址 50
+            modbusNum:'001F',//数量 31个
+            // modbusAdrMap:{
+            //     '0A':'0003',//地址50  0-2   数量3字节  16进制03
+            //     '3A':'0003',//地址58  8-10  数量3字节  16进制03
+            //     '3D':'000a',//地址61  11-20 数量10字节 16进制0a
+            //     '47':'000a'// 地址71  21-30 数量10字节 16进制0a
+            // }//数据起始地址高位+数据起始地址低位
+        },
+        '100100':{
+            type:'1',//类型1代表模式数据
+            parentName:'migman',
+            name:'migman',
+            modbusAdr:'0032',//起始地址 50
+            modbusNum:'000F',//数量 15个
+            // modbusAdrMap:{
+            //     '0A':'0003',//地址50 0-2
+            //     '3A':'0007',//地址58 8-14
+            // },//数据起始地址高位+数据起始地址低位
+        },
+        '100200':{
+            type:'1',//类型1代表模式数据
+            parentName:'tigsyn',
+            name:'tigsyn',
+            modbusAdr:'012C',//起始地址 300
+            modbusNum:'002C',//数量 44个
+        },
+        '100300':{
+            type:'1',//类型1代表模式数据
+            parentName:'tigman',
+            name:'tigman',
+            modbusAdr:'012C',//起始地址 300
+            modbusNum:'0030',//数量 48个
+        },
+        '100400':{
+            type:'1',//类型1代表模式数据
+            parentName:'mma',
+            name:'mma',
+            modbusAdr:'00FA',//起始地址 250
+            modbusNum:'0011',//数量 17个
+            // modbusAdrMap:{
+            //     '0A':'0003',//地址50 0-2
+            //     '3A':'0007',//地址58 8-14
+            // },//数据起始地址高位+数据起始地址低位
+        },
+        
+        '100500':{
+            type:'1',//类型1代表模式数据
+            parentName:'cut',
+            name:'cut',
+            modbusAdr:'0190',//起始地址 400
+            modbusNum:'0009'//数量 9个
+            // modbusNum:'002e'//数量 46个
+        },
+        'A0':{
+            parentName:'migsyn',
+            name:'mode',
+            modbusAdr:'0008'//数据起始地址高位+数据起始地址低位
+        },
+        'A1':{
+            parentName:'migsyn',
+            name:'material',
+            modbusAdr:'0009'//数据起始地址高位+数据起始地址低位
+        },
+        'A2':{
+            parentName:'migsyn',
+            name:'gas',
+            modbusAdr:'000A'//数据起始地址高位+数据起始地址低位
+        },
+        'A3':{
+            parentName:'migsyn',
+            name:'diameter',
+            modbusAdr:'000B'//数据起始地址高位+数据起始地址低位
+        },
+        'A4':{
+            parentName:'migsyn',
+            name:'thickness',
+            modbusAdr:'000C'//数据起始地址高位+数据起始地址低位
+        },
+        'A5':{
+            parentName:'migsyn',
+            name:'speed',
+            modbusAdr:'000D'//数据起始地址高位+数据起始地址低位
+        },
+        'A6':{
+            parentName:'migsyn',
+            name:'v_welding',
+            modbusAdr:'000F'//数据起始地址高位+数据起始地址低位
+        },
+        'AE':{
+            parentName:'migsyn',
+            name:'getready',
+            modbusAdr:'0000'//数据起始地址高位+数据起始地址低位
+        },
+        'B0':{
+            parentName:'migman',
+            name:'mode',
+            modbusAdr:'0008'//数据起始地址高位+数据起始地址低位
+        },
+        'B1':{
+            parentName:'migman',
+            name:'speed',
+            modbusAdr:'0009'//数据起始地址高位+数据起始地址低位
+        },
+        'B2':{
+            parentName:'migman',
+            name:'v_welding',
+            modbusAdr:'000A'//数据起始地址高位+数据起始地址低位
+        },
+        'BE':{
+            parentName:'migsyn',
+            name:'getready',
+            modbusAdr:'0000'//数据起始地址高位+数据起始地址低位
+        },
+        'C0':{
+            parentName:'tigsyn',
+            name:'diameter',
+            modbusAdr:'00D7'//215
+        },
+        'C1':{
+            parentName:'tigsyn',
+            name:'material',
+            modbusAdr:'00D8'//216
+        },
+        'C2':{
+            parentName:'tigsyn',
+            name:'thickness',
+            modbusAdr:'00D9'//217
+        },
+        // 'C3':{
+        //     parentName:'tigsyn',
+        //     name:'polatrity',
+        //     modbusAdr:''//
+        // },
+        'C4':{
+            parentName:'tigsyn',
+            name:'weld_cur_val',
+            modbusAdr:'00DC'//218
+        },
+        'C5':{
+            parentName:'tigsyn',
+            name:'slowDownTime',
+            modbusAdr:'00DA'//218
+        },
+        'C6':{
+            parentName:'tigsyn',
+            name:'mode',
+            modbusAdr:'00C8'//200
+        },
+        // mma:{
+        //     acdc:'E0',
+        //     electrode:'E1',
+        //     diameter:'E2',
+        //     thickness:'E3',
+        //     arc_force_val:'E4',
+        //     weld_cur_val:'E5',
+        //     getready:'ED',
+        //     memory:'EF'
+        // }
+        'E0':{
+            parentName:'mma',
+            name:'acdc',
+            modbusAdr:'0190'//400
+        },
+        'E1':{
+            parentName:'mma',
+            name:'electrode',
+            modbusAdr:'0192'//402
+        },
+        'E2':{
+            parentName:'mma',
+            name:'diameter',
+            modbusAdr:'0193'//403
+        },
+        'E3':{
+            parentName:'mma',
+            name:'thickness',
+            modbusAdr:'0194'//404
+        },
+        'E4':{
+            parentName:'mma',
+            name:'arc_force_val',
+            modbusAdr:'0195'//405
+        },
+        'E5':{
+            parentName:'mma',
+            name:'weld_cur_val',
+            modbusAdr:'0198'//408
+        },
+        'F0':{
+            parentName:'cut',
+            name:'mode',
+            modbusAdr:'0131'//数据起始地址高位+数据起始地址低位
+        },
+        'F1':{
+            parentName:'cut',
+            name:'material',
+            modbusAdr:'0132'// 306
+        },
+        'F2':{
+            parentName:'cut',
+            name:'thickness',
+            modbusAdr:'0133'// 307
+        },
+        'F3':{
+            parentName:'cut',
+            name:'weld_cur_val',
+            modbusAdr:'0130'// 300
+        },
+    },
+   
    //根据版本号指定不同 最大最小区间值
    initLimitVersion_100:{
        migsyn:{

@@ -1094,8 +1094,8 @@ Array.prototype.in_array = function (element) {
                 //钨丝直径
                 bean.diameter= parseInt(buildArr[5]+buildArr[6]+buildArr[7],2);
                 //校验结果
-                if( bean.diamete>3){
-                    bean.diamete=0;//默认值
+                if( bean.diameter>3){
+                    bean.diameter=0;//默认值
                 }
                 bean.material= parseInt(buildArr[2]+buildArr[3]+buildArr[4],2);
                 if( bean.material>2){
@@ -1880,6 +1880,14 @@ Array.prototype.in_array = function (element) {
                             changeNewData =changeToOldMmaData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
+                        case '0A0358'://tigsyn 返回43(43个数据*2=86个字节 ）(16进制=56)
+                            changeNewData =changeToOldTigsynData(receiveBleData);
+                            window.broastFromAndroid(changeNewData.toLocaleUpperCase());
+                            break;
+                        case '0A035E'://tigman 返回47(47个数据*2=94个字节 ）(16进制=5e)
+                            changeNewData =changeToOldTigmanData(receiveBleData);
+                            window.broastFromAndroid(changeNewData.toLocaleUpperCase());
+                            break;
                         // case '0A032E'://cut 返回46个字节
                         case '0A0312'://cut 返回9(09)个*2 =18个字节
                             changeNewData ='DAE6'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
@@ -2129,6 +2137,59 @@ Array.prototype.in_array = function (element) {
                 console.log('来自changeToOldMigSynData：',migOldHead1+migOldHead2,byte0,byte1,byte2,byte3,byte4,byte5,byte67,byte89,byte1011,byte1213,byte14,byte15,crc)
                 return `${migOldHead1}${total}${crc}`;
             }
+            // tigman数据转换机制
+            function changeToOldTigmanData(receiveBleData){
+                let datas =receiveBleData.substring(6,receiveBleData.length);
+                var dataList = [];
+                for(var i=0;i<datas.length;i+=4){
+                    dataList.push(datas.slice(i,i+4));
+                }
+            }
+            // tigsyn数据转换机制 
+            function changeToOldTigsynData(receiveBleData){
+                console.log(receiveBleData)
+                let datas =receiveBleData.substring(6,receiveBleData.length);
+                var dataList = [];
+                for(var i=0;i<datas.length;i+=4){
+                    dataList.push(datas.slice(i,i+4));
+                }
+                // 0	0	单位	
+                //     1	PFC	
+                //     2	焊接	
+                //     3	过热	
+                //     4	过流	
+                //     5
+                //     6	空	
+                //     7	2T4T	
+                // 	
+                // 
+                // 1-0,1,2	    钨棒直径	TIG_diameter
+                //  -3,4,5      金属	TIG_material
+                // 2		板厚	TIG_thickness
+                // 3,4		电流推荐值	TIG_recommend_current
+                // 5,6		电流	syn_weld_cur
+                // 14		板厚最小值	TIG_min_thickness
+                // 15		板厚最大值	TIG_min_thickness
+                let migOldHead1 ='da';
+                let migOldHead2 ='e3';
+                let byte0 = "00";//先默认
+                // 钨棒直径+金属
+                let temp1 =((Array(3).join(0) + parseInt(dataList[15],16).toString(2)).slice(-3)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
+                let temp2 =((Array(3).join(0) + parseInt(dataList[16],16).toString(2)).slice(-3)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
+                let tempByte1 = parseInt(`00${temp2}${temp1}`,2).toString(16);
+                let byte1 = (tempByte1+"").length==1?"0"+tempByte1:tempByte1;
+                let byte2 = dataList[17].substring(2,4);//直接截取 2字节转一个字节 //板厚;
+                let byte34 = dataList[21].substring(2,4)+dataList[21].substring(0,2);;//推荐电流
+                let byte56 = dataList[20].substring(2,4)+dataList[20].substring(0,2);//电流;//文档少了，推荐电流
+                let byte7 = dataList[27].substring(2,4);//板厚最小值
+                let byte8 = dataList[26].substring(2,4);//板厚最大值
+                let byte9 = dataList[18].substring(2,4);//缓降时间
+                let byte10 = dataList[19].substring(2,4);//后送气时间
+                let total =`${migOldHead2}${byte0}${byte1}${byte2}${byte34}${byte56}${byte7}${byte8}${byte9}${byte10}`;
+                let crc = crcModelBusClacQuery(total)
+                return `${migOldHead1}${total}${crc}`;
+            }
+            //mma数据转换机制
             function changeToOldMmaData(receiveBleData){
                 console.log(receiveBleData)
                 // window.modbusBroastFromApp("0A 03 22 0000 0000 0000 0038 005a 0001 0001 0007 0005 0001 0000 0002 0000 000d 0004 00c8 0010 9ECE");
@@ -2165,16 +2226,21 @@ Array.prototype.in_array = function (element) {
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 let tempByte0 = parseInt(`${t0List[15]}0000000`,2).toString(16);
                 let byte0 =tempByte0.length>1?tempByte0:`0${tempByte0}`;//集合字节
-                // temp10.push(parseInt(("0x"+strArr[2]),16).toString(10));//直流、交流类型及焊接状态
-                // temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//焊条类型+直径
-                // temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//板厚
-                // temp10.push(parseInt(("0x"+strArr[5]),16).toString(10));//电弧推力
-                // temp10.push(parseInt(("0x"+strArr[7]+strArr[6]),16).toString(10));//电流推荐值
-                // temp10.push(parseInt(("0x"+strArr[9]+strArr[8]),16).toString(10));//电流
-                // temp10.push(parseInt(("0x"+strArr[10]),16).toString(10));//板厚最小值
-                // temp10.push(parseInt(("0x"+strArr[11]),16).toString(10));//板厚最大值
-
-
+                //焊条种类
+                let tempByte1_0_1 = ((Array(2).join(0) + parseInt(dataList[5],16).toString(2)).slice(-2)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                let tempByte1_2_4 = ((Array(3).join(0) + parseInt(dataList[6],16).toString(2)).slice(-3)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                //焊条种类(0,1) + 焊条直径(2,3,4)
+                let temp01 =parseInt(`000${tempByte1_2_4}${tempByte1_0_1}`,2).toString(16);
+                let byte1 = (temp01+"").length==1?"0"+temp01:temp01;
+                let byte2 = dataList[7].substring(2,4);//直接截取 2字节转一个字节 //板厚
+                let byte3 = dataList[8].substring(2,4);//直接截取 2字节转一个字节 //电弧推力
+                let byte4 = dataList[4].substring(2,4)+dataList[4].substring(0,2);//电流推荐值
+                let byte5 = dataList[3].substring(2,4)+dataList[3].substring(0,2);//电流
+                let byte6 = dataList[14].substring(2,4);//板厚最小值
+                let byte7 = dataList[13].substring(2,4);//板厚最大值
+                let total =`${migOldHead2}${byte0}${byte1}${byte2}${byte3}${byte4}${byte5}${byte6}${byte7}`;
+                let crc = crcModelBusClacQuery(total)
+                return `${migOldHead1}${total}${crc}`;
             }
             function onlySendFuc(sendDt,pageFrom,crc){
                 if(!BASE_CONFIG.TESTFLAG){
