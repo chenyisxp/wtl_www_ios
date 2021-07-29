@@ -764,11 +764,21 @@ export default {
            
             if(url=='/welding'){
                 //执行焊接
-                var data = self.getDirective(self.typeName, 'Getready')+ '0000';
+                var data = "";
+                if(self.isModbusModal){
+                    if(self.typeName=='MIGMAN'){
+                        data =  self.getDirective(self.typeName, 'Getready')+ '0006';//00110 migman
+                    }else{
+                        data =  self.getDirective(self.typeName, 'Getready')+ '000e';//01110 migsyn
+                    }
+                }else{
+                    data =  self.getDirective(self.typeName, 'Getready')+ '0000';
+                }
+                // var data = self.getDirective(self.typeName, 'Getready')+ '0000';
                 var crc = self.crcModelBusClacQuery(data, true);
                 var sendData = "DA" + data + crc;        
                 //生产时打开
-                this.callSendDataToBleUtil('weld_common',sendData,crc);
+                self.callSendDataToBleUtil('weld_common',sendData,crc);
                 //   self.$router.push({path:'/welding',query:{electricCurrent: self.nowPosionX ,voltage:self.nowPosionX2}});
             }else if(self.pageBackTo){
                 //来自memorydetial页 回退
@@ -1442,14 +1452,19 @@ export default {
         getAndriodNewMsg () {
             // alert(this.$store.state.AdroidNewMsg+'||comon||'+this.$store.state.AdroidOldMsg);
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
+        },
+        isModbusModal(){
+            return this.$store.state.isModbusModal;
         }
   },
   destroyed(){
       let self =this;
       self.firstInit=true;
       clearTimeout(self.autoTimeoutFlag);
+      clearInterval(self.$store.state.modbusCircleTimer)
     //   window.removeEventListener(null, self.goBack, "#");
     window.removeEventListener('popstate', this.goBack, false);
+
   },
   watch: {
         getAndriodNewMsg(val, oldVal){

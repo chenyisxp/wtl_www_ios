@@ -61,7 +61,8 @@ const state = {
     isModbusModal:false,
     modbusSendTimes:0,
     modbusSendDataTimes:0,
-    logFaceFlag:false//面板信息
+    logFaceFlag:false,//面板信息
+    modbusCircleTimer:{}
 }
 
 const mutations = {

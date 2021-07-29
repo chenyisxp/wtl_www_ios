@@ -740,7 +740,13 @@ export default {
                }
            }else if(url=='/welding'){
                 //执行焊接
-                var data = self.getDirective(self.typeName, 'Getready')+ '0000';
+                var data = "";
+                if(self.isModbusModal){
+                    data =  self.getDirective(self.typeName, 'Getready')+ '0060';//01100000 mma
+                }else{
+                    data =  self.getDirective(self.typeName, 'Getready')+ '0000';
+                }
+                // var data = self.getDirective(self.typeName, 'Getready')+ '0000';
                 var crc = self.crcModelBusClacQuery(data, true);
                 var sendData = "DA" + data + crc;        
                 //生产时打开 
@@ -1216,6 +1222,9 @@ export default {
         getAndriodNewMsg () {
             // alert(this.$store.state.AdroidNewMsg+'||||'+this.$store.state.AdroidOldMsg);
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
+        },
+        isModbusModal(){
+            return this.$store.state.isModbusModal;
         }
   },
   watch: {
@@ -1271,6 +1280,7 @@ export default {
     let self =this;
      self.firstInit =true;
     clearTimeout(self.autoTimeoutFlag);
+    clearInterval(self.$store.state.modbusCircleTimer)
     // window.removeEventListener('popstate', this.go('/newIndex'), false);
         window.removeEventListener('popstate', this.goBack, false);
   }

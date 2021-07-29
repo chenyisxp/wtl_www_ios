@@ -93,7 +93,7 @@
                     </div>
                 </div> -->
                 <div class="inducance">
-                    <div class="showna">Inducance:<span :class="overInducanceFlag?'red':''">{{inducanceValue}}</span></div>
+                    <div class="showna">Pressure:<span :class="overInducanceFlag?'red':''">{{inducanceValue}}</span></div>
                 </div>
         </div>
    <div class="footers">
@@ -734,10 +734,15 @@ export default {
        go(url){
            let self =this;
            console.log(self.pageBackTo)
-           
             if(url=='/welding'){
                 //执行焊接
-                var data = self.getDirective(self.typeName, 'Getready')+ '0000';
+                // var data = self.getDirective(self.typeName, 'Getready')+ '0000';
+                var data = "";
+                if(this.isModbusModal){
+                    data = this.getDirective(this.typeName, 'Getready')+ '0180';//0110000000 CUT
+                }else{
+                    data = this.getDirective(this.typeName, 'Getready')+ '0000';
+                }
                 var crc = self.crcModelBusClacQuery(data, true);
                 var sendData = "DA" + data + crc;        
                 //生产时打开
@@ -1352,12 +1357,16 @@ export default {
         getAndriodNewMsg () {
             // alert(this.$store.state.AdroidNewMsg+'||comon||'+this.$store.state.AdroidOldMsg);
             return this.$store.state.AdroidNewMsg;　　//需要监听的数据
+        },
+        isModbusModal(){
+            return this.$store.state.isModbusModal;　　//需要监听的数据
         }
   },
   destroyed(){
       let self =this;
       self.firstInit=true;
       clearTimeout(self.autoTimeoutFlag);
+      clearInterval(self.$store.state.modbusCircleTimer)
     //   window.removeEventListener(null, self.goBack, "#");
     window.removeEventListener('popstate', this.goBack, false);
   },

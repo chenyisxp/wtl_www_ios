@@ -681,7 +681,12 @@ export default {
        go(url){
         if(url=='/welding'){
             //执行焊接
-            var data = this.getDirective(this.typeName, 'Getready')+ '0000';
+            var data = "";
+            if(this.isModbusModal){
+                data =  this.getDirective(this.typeName, 'Getready')+ '0600';//011000000000 tigsyn
+            }else{
+                data =  this.getDirective(this.typeName, 'Getready')+ '0000';
+            }
             var crc = this.crcModelBusClacQuery(data, true);
             var sendData = "DA" + data + crc;        
             this.callSendDataToBleUtil('weld_tig_syn',sendData,crc);
@@ -1275,6 +1280,9 @@ export default {
         envType(){
             return this.$store.state.envType;　　//需要监听的数据
         },
+        isModbusModal(){
+            return this.$store.state.isModbusModal;
+        },
         // getAndriodNewMsg () {
             
         //     return this.$store.state.AdroidNewMsg;　　//需要监听的数据
@@ -1331,6 +1339,7 @@ export default {
   destroyed(){
       this.firstInit =true;
        clearTimeout(this.autoTimeoutFlag);
+       clearInterval(this.$store.state.modbusCircleTimer)
         window.removeEventListener('popstate', this.goBack, false);
     //    window.removeEventListener('popstate', this.go('/newIndex'), false);
   }

@@ -18,6 +18,9 @@ Array.prototype.in_array = function (element) {
     export default {
         install(Vue, options) {
             Vue.prototype.GLOBAL_CONFIG = BASE_CONFIG;
+            // modbus 相关
+            var modbusLastReadData="";
+            var  modbusCircleTimer={};//modbus循环请求时间器
             //安卓逻辑迁移 循环定时器 
             /**
              * 1、校验数据的当前状态
@@ -337,7 +340,7 @@ Array.prototype.in_array = function (element) {
             const TIGSYN_DIRECTIVE_MAP=new Map([['DIAMETER','C0'],['MATERIAL','C1'],['THICKNESS','C2'],['POLATRITY','C3'],['WELDCUR','C4'],['slowDownTime','C5'],['MODE','C6'],['Getready','CE'],['Memory','CF']]);
             const MMA_DIRECTIVE_MAP = new Map([['POLATRITY','E0'],['ELECTRODE','E1'],['DIAMETER','E2'],['THICKNESS','E3'],['FORCE','E4'],['MMA_CURRENT','E5'],['Getready','EE'],['Memory','EF']]);
             const TIGMAN_DIRECTIVE_MAP =new Map([['TDCHFPULSE','D0'],['pre_gas','D1'],['start_cur_end','D2'], ['slop_up','D3'],['weld_cur','D4'],['base_cur','D5'],['pulse_fre','D6'],['pulse_duty','D7'],['slop_down','D8'],['crater_cur','D9'],['post_gas','DA'],['ac_fre','DB'],['ac_balance','DB'],['Getready','DE'],['Memory','DF']]);
-            const CUT_DIRECTIVE_MAP =new Map([['MODE','F0'],['MATERIAL','F1'],['THICKNESS','F2'], ['WELDCUR','F3']]);
+            const CUT_DIRECTIVE_MAP =new Map([['MODE','F0'],['MATERIAL','F1'],['THICKNESS','F2'], ['WELDCUR','F3'], ['Getready','FE']]);
            //特殊指令数组 存储、历史等
            const SPECIAL_DIRECTIVE_MAP =new Map([['CALL_MEMORY','20'],['APPY_MEMORY','21'],['CALL_LAST_WELD','30'],['APPY_LAST_WELD','31'],['EDIT_UNIT','40'],['OVERRIDE','22']]);
             //tigman映射关系
@@ -553,6 +556,7 @@ Array.prototype.in_array = function (element) {
                        }
                       break;
                     case weldDirctive.tigMan:
+                        //假如有改动注意 changeToOldTigmanRealData也要考虑
                         rstInfo.nowTypeList=weldParam.tigmanList;
                         console.log(rstInfo.nowTypeList)
                         rstInfo.weldType='TIGMAN';
@@ -671,26 +675,26 @@ Array.prototype.in_array = function (element) {
                     console.log(rstBean);
                     rstInfo.nowTypeList.forEach(element => {
                         console.log(element.typeName)
-                            switch (element.typeName) {
-                                case 'MODE':
-                                    element.chooseKey=rstBean.mode;
-                                    break;
-                                case 'POLATRITY':
-                                    element.chooseKey=rstBean.polatrity;
-                                    break;
-                                case 'Pulse':
-                                    console.log(rstBean.ifpulse)
-                                    element.chooseKey=rstBean.ifpulse;
-                                    break;
-                                case 'HF':
-                                    element.chooseKey=rstBean.ifhf
-                                    break;
-                                default:
-                                    break;
-                            }
-                        });
+                        switch (element.typeName) {
+                            case 'MODE':
+                                element.chooseKey=rstBean.mode;
+                                break;
+                            case 'POLATRITY':
+                                element.chooseKey=rstBean.polatrity;
+                                break;
+                            case 'Pulse':
+                                console.log(rstBean.ifpulse)
+                                element.chooseKey=rstBean.ifpulse;
+                                break;
+                            case 'HF':
+                                element.chooseKey=rstBean.ifhf
+                                break;
+                            default:
+                                break;
+                        }
+                    });
                     //赋值开始  ......
-                    rstInfo.nowChooseIndex =arrayList[4];//
+                    rstInfo.nowChooseIndex =arrayList[4];
                     rstInfo.nowChoosedKeyName=tigmanLineMap.get(parseInt(arrayList[4]));
                     rstInfo.paramValue =arrayList[5];
                     
@@ -878,25 +882,39 @@ Array.prototype.in_array = function (element) {
                     console.log(temp10)
                     rstInfo = setWeldDataByType(temp10,weldDirctive.tigMan,pageFrom,_this);
                 }else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='newIndex'){
-                    //新规则
-                    var strArr =data.split(' ');
-                    var temp10 =[];
-                    temp10.push(parseInt(("0x"+strArr[0]),16).toString(10));//头DA 218
-                    temp10.push(parseInt(("0x"+strArr[1]),16).toString(10));//指令 228
-                    temp10.push(parseInt(("0x"+strArr[2]),16).toString(10));//焊接状态等 66
-                    temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//MODE+ADCD+2T4T+PULSE 2
-                    temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//count 对应当前选中哪个参数 4
-                    temp10.push(parseInt(("0x"+strArr[6]+strArr[5]),16).toString(10));//数值 0
-                    // ["218", "228", "66", "2", "4", "0"]
-                    //转成10进制
-                    console.log(temp10)
-                    rstInfo = newTigmanDataBuild(temp10,weldDirctive.tigMan,pageFrom,_this);
+                    if(store.state.isModbusModal){
+                        //这里数据的处理像memory的处理方式，取全部进行分析
+                        rstInfo = changeToOldTigmanRealData(data);
+                    }else{
+                        //新规则
+                        var strArr =data.split(' ');
+                        var temp10 =[];
+                        temp10.push(parseInt(("0x"+strArr[0]),16).toString(10));//头DA 218
+                        temp10.push(parseInt(("0x"+strArr[1]),16).toString(10));//指令 228
+                        temp10.push(parseInt(("0x"+strArr[2]),16).toString(10));//焊接状态等 66
+                        temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//MODE+ADCD+2T4T+PULSE 2
+                        temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//count 对应当前选中哪个参数 4
+                        temp10.push(parseInt(("0x"+strArr[6]+strArr[5]),16).toString(10));//数值 0
+                        // ["218", "228", "66", "2", "4", "0"]
+                        //转成10进制
+                        console.log(temp10)
+                        rstInfo = newTigmanDataBuild(temp10,weldDirctive.tigMan,pageFrom,_this);
+                       
+                    }
                     console.log(rstInfo)
-                    
                 }else if(compareString(dirctiveType,weldDirctive.cut)){
                     console.log(data)
-                    var strArr =data.split(' ');
+                    // var strArr =data.split(' ');
                     // DA E6 || 0A 03 12 00 00 00 00 00 00 00 00 00 3C 00 01 00 01 00 02 00 01 F8 04 ||55 73
+                    // window.modbusBroastFromApp("0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5");
+                    data=data.replaceAll(" ","");
+                    let datas =data.substring(10,data.length);
+                    console.log(data)
+                    console.log(datas)
+                    var strArr = [];
+                    for(var i=0;i<datas.length;i+=4){
+                        strArr.push(datas.slice(i,i+4));
+                    }
                     //等离子新模式modbus
                     rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
                     rstInfo.weldType='CUT';
@@ -904,17 +922,17 @@ Array.prototype.in_array = function (element) {
                     rstInfo.nowTypeList.forEach(element => {
                         switch (element.typeName) {
                             case 'MODE':
-                                let v1 = parseInt(("0x"+strArr[15]+""+strArr[16]),16).toString(10);
+                                let v1 = parseInt(strArr[3],16).toString(10);
                                 rstInfo.modeKey=v1;
                                 // element.chooseKey=setWeldParams('MODE',byte1Bean.mode);
                                 element.chooseKey=v1;
                                 break;
                             case 'MATERIAL':
-                                element.chooseKey=parseInt(("0x"+strArr[17]+""+strArr[18]),16).toString(10);
+                                element.chooseKey=parseInt(strArr[4],16).toString(10);
                                 // element.chooseKey=setWeldParams('MATERIAL',arrayList[3]);
                                 break; 
                             case 'THICKNESS':
-                                element.chooseKey=parseInt(("0x"+strArr[19]+""+strArr[20]),16).toString(10);;
+                                element.chooseKey=parseInt(strArr[5],16).toString(10);;
                                 // element.chooseKey=setWeldParams('THICKNESS',arrayList[6]);
                                 break;
                             default:
@@ -922,7 +940,7 @@ Array.prototype.in_array = function (element) {
                         }
                     });
                     
-                    rstInfo.PRESSUREKEY=parseInt(("0x"+strArr[21]+""+strArr[22]),16).toString(10);//机器上发不能改 气压值    
+                    rstInfo.PRESSUREKEY=0;//机器上发不能改 气压值    
                     //模式是normal的时候推荐值是3.5BAR，50PSI
                     // 其他两个模式是4.2BAR，61PSI
                     // 切割模式：
@@ -951,15 +969,15 @@ Array.prototype.in_array = function (element) {
                     
 
                     //其他属性不需要 赋值直接赋值 到时再取
-                    rstInfo.THINKNESS_VALUE = parseInt(("0x"+strArr[19]+""+strArr[20]),16).toString(10);;;
-                    rstInfo.CUT_MIN_THICHNESS=0;//最小厚度值
-                    rstInfo.CUT_MAX_THICHNESS=11;//最小厚度值
-                    //mig_material 值 ==0 显示gas选项否则隐藏
+                    rstInfo.THINKNESS_VALUE = parseInt(strArr[5],16).toString(10);
+                    rstInfo.CUT_MIN_THICHNESS=parseInt(strArr[7],16).toString(10);;//最小厚度值
+                    rstInfo.CUT_MAX_THICHNESS=parseInt(strArr[6],16).toString(10);;//最大厚度值
+                    //mig_material 值 ==0 显示gas选项否则隐藏 
                     rstInfo.MIG_MATERIAL =0;
-                    rstInfo.CUT_RECOMMEND_CURRENT =40;//推荐电流
-                    rstInfo.CUT_CURRENT_VAL=parseInt(("0x"+strArr[13]+""+strArr[14]),16).toString(10);;
-                    rstInfo.CUT_MIN_CUR=10;
-                    rstInfo.CUT_MAX_CUR=100;//2019.07.29
+                    rstInfo.CUT_RECOMMEND_CURRENT =parseInt(strArr[8],16).toString(10);;//推荐电流
+                    rstInfo.CUT_CURRENT_VAL=parseInt(strArr[2],16).toString(10);
+                    rstInfo.CUT_MIN_CUR=parseInt(strArr[10],16).toString(10);;
+                    rstInfo.CUT_MAX_CUR=parseInt(strArr[9],16).toString(10);
                     rstInfo.initBean={
                         unit:0,
 
@@ -1880,16 +1898,16 @@ Array.prototype.in_array = function (element) {
                             changeNewData =changeToOldMmaData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
-                        case '0A0358'://tigsyn 返回43(43个数据*2=86个字节 ）(16进制=56)
+                        case '0A0358'://tigsyn 返回43(44个数据*2=88个字节 ）(16进制=58)
                             changeNewData =changeToOldTigsynData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
-                        case '0A035E'://tigman 返回47(47个数据*2=94个字节 ）(16进制=5e)
+                        case '0A0360'://tigman 返回48(48个数据*2=96个字节 ）(16进制=60)
                             changeNewData =changeToOldTigmanData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         // case '0A032E'://cut 返回46个字节
-                        case '0A0312'://cut 返回9(09)个*2 =18个字节
+                        case '0A0316'://cut 返回11(11)个*2 =22个字节(16:16)
                             changeNewData ='DAE6'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
@@ -1930,6 +1948,7 @@ Array.prototype.in_array = function (element) {
                     if(modbusInfo && modbusInfo.name){
                         let tempData='';
                         let crc ='';
+                        let sendData ='';
                         // 先来简单分析一条MODBUS-RTU报文，例如：01  06  00 01  00 17  98 04 只有一个从机所以地址一样
                         // 01             06            00 01           00 17          98 04 
                         // 从机地址        功能号          数据地址          数据         CRC校验
@@ -1952,13 +1971,24 @@ Array.prototype.in_array = function (element) {
                             //     circleDataSendFuc(sendIndexList[0])
                             // }
                             tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusAdr+modbusInfo.modbusNum;
+                            crc = crcModelBusClacQuery(tempData);
+                            clearInterval(store.state.modbusCircleTimer);//modbus循环请求时间器
+                            sendData = tempData+crc;
+                            modbusLastReadData =sendData;
+                            //重新开启
+                            store.state.modbusCircleTimer = setInterval(() => {
+                                onlySendFuc(modbusLastReadData,pageFrom,crc)
+                                console.log('循环发送modebus协议数据：',modbusLastReadData,crc);
+                            }, 3000);
                         }else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
+                            crc = crcModelBusClacQuery(tempData);
+                            sendData = tempData+crc;
                         }
-                        crc = crcModelBusClacQuery(tempData);
+                        
                         let self =this;
-                        onlySendFuc(tempData+crc,pageFrom,crc)
-                        console.log('modebus协议数据：',tempData,crc);
+                        onlySendFuc(sendData,pageFrom,crc)
+                        console.log('modebus协议数据：',sendData,crc);
                         //发送
 
                     }else{
@@ -2137,13 +2167,90 @@ Array.prototype.in_array = function (element) {
                 console.log('来自changeToOldMigSynData：',migOldHead1+migOldHead2,byte0,byte1,byte2,byte3,byte4,byte5,byte67,byte89,byte1011,byte1213,byte14,byte15,crc)
                 return `${migOldHead1}${total}${crc}`;
             }
-            // tigman数据转换机制
+            // tigman数据转换机制--去别的地方再做处理
             function changeToOldTigmanData(receiveBleData){
-                let datas =receiveBleData.substring(6,receiveBleData.length);
+                let migOldHead1 ='da';
+                let migOldHead2 ='e4';
+                let total =migOldHead2+receiveBleData;
+                let crc = crcModelBusClacQuery(total)
+                return `${migOldHead1}${total}${crc}`;
+            }
+            //假如有改动注意  weldDirctive.tigMan 555行也要考虑
+            // tigman数据转换机制--去别的地方再做处理
+            function changeToOldTigmanRealData(receiveBleData){
+                
+                // DA E4 0A 03 60 00 00 00 00 00 00 00 00.................
+                receiveBleData=receiveBleData.replaceAll(" ","");
+                let datas =receiveBleData.substring(10,receiveBleData.length);
+                console.log(receiveBleData)
+                console.log(datas)
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));
                 }
+                //直接开始赋值
+                var rstInfo={};
+                rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.tigmanList));
+                rstInfo.weldType='TIGMAN';
+                rstInfo.weldTypeNum=BASE_CONFIG.callWeldTypeData.tigman.newIndex;//这个和首页里的配对
+                let byte0 =((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
+                //基础数据赋值
+                let mode =  parseInt(byte0[14]+byte0[15],2);
+                let ifpulse = parseInt(byte0[12],2);
+                let modeValue = mode==1?'4T':'2T';
+                let ifpulseValue = ifpulse==1?'NOPULSE':'PULSE';
+                rstInfo.initBean ={
+                    unit:0,
+                    pfc:0, //干嘛的
+                    weldStatus:0,
+                    hotStatus:0,
+                    flowStatus:0,
+                    empty1:0,
+                    isReadyFlag:0,
+                    ifhf:parseInt(byte0[13],2),
+                    ifpulse:ifpulse,
+                    polatrity:parseInt(byte0[8]+byte0[9]+byte0[10],2),
+                    mode:mode,
+                    nowChooseModel:modeValue+'_'+ifpulseValue+'_DC',
+                }
+                rstInfo.nowTypeList.forEach(element => {
+                    switch (element.typeName) {
+                        case 'MODE':
+                            element.chooseKey =rstInfo.initBean.mode;//0:短焊    1:长焊
+                            break;
+                        case 'POLATRITY':// POLATRITY 20201024 不对应啊 所以值没改
+                            element.chooseKey=rstInfo.initBean.polatrity;
+                            break;
+                        case 'Pulse'://"Pulse" Pluse 20201024 不对应啊 所以值没改
+                            element.chooseKey=rstInfo.initBean.ifpulse;//0:非脉冲   1:脉冲
+                            break;
+                        case 'HF':
+                            element.chooseKey=rstInfo.initBean.ifhf//0:无高频   1:有高频
+                            break;
+                        default:
+                            break;
+                    }
+                });
+                //赋值开始  ......
+                rstInfo.PRE_GAS_VAL =parseInt(dataList[1],16);//pre_gas
+                rstInfo.START_CUR_VAL =parseInt(dataList[3],16);//start_cur_end ?????????????
+                rstInfo.STOP_UP_VAL =parseInt(dataList[4],16);//slop_up 缓升时间
+                rstInfo.WELD_CUR_VAL =parseInt(dataList[5],16);//weld_cur 焊接电流
+                rstInfo.BASE_CUR_VAL =parseInt(dataList[8],16);//base_cur 脉冲基值电流
+                rstInfo.PULSE_FRE_VAL =parseInt(dataList[7],16);//pulse_fre 脉冲频率
+                rstInfo.DUTY_VAL =parseInt(dataList[6],16);//pulse_duty 脉冲占空比
+                rstInfo.SLOP_DOWN_VAL =parseInt(dataList[9],16);//slop_down 缓降时间
+                rstInfo.CRATER_CUR_VAL =parseInt(dataList[10],16);//crater_cur ????????? 收弧电流 ?????
+                rstInfo.POST_GAS_VAL=parseInt(dataList[11],16);//post_gas 后送气时间
+                rstInfo.AC_FRE_VAL =parseInt(dataList[12],16);//ac_fre 交流频率
+                rstInfo.AC_DUTY_VAL =parseInt(dataList[13],16);//ac_balance 交流占空比
+                //选中
+                //赋值开始  先默认第一个元素......
+                rstInfo.nowChooseIndex = "0";
+                rstInfo.nowChoosedKeyName = tigmanLineMap.get(parseInt('0'));
+                rstInfo.paramValue = rstInfo.PRE_GAS_VAL;
+                
+                return rstInfo;
             }
             // tigsyn数据转换机制 
             function changeToOldTigsynData(receiveBleData){
