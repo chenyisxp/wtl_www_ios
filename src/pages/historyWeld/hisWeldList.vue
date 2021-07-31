@@ -61,6 +61,11 @@
                 持续时间：2小时15分
             </div> -->
         </div>
+        <div class="li"  @click="gohisWeld(5)">
+            <div class="typename">
+                CUT<Icon type="ios-arrow-forward" />
+            </div>
+        </div>
     </div>
      <Loading :is-loading="isLoading"></Loading>
   </div>
@@ -143,6 +148,10 @@ export default {
                     this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode
                     this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.mma.name
                     break;
+                case 5:
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.cut.name
+                    break;
                 default:
                     break;
             }
@@ -152,8 +161,8 @@ export default {
             // });
             var dirctCode = this.getDirective('CALL_LAST_WELD','CALL_LAST_WELD');
             // var num = (Array(4).join('0') + parseInt(type,10).toString(16)).slice(-4);
-             var num =this.jinzhiChangeFuc(type);
-             console.log(num);
+            var num =this.jinzhiChangeFuc(type);
+            console.log(num);
             var crc =this.crcModelBusClacQuery(dirctCode+num, true);
             var sendData ="DA"+dirctCode+num+crc;
             //测试开关
@@ -184,6 +193,10 @@ export default {
                     break;
                 case 4:
                      this.broastFromAndroid(this.GLOBAL_CONFIG.testData.mma.headc+this.GLOBAL_CONFIG.testData.mma.data,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    //  this.broastFromAndroid('dac5 82 00 01 09 0064 0064 C54A','hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                case 5:
+                     this.broastFromAndroid(this.GLOBAL_CONFIG.testData.cut.headc+this.GLOBAL_CONFIG.testData.cut.data,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
                     //  this.broastFromAndroid('dac5 82 00 01 09 0064 0064 C54A','hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
                     break;
                 default:

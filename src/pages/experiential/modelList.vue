@@ -29,7 +29,8 @@ export default {
             {typeName:'migsyn',typeShowName:'MIG SYN',weldingCur:'',weldingVoltage:''},
             {typeName:'tigman',typeShowName:'TIG MAN',weldingCur:'',weldingVoltage:''},
             {typeName:'tigsyn',typeShowName:'TIG SYN',weldingCur:'',weldingVoltage:''},
-            {typeName:'mma',typeShowName:'MMA',weldingCur:'',weldingVoltage:''}
+            {typeName:'mma',typeShowName:'MMA',weldingCur:'',weldingVoltage:''},
+            {typeName:'cut',typeShowName:'CUT',weldingCur:'',weldingVoltage:''}
         ]
      } 
   },
@@ -57,10 +58,16 @@ export default {
                 //焊接中....tigman
                   data ='DAB4 0000 0000 1A94';
                 // this.weldBuildData('newIndex',this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode,this.GLOBAL_CONFIG.testWeldingData.tigman.data.replace(/\s+/g,"").replace(/(.{2})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, ""));
-           }else{
+           }else if(typeName=='mma'){
                 //焊接中....mma
                   data ='DAB5 0000 0000 DAA9';
                 // this.weldBuildData('newIndex',this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode,this.GLOBAL_CONFIG.testWeldingData.mma.data.replace(/\s+/g,"").replace(/(.{2})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, ""));
+           }else if(typeName=='cut'){
+                //焊接中....cut
+                  data ='DAB6 0000 0000 DAED';
+                // this.weldBuildData('newIndex',this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode,this.GLOBAL_CONFIG.testWeldingData.mma.data.replace(/\s+/g,"").replace(/(.{2})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, ""));
+           }else{
+             data="";
            }
            
             // setTimeout(() => {
@@ -73,7 +80,8 @@ export default {
       this.$router.push(url);
     },
     buildWeldingData(data){
-      //  alert(data);
+        if(!data){return};
+        //  alert(data);
         data=data.replace(/\s+/g,"").toUpperCase();
         //校验数据格式是否正确 发送信号给安卓 DAB1 0100 0200 8658 双字节
         var oldCrc =data.substring(data.length-4,data.length+1);
@@ -125,6 +133,11 @@ export default {
             break;
           case 'B5':
             this.$store.state.weldingInfo =this.GLOBAL_CONFIG.callWeldTypeData.mma;
+            this.$store.state.weldingCur =parseInt(("0x"+data.substring(6,8)+data.substring(4,6)),16).toString(10)
+            this.$store.state.weldingVoltage=parseInt(("0x"+data.substring(10,12)+data.substring(8,10)),16).toString(10)
+            break;
+          case 'B6':
+            this.$store.state.weldingInfo =this.GLOBAL_CONFIG.callWeldTypeData.cut;
             this.$store.state.weldingCur =parseInt(("0x"+data.substring(6,8)+data.substring(4,6)),16).toString(10)
             this.$store.state.weldingVoltage=parseInt(("0x"+data.substring(10,12)+data.substring(8,10)),16).toString(10)
             break;

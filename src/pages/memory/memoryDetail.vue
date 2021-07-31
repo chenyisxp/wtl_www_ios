@@ -41,6 +41,9 @@
                     <div class="m-s-l_current">{{tmp2}}</div>
                     <div class="m-s-l_force">{{tmp1}}</div>
                 </div>
+                <div class="m-show" v-if="name=='CUT'">
+                    <div class="m-s-l_current">{{tmp2}}</div>
+                </div>
                 <div class="m-l2">
                     
                 </div>
@@ -302,7 +305,11 @@ export default {
             this.tmp1 = list.ARC_FORCE_VAL;
             this.tmp2 =list.MMA_CURRENT_VAL;
         break;
-      default:
+        case this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode:
+            //电流是整数
+            this.tmp2 =list.CUT_CURRENT_VAL;
+        break;
+        default:
           break;
       }
       console.log('tmp1'+this.tmp1+"||"+'tmp2'+this.tmp2);

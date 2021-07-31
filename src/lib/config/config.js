@@ -9,7 +9,7 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/minfront/mainactivity',
-    liulanqiConnect:true,
+    liulanqiConnect:false,
    ONLY_CONNECT_STATUS_TOAST:false,
    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
    LOGFLAG:false,
@@ -64,6 +64,7 @@ let BASE_CONFIG = {
         
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 40 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 FF97'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 c2 00 01 09 6400 6400 CD99'},
+        cut:{heade:'dae',headm:'dad',headc:'dac',data:'6 0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5'}
    },
    //焊接中模拟数据
    testWeldingData:{

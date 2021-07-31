@@ -181,6 +181,9 @@ export default {
         case 'D5':
           return this.GLOBAL_CONFIG.callWeldTypeData.mma;
           break;
+        case 'D6':
+          return this.GLOBAL_CONFIG.callWeldTypeData.cut;
+          break;
         default:
         return 0;
           break;
@@ -211,7 +214,8 @@ export default {
                   this.broastFromAndroid('dad5 8a 10 09 09 aa00 aa00 07 09 6f8e','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
                 break;
             case '6':
-                  this.broastFromAndroid('dad5 8c 10 09 09 aa00 aa00 07 09 6f8e','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
+                  // this.broastFromAndroid('dad5 8c 10 09 09 aa00 aa00 07 09 6f8e','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
+                  this.broastFromAndroid('dad6 8c 0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5 5E6E','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);
                 break;
             case '7':
                   this.broastFromAndroid('dad5 8e 10 09 09 aa00 aa00 07 09 6f8eE','hisweldlist',index,this.GLOBAL_CONFIG.TESTFLAG);

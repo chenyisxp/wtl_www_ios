@@ -25,6 +25,9 @@
                     <div class="m-s-l_current">{{tmp2}}</div>
                     <div class="m-s-l_force">{{tmp1}}</div>
                 </div>
+                <div class="m-show" v-if="name=='CUT'">
+                    <div class="m-s-l_current">{{tmp2}}</div>
+                </div>
                 <div class="m-l2">
                     
                 </div>
@@ -537,6 +540,10 @@ export default {
             // this.tmp2 =(list.MMA_CURRENT_VAL+'').indexOf('.')>0?list.MMA_CURRENT_VAL/10:list.MMA_CURRENT_VAL+'.0';
             this.tmp1 = list.ARC_FORCE_VAL;
             this.tmp2 =list.MMA_CURRENT_VAL;
+        break;
+      case 5:
+             //电流是整数
+            this.tmp2 =list.CUT_CURRENT_VAL;
         break;
       default:
           break;

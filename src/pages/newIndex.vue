@@ -366,7 +366,7 @@ export default {
                 // this.go('/weld_mma');
                 break;
             case this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode://cut
-                this.broastFromAndroid3(this.GLOBAL_CONFIG.testData.migsyn.heade+this.GLOBAL_CONFIG.testData.migsyn.data,'newIndex');
+                this.broastFromAndroid3(this.GLOBAL_CONFIG.testData.cut.heade+this.GLOBAL_CONFIG.testData.cut.data,'newIndex');
                 // this.go('/weld_cut');
                 break;
             default:

@@ -908,7 +908,13 @@ Array.prototype.in_array = function (element) {
                     // DA E6 || 0A 03 12 00 00 00 00 00 00 00 00 00 3C 00 01 00 01 00 02 00 01 F8 04 ||55 73
                     // window.modbusBroastFromApp("0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5");
                     data=data.replaceAll(" ","");
-                    let datas =data.substring(10,data.length);
+                    let datas = "";
+                    if(pageFrom == 'memory'){
+                        datas = data.substring(12,data.length);
+                    }else{
+                        datas = data.substring(10,data.length);
+                    }
+                    
                     console.log(data)
                     console.log(datas)
                     var strArr = [];
@@ -983,8 +989,12 @@ Array.prototype.in_array = function (element) {
 
                     };//包含很多焊接状态和单位等
                 }
-                
-                store.state.rstInfo = rstInfo;
+                if(pageFrom=='memory'){
+                    //    alert(JSON.stringify(rstInfo))
+                    store.state.memoryInfo = rstInfo;
+                }else{
+                    store.state.rstInfo = rstInfo;
+                }
                 console.log(rstInfo)
                 return rstInfo;
             }
