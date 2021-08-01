@@ -1,6 +1,7 @@
 <template>
     <div class="loginIndex">
-        <div class="logoBox"><img src="../../assets/images/jian.png"></div>
+        <div class="logoBox"></div>
+        <div class="cancelBtn" @click="handleBack">Cancel</div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
             <input placeholder="Please enter your Email" v-model="email"/>
@@ -38,6 +39,9 @@ export default {
     };
   },
   methods: {
+    handleBack(){
+        this.$router.back();
+    },
     handleIn(){
         this.codeList = this.registerCodeValue.split("");
         this.otherListNum = 4-this.codeList.length>0?4-this.codeList.length:0;
@@ -91,7 +95,14 @@ export default {
     width: 100%;
     height: 100vh;
     padding: 0 1.5rem;
+    padding-top: 5rem;
     position: relative;
+    .cancelBtn{
+        position: absolute;
+        right: 1.5rem;
+        top:1rem;
+        color: #03a2c0;
+    }
     .logoBox{
         text-align: center;
         img{
@@ -99,6 +110,7 @@ export default {
         }
     }
     .attenWord{
+        height: 30px;
         font-size: 24px;
         font-style: italic;
         font-weight: bold;

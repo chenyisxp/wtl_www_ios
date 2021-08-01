@@ -162,7 +162,7 @@ let InterfaceService = {
         
     },
     getCheckCode:(url,callback) => {
-        axios.get(url)
+        axios.get(BASE_CONFIG.ROOT_URL+url)
             .then(response=>{
                 console.log(response)
                 if(response.status===200){
@@ -184,7 +184,7 @@ let InterfaceService = {
 
 } 
 const interMap = [
-    { method: 'testMsg', code: "ac010000" },
+    { method: 'testMsg', code: "ac010001" },
     { method: 'getJywDetail', code: "yq01001" },
     { method: 'getJywAcct', code: "yq01002" },
 

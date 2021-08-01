@@ -147,7 +147,7 @@ const router = new Router({
 		{ 
 			path: '/registerStep3',
 			name: 'registerStep3',
-			meta:{index:26},
+			meta:{index:27},
 			component:RegisterStep3
 		},
 		
@@ -171,8 +171,9 @@ const router = new Router({
 		},
 		{
 			path: '*',
-			component:NewIndex
-			// component:RegisterStep2
+			component:LoginIndex,
+			// component:NewIndex
+			// component:RegisterStep1
 			// component:NewIndex
 			// component: LoadApp
 			// component: resolve => require(['@/pages/testPage.vue'],resolve)
@@ -186,7 +187,12 @@ const router = new Router({
 		}
 	]
 })
-const normalPath = ['/resetPasswordStep3','/resetPasswordStep2','/resetPasswordStep1','/loginIndex','/registerStep2','/RegisterStep1','/forgotPassword','/develeperManage','/blueToothManage','/testPage','/setmanage','/newIndex','/modelList','loadApp']; //不需要蓝牙的页面
+const normalPath = 
+	[
+		'/resetPasswordStep3','/resetPasswordStep2','/resetPasswordStep1','/loginIndex',
+		'/registerStep3','/registerStep2','/registerStep1','/forgotPassword','/develeperManage',
+		'/blueToothManage','/testPage','/setmanage','/newIndex','/modelList','loadApp'
+	]; //不需要蓝牙的页面
 const normalPathStr = normalPath.join('') && (normalPath.join('')).toLocaleLowerCase();
 const parentRouter =['/newIndex','/saveManage','/hisWeldList','/memoryManage'];
 const parentRouterSrt =parentRouter.join('') && (parentRouter.join('')).toLocaleLowerCase();

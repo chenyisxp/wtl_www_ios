@@ -829,7 +829,7 @@ export default {
     },
     initMSG(){
      this.aa = {"code":1,"object":{"list":[{name:11},{name:22},{name:33}],"totalCount":0},"error":null,"message":null,"exception":null,"result":null};
-      var param={};
+      var param={email:'111',password:"222"};
       console.log(InterfaceService)
       InterfaceService.testMsg(param,(data)=>{
         if(data.respData && data.respData.respCode!='0000'){

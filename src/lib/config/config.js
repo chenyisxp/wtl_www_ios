@@ -3,12 +3,12 @@
 // const ROOT_URL = 'http://bozhi.greenlandfs.com';//http://47.98.83.29';
 // const ROOT_URL = 'http://10.105.113.211:11001';//永刚本地ip
 // const ROOT_URL = 'http://10.105.113.212:11001';//赛老板本地ip
-const ROOT_URL = 'http://127.0.0.1:3000';//赛老板本地ip
+const ROOT_URL = 'http://127.0.0.1:3001';//本地
 
 let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
-    SERVICE_ADDRESS : ROOT_URL + '/minfront/mainactivity',
+    SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
     liulanqiConnect:false,
    ONLY_CONNECT_STATUS_TOAST:false,
    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互

@@ -1,6 +1,7 @@
 <template>
     <div class="loginIndex">
-        <div class="logoBox"><img src="../../assets/images/jian.png"></div>
+        <!-- <div class="logoBox"><img src="../../assets/images/jian.png"></div> -->
+        <div class="cancelBtn" @click="handleBack">Cancel</div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
             <input placeholder="Please enter your Email" v-model="email"/>
@@ -29,6 +30,9 @@ export default {
     };
   },
   methods: {
+    handleBack(){
+        this.$router.back();
+    },
     handleSubmit(){
         if(this.email && this.password && this.password){
             Toast("Reset password  successful");
@@ -56,6 +60,7 @@ export default {
     width: 100%;
     height: 100vh;
     padding: 0 1.5rem;
+    padding-top: 5rem;
     position: relative;
     .logoBox{
         text-align: center;
@@ -63,7 +68,14 @@ export default {
           
         }
     }
+    .cancelBtn{
+        position: absolute;
+        right: 1.5rem;
+        top:1rem;
+        color: #03a2c0;
+    }
     .attenWord{
+        height: 30px;
         font-size: 24px;
         font-style: italic;
         font-weight: bold;

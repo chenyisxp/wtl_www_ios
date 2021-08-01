@@ -1,14 +1,14 @@
 <template>
     <div class="loginIndex">
         <div class="upContent">
-            <div class="cancelBtn">Cancel</div>
+            <div class="cancelBtn" @click="handleBack">Cancel</div>
             <div class="attenWord">Reset password</div>
             <div class="inBox i-1">
                 <input placeholder="Please enter your Email" v-model="email"/>
             </div>
             <div class="inBox i-2">
                 <input  placeholder="Input graghic code"  v-model="checkCode" maxlength="4"/>
-                <img src="http://www.itxxb.com/resource/20180310/2/20180310145437421_1.png">
+                <div class="checkCodeBox" v-html="checkCodeSvg" @click="getCheckCode()"></div>
             </div>
             <div class="btnBox b-1">
                 <div class="signBox" @click="handleSubmit">Confirm</div>
@@ -20,14 +20,25 @@
 
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
+import {InterfaceService} from '@/services/api'
 export default {
   data() {
     return {
         email:'',
-        checkCode:''
+        checkCode:'',
+        checkCodeSvg:''
     };
   },
   methods: {
+    getCheckCode(){
+        InterfaceService.getCheckCode('/api/getCaptcha/',(data)=>{
+            console.log(data)
+            this.checkCodeSvg=data;
+        })
+    },
+    handleBack(){
+        this.$router.back();
+    },
     handleSubmit(){
         if(this.email && this.checkCode){
             Toast("Sign in successful")
@@ -42,6 +53,7 @@ export default {
     }
   },
   mounted() {
+      this.getCheckCode();
   },created () {
    
   
@@ -109,6 +121,11 @@ export default {
             }
             &::before{
                 background:none
+            }
+            .checkCodeBox{
+                background: #fff;
+                position: absolute;
+                right: 0;
             }
         }
         input{

@@ -1,15 +1,16 @@
 <template>
     <div class="loginIndex">
         <div class="upContent">
-            <div class="logoBox"><img src="../../assets/images/jian.png"></div>
-             <div class="attenWord">Sign up</div>
+            <!-- <div class="logoBox"><img src="../../assets/images/jian.png"></div> -->
+            <div class="cancelBtn" @click="handleBack">Cancel</div>
+            <div class="attenWord">Sign up</div>
             <div class="inBox i-1">
                 <input placeholder="Please enter your Email" v-model="email"/>
             </div>
             <div class="inBox i-2">
                 <input  placeholder="Input graghic code"  v-model="checkCode" maxlength="4"/>
                 <!-- <img src="http://www.itxxb.com/resource/20180310/2/20180310145437421_1.png"> -->
-                <div v-html="checkCodeSvg"></div>
+                <div class="checkCodeBox" v-html="checkCodeSvg" @click="getCheckCode()"></div>
             </div>
             <div class="btnBox b-1">
                 <div class="signBox" @click="handleSubmit">Confirm</div>
@@ -31,6 +32,9 @@ export default {
     };
   },
   methods: {
+    handleBack(){
+        this.$router.back();
+    },
     handleSubmit(){
         if(this.email && this.checkCode){
             Toast("Sign in successful")
@@ -42,13 +46,16 @@ export default {
     },
     gogo(){
         this.go('/weld_mma?type='+'MMA');
+    },
+    getCheckCode(){
+        InterfaceService.getCheckCode('/api/getCaptcha/',(data)=>{
+            console.log(data)
+            this.checkCodeSvg=data;
+        })
     }
   },
   mounted() {
-    InterfaceService.getCheckCode('http://localhost:3001/api/getCaptcha/',(data)=>{
-        console.log(data)
-        this.checkCodeSvg=data;
-    })
+    this.getCheckCode();
   },created () {
    
   
@@ -62,6 +69,13 @@ export default {
     width: 100%;
     height: 100vh;
     position: relative;
+    padding-top: 5rem;
+    .cancelBtn{
+        position: absolute;
+        right: 1.5rem;
+        top:1rem;
+        color: #03a2c0;
+    }
     .logoBox{
         text-align: center;
         img{
@@ -69,9 +83,11 @@ export default {
         }
     }
     .upContent{
-        padding: 0 1.5rem 
+        padding: 0 1.5rem;
+       
     }
     .attenWord{
+        height: 30px;
         font-size: 24px;
         font-style: italic;
         font-weight: bold;
@@ -98,10 +114,11 @@ export default {
         }
         &.i-2{
             margin-top: 0.5rem;
+            position: relative;
             input{
                 padding-left: 0rem;
                 float: left;
-                width: calc(100% - 3rem);
+                width: calc(100% - 5rem);
             }
             img{
                 float: left;
@@ -109,6 +126,11 @@ export default {
             }
             &::before{
                 background:none
+            }
+            .checkCodeBox{
+                background: #fff;
+                position: absolute;
+                right: 0;
             }
         }
         input{
