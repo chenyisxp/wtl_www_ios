@@ -1,6 +1,7 @@
 <template>
     <div class="loginIndex">
-        <div class="logoBox"><img src="../../assets/images/jian.png"></div>
+        <!-- <div class="logoBox"><img src="../../assets/images/jian.png"></div> -->
+        <div class="cancelBtn" @click="handleBack">Cancel</div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
             <input placeholder="Please enter your Email" v-model="email"/>
@@ -20,6 +21,7 @@
 
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
+import {InterfaceService} from '@/services/api'
 export default {
   data() {
     return {
@@ -29,11 +31,32 @@ export default {
     };
   },
   methods: {
+    handleBack(){
+        this.$router.back();
+    },
     handleSubmit(){
-        if(this.email && this.password && this.password){
-            Toast("Sign in successful")
-            this.go('/newIndex')
+        if(!this.email){
+            Toast("请输入邮箱")
+            return;
         }
+        if(!this.password){
+            Toast("请输入密码")
+            return;
+        }
+        if(this.password !=this.password2){
+            Toast("前后密码不一致")
+            return;
+        }
+        
+        // this.go('/newIndex')
+        InterfaceService.registerAcct({email:this.email,uuid:this.userUuid,password:this.password},(data)=>{
+            if(data && data.respData && data.respData.respCode == '0000'){
+                this.go('/newIndex')
+            }
+        },function(data){
+            
+        });
+       
     },
     go(url){
        this.$router.push(url);
@@ -46,6 +69,11 @@ export default {
   },created () {
    
   
+  },
+  computed: {
+      userUuid(){
+          return this.$store.state.userUuid;
+      }
   }
 };
 </script>
@@ -56,7 +84,14 @@ export default {
     width: 100%;
     height: 100vh;
     padding: 0 1.5rem;
+    padding-top: 5rem;
     position: relative;
+    .cancelBtn{
+        position: absolute;
+        right: 1.5rem;
+        top:1rem;
+        color: #03a2c0;
+    }
     .logoBox{
         text-align: center;
         img{

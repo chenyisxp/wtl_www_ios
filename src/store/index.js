@@ -62,7 +62,11 @@ const state = {
     modbusSendTimes:0,
     modbusSendDataTimes:0,
     logFaceFlag:false,//面板信息
-    modbusCircleTimer:{}
+    modbusCircleTimer:{},
+    email:'',
+    password:'',
+    userUuid:''
+
 }
 
 const mutations = {

@@ -184,11 +184,21 @@ let InterfaceService = {
 
 } 
 const interMap = [
-    { method: 'testMsg', code: "ac010001" },
-    { method: 'getJywDetail', code: "yq01001" },
-    { method: 'getJywAcct', code: "yq01002" },
+    { method: 'login', code: "ac010001" },//登录
+    { method: 'getMainCheckCode', code: "ac010002" },//获取验证码
+    { method: 'sendEmailCode', code: "ac010003" },//获取验证码
+    { method: 'checkEmailCode', code: "ac010004" },//校验验证码
+    { method: 'insertUuidFuc', code: "ac010005" },//插入uuid
+    { method: 'registerAcct', code: "ac010006" },//注册
+    { method: 'upLoadData', code: "ac020001" },//上传数据
+    
+    
 
-    { method: 'miniProgramInnit', code: "1030004" },   //微信小程序初始化
+
+    // { method: 'getJywDetail', code: "yq01001" },
+    // { method: 'getJywAcct', code: "yq01002" },
+
+    // { method: 'miniProgramInnit', code: "1030004" },   //微信小程序初始化
 
 ]
 

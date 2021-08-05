@@ -210,6 +210,7 @@ import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
 import Head from "@/components/base/header";
 import $ from 'jquery'
+import {InterfaceService} from '@/services/api'
 export default {
   name: '',
   components: {
@@ -776,7 +777,7 @@ export default {
                 }
                 // var data = self.getDirective(self.typeName, 'Getready')+ '0000';
                 var crc = self.crcModelBusClacQuery(data, true);
-                var sendData = "DA" + data + crc;        
+                var sendData = "DA" + data + crc;
                 //生产时打开
                 self.callSendDataToBleUtil('weld_common',sendData,crc);
                 //   self.$router.push({path:'/welding',query:{electricCurrent: self.nowPosionX ,voltage:self.nowPosionX2}});
@@ -1455,6 +1456,9 @@ export default {
         },
         isModbusModal(){
             return this.$store.state.isModbusModal;
+        },
+        userUuid(){
+            return this.$store.state.userUuid;
         }
   },
   destroyed(){

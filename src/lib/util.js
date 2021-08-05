@@ -15,8 +15,19 @@ Array.prototype.in_array = function (element) {
     import { BASE_CONFIG } from './config/config'
     import store from '../store/index.js'
     import { Toast} from "mint-ui";
+    import {InterfaceService} from '@/services/api'
     export default {
         install(Vue, options) {
+            function S4() {
+                return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+            }
+            function guid() {
+                // return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+                return (S4()+S4()+S4()+S4()+S4()+S4()+S4()+S4());
+            }
+            Vue.prototype.creatUUID =function() {
+                return guid();
+            }
             Vue.prototype.GLOBAL_CONFIG = BASE_CONFIG;
             // modbus 相关
             var modbusLastReadData="";
@@ -2368,6 +2379,7 @@ Array.prototype.in_array = function (element) {
                     if(BASE_CONFIG.ENV_IOS_FLAG){
                         var message = {"method":"handleSendData","sendDt":sendDt};
                         if(window.webkit){
+                            upLoadDataFuc(sendDt,pageFrom);
                             window.webkit.messageHandlers.interOp.postMessage(message);
                         }else{
                             console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom,crc)
@@ -2376,12 +2388,21 @@ Array.prototype.in_array = function (element) {
                         store.state.nowPageFrom=pageFrom?pageFrom:'';
                         if(window.android){
                             //注意这个modbuscrc是倒过来的
+                            upLoadDataFuc(sendDt,pageFrom);
                             window.android.callSendDataToBle(pageFrom,sendDt,crc);
                         }else{
                             console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom,crc)
                         }
                     }
+                    upLoadDataFuc(sendDt,pageFrom);
                 }
+            }
+            function upLoadDataFuc(sendData,pageFrom){
+                InterfaceService.upLoadData({uuid:store.state.userUuid,allData:sendData,pageName:pageFrom,type:'SEND'},(data)=>{
+                    
+                },function(data){
+                    
+                });
             }
             function circleDataSendFuc(indexInfo){
                 let sendDt = indexInfo.sendData+indexInfo.crc;

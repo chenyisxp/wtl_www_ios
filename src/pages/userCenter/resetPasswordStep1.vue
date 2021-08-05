@@ -8,7 +8,7 @@
             </div>
             <div class="inBox i-2">
                 <input  placeholder="Input graghic code"  v-model="checkCode" maxlength="4"/>
-                <div class="checkCodeBox" v-html="checkCodeSvg" @click="getCheckCode()"></div>
+                <div class="checkCodeBox" v-html="checkCodeSvg.svgcheckCode" @click="getMainCheckCode()"></div>
             </div>
             <div class="btnBox b-1">
                 <div class="signBox" @click="handleSubmit">Confirm</div>
@@ -36,13 +36,39 @@ export default {
             this.checkCodeSvg=data;
         })
     },
+    getMainCheckCode(){
+        InterfaceService.getMainCheckCode({actionType:'code',uuid:this.userUuid},(data)=>{
+            this.checkCodeSvg=data.respData.msgList[0];
+        },function(data){
+        });
+    },
     handleBack(){
         this.$router.back();
     },
     handleSubmit(){
-        if(this.email && this.checkCode){
-            Toast("Sign in successful")
-            this.go('/resetPasswordStep2');
+        if(!this.email){
+            Toast("请填写邮箱")
+            return;
+        }
+        if(!this.checkCode || this.checkCode.length<4){
+            Toast("请输入验证码")
+            return;
+        }
+        if(this.checkCode.toUpperCase() == this.checkCodeSvg.newCheckCode.toUpperCase()){
+            
+            InterfaceService.sendEmailCode({email:this.email,uuid:this.uuid},(data)=>{
+                if(data && data.respData && data.respData.respCode == '0000'){
+                    this.go('/resetPasswordStep2')
+                }else{
+                    Toast("soory,请刷新重试")
+                    this.go('/resetPasswordStep2')//模拟
+                }
+            },function(data){
+               
+            });
+           
+        }else{
+            Toast("请输入正确的验证码")
         }
     },
     go(url){
@@ -53,10 +79,17 @@ export default {
     }
   },
   mounted() {
-      this.getCheckCode();
+    this.email = this.$store.state.email || '';
+    //   this.getCheckCode();
+    this.getMainCheckCode();
   },created () {
    
   
+  },
+  computed: {
+      userUuid(){
+          return this.$store.state.userUuid;
+      }
   }
 };
 </script>

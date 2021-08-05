@@ -21,6 +21,7 @@
 
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
+import {InterfaceService} from '@/services/api'
 export default {
   data() {
     return {
@@ -34,10 +35,27 @@ export default {
         this.$router.back();
     },
     handleSubmit(){
-        if(this.email && this.password && this.password){
-            Toast("Reset password  successful");
-            this.go('/newIndex')
+        if(!this.email){
+            Toast("请输入邮箱")
+            return;
         }
+        if(!this.password){
+            Toast("请输入密码")
+            return;
+        }
+        if(this.password !=this.password2){
+            Toast("前后密码不一致")
+            return;
+        }
+        
+        // this.go('/newIndex')
+        InterfaceService.registerAcct({email:this.email,uuid:this.userUuid,password:this.password},(data)=>{
+            if(data && data.respData && data.respData.respCode == '0000'){
+                this.go('/newIndex')
+            }
+        },function(data){
+            
+        });
     },
     go(url){
        this.$router.push(url);
@@ -50,6 +68,11 @@ export default {
   },created () {
    
   
+  },
+  computed: {
+      userUuid(){
+          return this.$store.state.userUuid;
+      }
   }
 };
 </script>

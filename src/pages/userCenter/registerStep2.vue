@@ -12,12 +12,12 @@
                 <span class="g_hx" :class="nowFocus && index2==0 && codeList.length==0?'focus_on':''"  v-for="(item2,index2) in otherListNum" :key="'i2_'+index2"></span>
             </div>
             <p>
-                <input type="text" v-model.trim="registerCodeValue" @input="handleIn" maxlength="4" @focus="nowFocus=true;" @blur="nowFocus=false;" @click="nowFocus=true;"/>
+                <input type="text" v-model.trim="emailCode" @input="handleIn" maxlength="4" @focus="nowFocus=true;" @blur="nowFocus=false;" @click="nowFocus=true;"/>
             </p>
         </div>
         <div class="wordBox clearfloat">
             <span class="w-1">Input verification code</span>
-            <span class="w-2">(300s) Resend</span>
+            <span class="w-2">({{secondNum}}s) Resend</span>
         </div>
         <div class="btnBox b-1">
             <div class="signBox" @click="handleSubmit">Confirm</div>
@@ -28,14 +28,16 @@
 
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
+import {InterfaceService} from '@/services/api'
 export default {
   data() {
     return {
         email:'',
-        registerCodeValue:'',
+        emailCode:'',
         codeList:[],
         otherListNum:4,
-        nowFocus:false
+        nowFocus:false,
+        secondNum:300
     };
   },
   methods: {
@@ -43,7 +45,7 @@ export default {
         this.$router.back();
     },
     handleIn(){
-        this.codeList = this.registerCodeValue.split("");
+        this.codeList = this.emailCode.split("");
         this.otherListNum = 4-this.codeList.length>0?4-this.codeList.length:0;
         console.log(this.otherListNum)
     },
@@ -66,9 +68,16 @@ export default {
         }
     },
     handleSubmit(){
-        if(this.email && this.registerCodeValue.length>3){
+        if(this.email && this.emailCode.length>3){
+            InterfaceService.checkEmailCode({email:this.email,uuid:this.userUuid,emailCode:this.emailCode},(data)=>{
+                if(data && data.respData && data.respData.respCode == '0000'){
+                    this.go('/registerStep3')
+                }
+            },function(data){
+               
+            });
             // Toast("Sign in successful");
-            this.go('/registerStep3')
+            // this.go('/registerStep3')
         }
     },
     go(url){
@@ -79,12 +88,20 @@ export default {
     }
   },
   mounted() {
+        this.secondNum=300;
+        setInterval(() => {
+            --this.secondNum;
+        }, 1000);
   },created () {
   },
   watch: {
-      registerCodeValue(oldval,newval){
+      emailCode(oldval,newval){
           console.log(oldval,newval)
+      },
+      userUuid(){
+          return this.$store.state.userUuid;
       }
+
   }
 };
 </script>

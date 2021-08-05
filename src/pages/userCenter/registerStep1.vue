@@ -10,7 +10,7 @@
             <div class="inBox i-2">
                 <input  placeholder="Input graghic code"  v-model="checkCode" maxlength="4"/>
                 <!-- <img src="http://www.itxxb.com/resource/20180310/2/20180310145437421_1.png"> -->
-                <div class="checkCodeBox" v-html="checkCodeSvg" @click="getCheckCode()"></div>
+                <div class="checkCodeBox" v-html="checkCodeSvg.svgcheckCode" @click="getMainCheckCode()"></div>
             </div>
             <div class="btnBox b-1">
                 <div class="signBox" @click="handleSubmit">Confirm</div>
@@ -28,7 +28,8 @@ export default {
     return {
         email:'',
         checkCode:'',
-        checkCodeSvg:''
+        checkCodeSvg:'',
+        uuid:''
     };
   },
   methods: {
@@ -36,10 +37,32 @@ export default {
         this.$router.back();
     },
     handleSubmit(){
-        if(this.email && this.checkCode){
-            Toast("Sign in successful")
-            this.go('/registerStep2')
+        if(!this.email){
+            Toast("请填写邮箱")
+            return;
         }
+        if(!this.checkCode || this.checkCode.length<4){
+            Toast("请输入验证码")
+            return;
+        }
+        if(this.checkCode.toUpperCase() == this.checkCodeSvg.newCheckCode.toUpperCase()){
+            
+            InterfaceService.sendEmailCode({email:this.email,uuid:this.uuid},(data)=>{
+                if(data && data.respData && data.respData.respCode == '0000'){
+                    this.go('/registerStep2')
+                }else{
+                    //  Toast("")
+                     //假装成功
+                    this.go('/registerStep2')
+                }
+            },function(data){
+               
+            });
+           
+        }else{
+            Toast("请输入正确的验证码")
+        }
+       
     },
     go(url){
        this.$router.push(url);
@@ -52,10 +75,21 @@ export default {
             console.log(data)
             this.checkCodeSvg=data;
         })
+    },
+    getMainCheckCode(){
+        InterfaceService.getMainCheckCode({actionType:'code',uuid:this.uuid},(data)=>{
+            this.checkCodeSvg = data.respData.msgList[0];
+        },function(data){
+        });
     }
   },
   mounted() {
-    this.getCheckCode();
+   
+    this.uuid =  localStorage.getItem("wtl_uuid");
+    if(!this.uuid){
+        this.uuid = this.creatUUID();
+    }
+    this.getMainCheckCode();
   },created () {
    
   

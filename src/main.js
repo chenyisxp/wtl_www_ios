@@ -16,12 +16,12 @@ import filters from './filters/index'
 import directive from './lib/directive'
 import store from './store/index.js'
 // import { MessageBox ,Popup } from 'mint-ui'
-import { InterfaceService } from './lib/service'
 import { Indicator,Toast } from 'mint-ui'
 
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 import {Icon,Switch} from 'iview';
+import { InterfaceService } from "@/services/api";
 // import {
 //   InputNumber,
 //   Button,
@@ -226,9 +226,6 @@ new Vue({
       }
    },
    mounted () {
-    var reqUrl = window.location.href.split('#')[0];
-    
-    var myURL = parseURL(reqUrl); 
     //禁止使用返回键
       // window.history.pushState(null, null, "#");
       // window.addEventListener("popstate", function(e) {
@@ -238,33 +235,21 @@ new Vue({
       // InterfaceService.getUpdateInfo((data)=>{
       //   console.log(data)
       // })
-      function parseURL(url) { 
-        var a =  document.createElement('a'); 
-        a.href = url; 
-        return { 
-          source: url, 
-          protocol: a.protocol.replace(':',''), 
-          host: a.hostname, 
-          port: a.port, 
-          query: a.search, 
-          params: (function(){ 
-              var ret = {}, 
-                  seg = a.search.replace(/^\?/,'').split('&'), 
-                  len = seg.length, i = 0, s; 
-              for (;i<len;i++) { 
-                  if (!seg[i]) { continue; } 
-                  s = seg[i].split('='); 
-                  ret[s[0]] = s[1]; 
-              } 
-              return ret; 
-          })(), 
-          file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1], 
-          hash: a.hash.replace('#',''), 
-          path: a.pathname.replace(/^([^\/])/,'/$1'), 
-          relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1], 
-          segments: a.pathname.replace(/^\//,'').split('/') 
-        }; 
-      }  
+      //1、先查询手机本地存储是否存在uuid
+      //2、存在直接使用，不存在创建
+       //用于生成uuid
+        let uuid = localStorage.getItem("wtl_uuid");
+        if(uuid=="" || uuid== null){
+          uuid = this.creatUUID();
+          localStorage.setItem("wtl_uuid",uuid);
+          //是否联网了
+          InterfaceService.insertUuidFuc({uuid:uuid},(data)=>{
+            
+          },function(data){
+          });
+        }
+        this.$store.state.userUuid = uuid;
+        
    },destroyed () {
    }
  

@@ -9,17 +9,17 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:false,
-   ONLY_CONNECT_STATUS_TOAST:false,
-   DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
-   LOGFLAG:false,
-   TESTFLAG : false,//测试开关
-   TESTDEEPTH:0,//深度
-   autoRouterTime:5000,//自动前往焊接中页面的时间：ms
-   scaningDuring:15000,//扫描时间
-   ENV_IOS_FLAG : false,//true:ios、fasle:安卓环境
-   DirectStart:'DA',
-   callWeldTypeData:{//注意utils中有独立crccode注意一起改
+    liulanqiConnect:true,//浏览器调试的时候
+    ONLY_CONNECT_STATUS_TOAST:false,
+    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
+    LOGFLAG:false,
+    TESTFLAG : false,//测试开关
+    TESTDEEPTH:0,//深度
+    autoRouterTime:5000,//自动前往焊接中页面的时间：ms
+    scaningDuring:15000,//扫描时间
+    ENV_IOS_FLAG : false,//true:ios、fasle:安卓环境
+    DirectStart:'DA',
+    callWeldTypeData:{//注意utils中有独立crccode注意一起改
        migsyn:{data:'100000',crcCode:'0570',name:'MIG SYN',modelKey:'MIGSYN',url:'/weld_common?type=MIGSYN',newIndex:0},
        migman:{data:'100100',crcCode:'9571',name:'MIG MAN',modelKey:'MIGMAN',url:'/weld_common?type=MIGMAN',newIndex:1},
        tigsyn:{data:'100200',crcCode:'6571',name:'TIG SYN',modelKey:'TIGSYN',url:'/weld_tig_syn',newIndex:2},

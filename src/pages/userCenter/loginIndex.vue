@@ -21,6 +21,7 @@
 
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
+import {InterfaceService} from '@/services/api'
 export default {
   data() {
     return {
@@ -46,7 +47,19 @@ export default {
     },
     handleSubmit(){
         if(this.email && this.password){
-            Toast("Sign in successful")
+            // Toast("Sign in successful")
+            var param={'email':this.email,password:this.password}
+            InterfaceService.login(param,(data)=>{
+                this.$store.state.email=this.email;
+                if(data && data.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length>0){
+                    //登录成功
+                }else{
+                    Toast("请检查帐号或密码是否正确");
+                }
+            },function(data){
+            });
+        }else{
+            Toast("请先输入帐号及密码")
         }
     },
     go(url){
