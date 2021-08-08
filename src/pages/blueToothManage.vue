@@ -225,6 +225,7 @@ export default {
       },
       //体验模式
       goWeldingExperiential(){
+        this.$store.state.modbusSendDataTimes=0;
         this.GLOBAL_CONFIG.TESTFLAG=true;
         this.isLoading =false;
         this.$store.state.getConnectStatus='connected';
@@ -232,6 +233,7 @@ export default {
       },
       goExperiential(){
         let self =this;
+        self.$store.state.modbusSendDataTimes=0;
         self.$store.state.routerOprete=1;
         clearInterval(self.$store.state.globalGetConnectStatus);
         self.GLOBAL_CONFIG.TESTFLAG=true;

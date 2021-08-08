@@ -325,9 +325,9 @@ Array.prototype.in_array = function (element) {
                         //单位切换inch
                         inchComList:[
                             {id:0,key:'5mm',value:'24Ga'},{id:1,key:'10mm',value:'18Ga'},{id:2,key:'20mm',value:'14Ga'},
-                            {id:3,key:'30mm',value:'12Ga'},{id:4,key:'40mm',value:'10Ga'},{id:5,key:'50mm',value:'3/16'},
-                            {id:6,key:'60mm',value:'1/4'},{id:7,key:'80mm',value:'5/16'},{id:8,key:'100mm',value:'3/8'},
-                            {id:9,key:'120mm',value:'1/2'},{id:10,key:'150mm',value:'5/8'},{id:11,key:'200mm',value:'3/4'}
+                            {id:3,key:'30mm',value:'12Ga'},{id:4,key:'40mm',value:'10Ga'},{id:5,key:'50mm',value:'3/16"'},
+                            {id:6,key:'60mm',value:'1/4"'},{id:7,key:'80mm',value:'5/16"'},{id:8,key:'100mm',value:'3/8"'},
+                            {id:9,key:'120mm',value:'1/2"'},{id:10,key:'150mm',value:'5/8"'},{id:11,key:'200mm',value:'3/4"'}
                         ]
                     }
                 ]
@@ -958,6 +958,18 @@ Array.prototype.in_array = function (element) {
                     for(var i=0;i<datas.length;i+=4){
                         strArr.push(datas.slice(i,i+4));
                     }
+                    let byte0 =((Array(16).join(0) + parseInt(strArr[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
+                    var byte1Bean ={};
+                        byte1Bean.weldStatus=byte0[15];//0:未焊接  1:在焊接
+                        if(byte1Bean.weldStatus==1){
+                            if(pageFrom=='newIndex'){
+                                store.state.weldingStatus=1
+                            }
+                        }else{
+                            store.state.weldingStatus=0;
+                            store.state.getWeldingInfoTimes=0;//重置
+                        }
+                        byte1Bean.unit=0;//默认是0 ich单位是1 TODO
                     //等离子新模式modbus
                     rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
                     rstInfo.weldType='CUT';
@@ -965,17 +977,17 @@ Array.prototype.in_array = function (element) {
                     rstInfo.nowTypeList.forEach(element => {
                         switch (element.typeName) {
                             case 'MODE':
-                                let v1 = parseInt(strArr[3],16).toString(10);
+                                let v1 = parseInt(strArr[3],16);
                                 rstInfo.modeKey=v1;
                                 // element.chooseKey=setWeldParams('MODE',byte1Bean.mode);
                                 element.chooseKey=v1;
                                 break;
                             case 'MATERIAL':
-                                element.chooseKey=parseInt(strArr[4],16).toString(10);
+                                element.chooseKey=parseInt(strArr[4],16);
                                 // element.chooseKey=setWeldParams('MATERIAL',arrayList[3]);
                                 break; 
                             case 'THICKNESS':
-                                element.chooseKey=parseInt(strArr[5],16).toString(10);;
+                                element.chooseKey=parseInt(strArr[5],16);
                                 // element.chooseKey=setWeldParams('THICKNESS',arrayList[6]);
                                 break;
                             default:
@@ -1012,19 +1024,16 @@ Array.prototype.in_array = function (element) {
                     
 
                     //其他属性不需要 赋值直接赋值 到时再取
-                    rstInfo.THINKNESS_VALUE = parseInt(strArr[5],16).toString(10);
-                    rstInfo.CUT_MIN_THICHNESS=parseInt(strArr[7],16).toString(10);;//最小厚度值
-                    rstInfo.CUT_MAX_THICHNESS=parseInt(strArr[6],16).toString(10);;//最大厚度值
+                    rstInfo.THINKNESS_VALUE = parseInt(strArr[5],16);
+                    rstInfo.CUT_MIN_THICHNESS=parseInt(strArr[7],16);//最小厚度值
+                    rstInfo.CUT_MAX_THICHNESS=parseInt(strArr[6],16);//最大厚度值
                     //mig_material 值 ==0 显示gas选项否则隐藏 
                     rstInfo.MIG_MATERIAL =0;
-                    rstInfo.CUT_RECOMMEND_CURRENT =parseInt(strArr[8],16).toString(10);;//推荐电流
-                    rstInfo.CUT_CURRENT_VAL=parseInt(strArr[2],16).toString(10);
-                    rstInfo.CUT_MIN_CUR=parseInt(strArr[10],16).toString(10);;
-                    rstInfo.CUT_MAX_CUR=parseInt(strArr[9],16).toString(10);
-                    rstInfo.initBean={
-                        unit:0,
-
-                    };//包含很多焊接状态和单位等
+                    rstInfo.CUT_RECOMMEND_CURRENT =parseInt(strArr[8],16);//推荐电流
+                    rstInfo.CUT_CURRENT_VAL=parseInt(strArr[2],16);
+                    rstInfo.CUT_MIN_CUR=parseInt(strArr[10],16);
+                    rstInfo.CUT_MAX_CUR=parseInt(strArr[9],16);
+                    rstInfo.initBean=byte1Bean
                 }
                 if(pageFrom=='memory'){
                     //    alert(JSON.stringify(rstInfo))
@@ -2038,15 +2047,17 @@ Array.prototype.in_array = function (element) {
                                 onlySendFuc(modbusLastReadData,pageFrom,crc)
                                 console.log('循环发送modebus协议数据：',modbusLastReadData,crc);
                             }, 3000);
+                            console.log('modebus协议数据read：',sendData,crc);
                         }else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                             crc = crcModelBusClacQuery(tempData);
                             sendData = tempData+crc;
+                            console.log('modebus协议数据write：',sendData,crc);
                         }
                         
                         let self =this;
                         onlySendFuc(sendData,pageFrom,crc)
-                        console.log('modebus协议数据：',sendData,crc);
+                        
                         //发送
 
                     }else{

@@ -268,7 +268,7 @@ export default {
       // newString ="empty||||test_m_2||||test_m_3||||test_m_41||||test_m_5||||test_m_6||||test_m_7||||test_m_8||||test_m_9";
       newString="";
     }else{
-      if(envType=='env_ios'){
+      if(this.envType=='env_ios'){
         this.callMemoryRemarks.forEach((element,i) => {
           if(i<9){
              this.mList[i].remarksTtile=element.remarkInfo || '';

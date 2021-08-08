@@ -644,8 +644,8 @@ export default {
           ,500)
     },
       addFuc(){
-        if(this.nowPosionX>=this.max){
-            this.nowPosionX2 =this.max2;
+        if(this.nowPosionX>=parseInt(this.max)){
+            // alert(this.nowPosionX+"||"+this.max)
             return;
         }else{
             this.nowPosionX=Math.round((parseFloat(this.nowPosionX)+this.paramIncreaseDistance)*10)/10;
@@ -695,6 +695,7 @@ export default {
     }
     ,addFuc2(){
         if(this.nowPosionX2==this.max2){
+            this.nowPosionX2 =this.max2;
             return;
         }else{
             this.nowPosionX2= Math.round((parseFloat(this.nowPosionX2)+this.paramIncreaseDistance2)*10)/10;
