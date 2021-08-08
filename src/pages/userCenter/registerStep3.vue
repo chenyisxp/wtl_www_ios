@@ -4,7 +4,7 @@
         <div class="cancelBtn" @click="handleBack">Cancel</div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
-            <input placeholder="Please enter your Email" v-model="email"/>
+            <input placeholder="Please enter your Email" v-model="email" disabled/>
         </div>
         <div class="inBox i-2">
             <input placeholder="Enter the password"  v-model="password"/>
@@ -39,6 +39,10 @@ export default {
             Toast("请输入邮箱")
             return;
         }
+        let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
+        if(this.email && !re.test(this.email)){
+            Toast("邮箱格式不正确")
+        }
         if(!this.password){
             Toast("请输入密码")
             return;
@@ -66,6 +70,7 @@ export default {
     }
   },
   mounted() {
+      this.email = localStorage.getItem("wtl_email") || '';
   },created () {
    
   

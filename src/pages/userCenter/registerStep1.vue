@@ -41,28 +41,49 @@ export default {
             Toast("请填写邮箱")
             return;
         }
+        let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
+        if(this.email && !re.test(this.email)){
+            Toast("邮箱格式不正确")
+        }
         if(!this.checkCode || this.checkCode.length<4){
             Toast("请输入验证码")
             return;
         }
+        localStorage.setItem("wtl_email",this.email);
         if(this.checkCode.toUpperCase() == this.checkCodeSvg.newCheckCode.toUpperCase()){
-            
-            InterfaceService.sendEmailCode({email:this.email,uuid:this.uuid},(data)=>{
-                if(data && data.respData && data.respData.respCode == '0000'){
-                    this.go('/registerStep2')
-                }else{
-                    //  Toast("")
-                     //假装成功
-                    this.go('/registerStep2')
-                }
-            },function(data){
-               
-            });
-           
+            if(!this.GLOBAL_CONFIG.TESTFLAG){
+                InterfaceService.queryUserInfo({email:this.email,uuid:this.userUuid},(data)=>{
+                    if(data && data.respData && data.respData.respCode == '0000' ){
+                        if(data.respData.msgList && data.respData.msgList.length>0){
+                            //邮箱已注册
+                            Toast("当前邮箱已注册")
+                        }else{
+                            this.nextFuc();
+                        }
+                    }
+                },function(data){
+                
+                });
+                
+            }else{
+                this.go('/registerStep2')
+            }
         }else{
             Toast("请输入正确的验证码")
         }
        
+    },
+    nextFuc(){
+        //确认是否注册过
+        InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
+            if(data && data.respData && data.respData.respCode == '0000'){
+                this.go('/registerStep2')
+            }else{
+                Toast("邮件验证码发送失败")
+            }
+        },function(data){
+        
+        });
     },
     go(url){
        this.$router.push(url);
@@ -77,14 +98,14 @@ export default {
         })
     },
     getMainCheckCode(){
-        InterfaceService.getMainCheckCode({actionType:'code',uuid:this.uuid},(data)=>{
+        InterfaceService.getMainCheckCode({actionType:'code',uuid:this.userUuid},(data)=>{
             this.checkCodeSvg = data.respData.msgList[0];
         },function(data){
         });
     }
   },
   mounted() {
-   
+    this.email = localStorage.getItem("wtl_email") || '';
     this.uuid =  localStorage.getItem("wtl_uuid");
     if(!this.uuid){
         this.uuid = this.creatUUID();
@@ -93,6 +114,11 @@ export default {
   },created () {
    
   
+  },
+  computed: {
+      userUuid(){
+          return this.$store.state.userUuid;
+      }
   }
 };
 </script>

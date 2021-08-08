@@ -1140,15 +1140,16 @@ export default {
             // this.diffMax = 100;
             this.block =this.max-this.min;
         //缓降时间 初始化
-        this.min2=list.sdTime_min;
+        this.min2=list.sdTime_min/10;
         this.max2 =list.sdTime_max/10;
-        console.log(list.slowDownTime)
+        
         this.nowPosionX2 =list.slowDownTime/10;
         this.oldNowPosionX2 =this.nowPosionX2;
              //电压初始化  推荐值正负20即可
-            this.diffMin2 =0;
-            this.diffMax2 =10;
+            this.diffMin2 =this.min2;
+            this.diffMax2 =this.max2;
             this.block2 =this.max2-this.min2;
+        console.log(list.slowDownTime,this.max2,this.block2)
     //初始化 电流控制器
     this.initElecticCurrent();
     //初始化 缓降时间 控制器

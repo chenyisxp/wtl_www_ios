@@ -191,8 +191,8 @@ let BASE_CONFIG = {
             type:'1',//类型1代表模式数据
             parentName:'cut',
             name:'cut',
-            modbusAdr:'02bc',//起始地址 700
-            modbusNum:'0009'//数量 9个
+            modbusAdr:'02BC',//起始地址 700
+            modbusNum:'000B'//数量 11个
             // modbusNum:'002e'//数量 46个
         },
         'A0':{

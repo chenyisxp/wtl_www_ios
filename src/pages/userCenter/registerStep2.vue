@@ -4,7 +4,7 @@
         <div class="cancelBtn" @click="handleBack">Cancel</div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
-            <input placeholder="Please enter your Email" v-model="email"/>
+            <input placeholder="Please enter your Email" v-model="email" disabled/>
         </div>
         <div class="pc_in">
             <div>
@@ -68,16 +68,31 @@ export default {
         }
     },
     handleSubmit(){
-        if(this.email && this.emailCode.length>3){
-            InterfaceService.checkEmailCode({email:this.email,uuid:this.userUuid,emailCode:this.emailCode},(data)=>{
-                if(data && data.respData && data.respData.respCode == '0000'){
-                    this.go('/registerStep3')
-                }
-            },function(data){
-               
-            });
+        if(!this.email){
+            Toast("请填写邮箱")
+            return;
+        }
+        let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
+        if(this.email && !re.test(this.email)){
+            Toast("邮箱格式不正确")
+        }
+
+        if(this.emailCode && this.emailCode.length>3){
+            if(!this.GLOBAL_CONFIG.TESTFLAG){
+                InterfaceService.checkEmailCode({email:this.email,uuid:this.userUuid,emailCode:this.emailCode},(data)=>{
+                    if(data && data.respData && data.respData.respCode == '0000'){
+                        this.go('/registerStep3')
+                    }
+                },function(data){
+                
+                });
+            }else{
+                this.go('/registerStep3')
+            }
             // Toast("Sign in successful");
             // this.go('/registerStep3')
+        }else{
+             Toast("请输入验证码");
         }
     },
     go(url){
@@ -88,6 +103,7 @@ export default {
     }
   },
   mounted() {
+        this.email = localStorage.getItem("wtl_email") || '';
         this.secondNum=300;
         setInterval(() => {
             --this.secondNum;

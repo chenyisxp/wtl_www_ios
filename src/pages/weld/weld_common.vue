@@ -1271,7 +1271,7 @@ export default {
             }
             this.block =this.max-this.min;
         //电压初始化  推荐值正负10即可
-        this.min2=10;
+        this.min2=list.MIN_WELD_V_DISPLAY || 10;
         this.max2 =list.MAX_WELD_V_DISPLAY;
         this.nowPosionX2 =list.V_WELDING/10;
         // alert(this.nowPosionX2)
@@ -1359,7 +1359,7 @@ export default {
             this.diffMax =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)+9))/10;
             this.block =this.max-this.min;
         //电压初始化  推荐值正负10即可
-        this.min2=10;
+        this.min2=list.MIN_WELD_V_DISPLAY || 10;//10;
         this.max2 =list.MAX_WELD_V_DISPLAY;
         this.nowPosionX2 =list.V_WELDING/10;
         this.oldNowPosionX2 =this.nowPosionX2;

@@ -171,8 +171,8 @@ const router = new Router({
 		},
 		{
 			path: '*',
-			component:LoginIndex,
-			// component:NewIndex
+			// component:LoginIndex,
+			component:NewIndex
 			// component:RegisterStep1
 			// component:NewIndex
 			// component: LoadApp

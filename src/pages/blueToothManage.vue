@@ -120,8 +120,10 @@
     
     <!-- 测试入口 -->
     <!-- <div v-if="testModalDoorFlag"> -->
+        <div class="testWay toLogin" @click="goToLogin">go to login<Icon type="ios-arrow-dropright-circle" /></div>
         <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
         <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+        
     <!-- </div> -->
   </div>
 </template>
@@ -214,6 +216,12 @@ export default {
           }else{
             this.setBleConnect(this.cameraRstIp,this.cameraRstName)
           }
+      },
+      goToLogin(){
+            this.GLOBAL_CONFIG.TESTFLAG=true;
+            this.isLoading =false;
+            this.$store.state.getConnectStatus='connected';
+            this.$router.push({path:'/loginIndex',query:{}});
       },
       //体验模式
       goWeldingExperiential(){
@@ -1158,8 +1166,12 @@ export default {
         text-align: center;
         color: #5592bd;
         font-size: 20px;
-    }.welding{
-        bottom: 70px;
+        &.welding{
+            bottom: 70px;
+        }
+        &.toLogin{
+            bottom: 120px;
+        }
     }
 
 }
