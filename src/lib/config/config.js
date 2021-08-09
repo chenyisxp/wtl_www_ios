@@ -12,7 +12,7 @@ let BASE_CONFIG = {
     liulanqiConnect:true,//浏览器调试的时候
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
-    LOGFLAG:false,
+    LOGFLAG:true,
     TESTFLAG : false,//测试开关
     TESTDEEPTH:0,//深度
     autoRouterTime:5000,//自动前往焊接中页面的时间：ms

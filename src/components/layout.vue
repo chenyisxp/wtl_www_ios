@@ -173,7 +173,7 @@ export default {
           if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
             this.callSendDataToBleUtil('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
           }else{
-            window.android.callSendDataToBle('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc);
+             window.android?window.android.callSendDataToBle('newIndex','DA00'+oldCrc+this.crcModelBusClacQuery('00'+oldCrc, true),oldCrc):'';
           }
           return;
         }
@@ -184,7 +184,7 @@ export default {
           if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
             this.callSendDataToBleUtil('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
           }else{
-            window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc);
+             window.android?window.android.callSendDataToBle('newIndex','DAFF'+oldCrc+this.crcModelBusClacQuery('FF'+oldCrc, true),oldCrc):'';
           }
         } 
         //有空的情况
@@ -215,6 +215,11 @@ export default {
             break;
           case 'B5':
             this.$store.state.weldingInfo =this.GLOBAL_CONFIG.callWeldTypeData.mma;
+            this.$store.state.weldingCur =parseInt(("0x"+data.substring(6,8)+data.substring(4,6)),16).toString(10)
+            this.$store.state.weldingVoltage=parseInt(("0x"+data.substring(10,12)+data.substring(8,10)),16).toString(10)
+            break;
+          case 'B6':
+            this.$store.state.weldingInfo =this.GLOBAL_CONFIG.callWeldTypeData.cut;
             this.$store.state.weldingCur =parseInt(("0x"+data.substring(6,8)+data.substring(4,6)),16).toString(10)
             this.$store.state.weldingVoltage=parseInt(("0x"+data.substring(10,12)+data.substring(8,10)),16).toString(10)
             break;
@@ -385,6 +390,9 @@ export default {
      clearInterval(this.$store.state.globalGetConnectStatus);
   },
   computed: {
+      isModbusModal(){
+        return this.$store.state.isModbusModal;
+      },
       isConnectStatus () {
         return this.$store.state.getConnectStatus;　　//需要监听的数据
       },
@@ -497,6 +505,10 @@ export default {
       clearTimeout(this.weldingTimer);
       this.weldingTimer=setTimeout(() => {
         this.$store.state.weldingDelay=true;
+        if(this.isModbusModal){
+          console.log('执行modbus清楚焊接中')
+           this.$store.state.weldingStatus=0;
+        }
       }, 8000);
       // this.$store.state.AdroidOldMsg=data;
       this.buildWeldingData(data);

@@ -935,10 +935,13 @@ export default {
           // that.modelType='0570';
           // that.comfromFlag=true;
           var tempType=that.getModelType(data.substring(2,4));
-          
+          console.log(that.modelType+'||'+tempType)
+          //modbus改造
+          // if（that.modelType!=tempType){
           if(that.modelType!=tempType){
             return;
           }
+           
           that.wtlLog("newindex",'ppp::'+that.$store.state.AdroidNewMsg+'||||'+that.$store.state.AdroidOldMsg);
           // alert('ppp::'+that.$store.state.AdroidNewMsg+'||||'+that.$store.state.AdroidOldMsg);
           if(that.$store.state.AdroidOldMsg){

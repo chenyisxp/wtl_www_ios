@@ -1976,6 +1976,16 @@ Array.prototype.in_array = function (element) {
                             changeNewData ='DAE6'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
+                        //cut焊接中
+                        case '0A0304':
+                            // DAB1 0100 0200 8658 双字节
+                            // 0A03 04 0032 0032 60E9 =receiveBleData 
+                            let content ='B6'+receiveBleData.substring(8,10)+receiveBleData.substring(6,8)+receiveBleData.substring(12,14)+receiveBleData.substring(10,12);
+                            let crc =crcModelBusClacQuery(content,true);
+                            changeNewData ='DA'+content+crc;
+                            console.log(changeNewData)
+                            window.tellVueWelding(changeNewData);
+                            break;
                         default:
                             break;
                     }
