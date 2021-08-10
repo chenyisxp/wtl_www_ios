@@ -34,6 +34,8 @@ Array.prototype.in_array = function (element) {
             var upLoadLastData = "";
             var  modbusCircleTimer={};//modbus循环请求时间器
             var newIndexDataVal="";
+            var nowModalIdx ='';//当前模式
+            
             //安卓逻辑迁移 循环定时器 
             /**
              * 1、校验数据的当前状态
@@ -680,7 +682,7 @@ Array.prototype.in_array = function (element) {
                 rstInfo.nowTypeList=weldParam.tigmanList;
                 console.log(rstInfo.nowTypeList)
                 rstInfo.weldType='TIGMAN';
-                rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.tigman.newIndex;//这个和首页里的配对
+                rstInfo.weldTypeNum=BASE_CONFIG.callWeldTypeData.tigman.newIndex;//这个和首页里的配对
                 //确认指令
                 console.log(arrayList.length+'aa')
                 if((arrayList[1]=='228'||arrayList[1]=='212'||arrayList[1]=='196') &&arrayList.length==6){
@@ -773,10 +775,10 @@ Array.prototype.in_array = function (element) {
                         if(store.state.nowModelDirectice!='' &&dirctiveType!=store.state.nowModelDirectice){
                             return;
                         }
-                        if(newIndexDataVal == data){
-                            console.log('拦截相同的报文：'+data)
-                            return;
-                        }
+                        // if(newIndexDataVal == data){
+                        //     console.log('拦截相同的报文：'+data)
+                        //     return;
+                        // }
                         newIndexDataVal=data;
                         rstInfo =buidDataByPagefrom(pageFrom,dirctiveType,data,this);
                         break;
@@ -964,8 +966,12 @@ Array.prototype.in_array = function (element) {
                         if(byte1Bean.weldStatus==1){
                             if(pageFrom=='newIndex'){
                                 store.state.weldingStatus=1
+                                if(store.state.isModbusModal){
+                                    weldingInfoQuery();// clearInterval(store.state.weldingInterval);
+                                }
                             }
                         }else{
+                            clearInterval(store.state.weldingInterval);
                             store.state.weldingStatus=0;
                             store.state.getWeldingInfoTimes=0;//重置
                         }
@@ -1043,6 +1049,47 @@ Array.prototype.in_array = function (element) {
                 }
                 console.log(rstInfo)
                 return rstInfo;
+            }
+            function   weldingInfoQuery(){
+                let sendData    ="";
+                let crc    ="";
+                store.state.weldingInterval=setInterval(() => {
+                    switch (nowModalIdx) {
+                        case 'B1':
+                            //MIG地址101 数量2                                                              
+                            sendData='0A0300650002';
+                            crc='D56F';
+                            break;
+                        case 'B2':
+                            //MIG地址101 数量2                                                              
+                            sendData='0A0300650002';
+                            crc='D56F';
+                            break;
+                        case 'B3':
+                            //TIG地址348 数量2                                                              
+                            sendData='0A03015C0002';
+                            crc='049E';
+                            break;
+                        case 'B4':
+                            //TIG地址348 数量2                                                              
+                            sendData='0A03015C0002';
+                            crc='049E';
+                            break;
+                        case 'B5':
+                            //MMA地址501 数量2                                                              
+                            sendData='0A0301F50002';
+                            crc='D4BE';
+                            break;
+                        case 'B6':
+                            //CUT地址711 数量2                                                              
+                            sendData='0A0302C70002';
+                            crc='7535';
+                            break;
+                        default:
+                            break;
+                    }
+                    onlySendFuc(sendData+crc,'weldingInfoQuery',crc);
+                }, 1000);
             }
             //获取指令
             Vue.prototype.getDirective = function(type,paramKey) {
@@ -1949,41 +1996,70 @@ Array.prototype.in_array = function (element) {
                     switch (headKey) {
                         case '0A033E'://migsyn 返回31(1F)个数据*2=62个字节
                             // changeNewData =changeToOldMigSynData(receiveBleData);
+                            //假如不是同一个焊接中的数据返回
+                            if(store.state.weldingStatus==1 && nowModalIdx!='B1'){
+                                return;
+                            }
+                            nowModalIdx='B1'
                             changeNewData = 'DAE1'+receiveBleData+BASE_CONFIG.callWeldTypeData.migsyn.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         case '0A031E'://migman 返回15(0F)个数据*2=30个字节(16:1e)
                             // changeNewData =changeToOldMigManData(receiveBleData);
+                            //假如不是同一个焊接中的数据返回
+                            if(store.state.weldingStatus==1 && nowModalIdx!='B2'){
+                                return;
+                            }
+                            nowModalIdx='B2'
                             changeNewData = 'DAE2'+receiveBleData+BASE_CONFIG.callWeldTypeData.migman.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         case '0A0322'://mma 返回17(11)个数据*2=34个字节 (16:22)
                             // changeNewData =changeToOldMmaData(receiveBleData);
+                            //假如不是同一个焊接中的数据返回
+                            if(store.state.weldingStatus==1 && nowModalIdx!='B5'){
+                                return;
+                            }
+                            nowModalIdx='B5'
                             changeNewData ='DAE5'+receiveBleData+BASE_CONFIG.callWeldTypeData.mma.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         case '0A0358'://tigsyn 返回43(44个数据*2=88个字节 ）(16进制=58)
                             // changeNewData =changeToOldTigsynData(receiveBleData);
+                            //假如不是同一个焊接中的数据返回
+                            if(store.state.weldingStatus==1 && nowModalIdx!='B3'){
+                                return;
+                            }
+                            nowModalIdx='B3'
                             changeNewData ='DAE3'+receiveBleData+BASE_CONFIG.callWeldTypeData.tigsyn.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         case '0A0360'://tigman 返回48(48个数据*2=96个字节 ）(16进制=60)
+                            //假如不是同一个焊接中的数据返回
+                            if(store.state.weldingStatus==1 && nowModalIdx!='B4'){
+                                return;
+                            }
+                            nowModalIdx='B4'
                             changeNewData =changeToOldTigmanData(receiveBleData);
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
                         // case '0A032E'://cut 返回46个字节
                         case '0A0316'://cut 返回11(11)个*2 =22个字节(16:16)
+                            //假如不是同一个焊接中的数据返回
+                            if(store.state.weldingStatus==1 && nowModalIdx!='B6'){
+                                return;
+                            }
+                            nowModalIdx='B6'
                             changeNewData ='DAE6'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
                             window.broastFromAndroid(changeNewData.toLocaleUpperCase());
                             break;
-                        //cut焊接中
+                        //统一焊接中数据处理 注意都是两个字节
                         case '0A0304':
                             // DAB1 0100 0200 8658 双字节
-                            // 0A03 04 0032 0032 60E9 =receiveBleData 
-                            let content ='B6'+receiveBleData.substring(8,10)+receiveBleData.substring(6,8)+receiveBleData.substring(12,14)+receiveBleData.substring(10,12);
+                            // 0A03 04 0032 0032 60E9 =receiveBleData cut模式                                                    
+                            let content =nowModalIdx+receiveBleData.substring(8,10)+receiveBleData.substring(6,8)+receiveBleData.substring(12,14)+receiveBleData.substring(10,12);
                             let crc =crcModelBusClacQuery(content,true);
                             changeNewData ='DA'+content+crc;
-                            console.log(changeNewData)
                             window.tellVueWelding(changeNewData);
                             break;
                         default:
@@ -2025,7 +2101,7 @@ Array.prototype.in_array = function (element) {
                     if(modbusInfo && modbusInfo.name){
                         let tempData='';
                         let crc ='';
-                        let sendData ='';
+                        let sData ='';
                         // 先来简单分析一条MODBUS-RTU报文，例如：01  06  00 01  00 17  98 04 只有一个从机所以地址一样
                         // 01             06            00 01           00 17          98 04 
                         // 从机地址        功能号          数据地址          数据         CRC校验
@@ -2050,23 +2126,44 @@ Array.prototype.in_array = function (element) {
                             tempData =  BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusAdr+modbusInfo.modbusNum;
                             crc = crcModelBusClacQuery(tempData);
                             clearInterval(store.state.modbusCircleTimer);//modbus循环请求时间器
-                            sendData = tempData+crc;
-                            modbusLastReadData =sendData;
+                            sData = tempData+crc;
+                            modbusLastReadData =sData;
                             //重新开启 什么时候清除呢
                             store.state.modbusCircleTimer = setInterval(() => {
                                 onlySendFuc(modbusLastReadData,pageFrom,crc)
                                 console.log('循环发送modebus协议数据：',modbusLastReadData,crc);
                             }, 3000);
-                            console.log('modebus协议数据read：',sendData,crc);
+                            console.log('modebus协议数据read：',sData,crc);
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='2'){
+                            clearInterval(store.state.modbusCircleTimer);
+                            //momery模式 原来的：DA2001009A71
+                            console.log('momery模式数据'+sData)
+                            // 通道数	1-9对应焊机上的存储通道1-9
+                            // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
+                            //写第几通道数据 800
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+num;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;//0A0603200200885F
+                            //延迟500ms请求模式数据
+                            setTimeout(() => {
+                                //读数据
+                                let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusReadAdr+modbusInfo.modbusNum;
+                                let crc2 = crcModelBusClacQuery(td2);
+                                let sData2 = td2+crc;
+                                onlySendFuc(sData2,pageFrom,crc2);//0A03032A003464EA
+                            }, 500);
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='3'){
+                            //history模式
+                            clearInterval(store.state.modbusCircleTimer);
+                         
                         }else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                             crc = crcModelBusClacQuery(tempData);
-                            sendData = tempData+crc;
-                            console.log('modebus协议数据write：',sendData,crc);
+                            sData = tempData+crc;
+                            
                         }
-                        
-                        let self =this;
-                        onlySendFuc(sendData,pageFrom,crc)
+                        console.log('modebus协议数据write：',sData,crc);
+                        onlySendFuc(sData,pageFrom,crc)
                         
                         //发送
 
@@ -2274,9 +2371,13 @@ Array.prototype.in_array = function (element) {
                     byte1Bean.weldStatus=t0List[15];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
-                            store.state.weldingStatus=1
+                            store.state.weldingStatus=1;
+                            if(store.state.isModbusModal){
+                                weldingInfoQuery();// clearInterval(store.state.weldingInterval);
+                            }
                         }
                     }else{
+                        clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
@@ -2353,8 +2454,12 @@ Array.prototype.in_array = function (element) {
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
                             store.state.weldingStatus=1
+                            if(store.state.isModbusModal){
+                                weldingInfoQuery();// clearInterval(store.state.weldingInterval);
+                            }
                         }
                     }else{
+                        clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
@@ -2402,8 +2507,12 @@ Array.prototype.in_array = function (element) {
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
                             store.state.weldingStatus=1
+                            if(store.state.isModbusModal){
+                                weldingInfoQuery();// clearInterval(store.state.weldingInterval);
+                            }
                         }
                     }else{
+                        clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
@@ -2467,8 +2576,12 @@ Array.prototype.in_array = function (element) {
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
                             store.state.weldingStatus=1
+                            if(store.state.isModbusModal){
+                                weldingInfoQuery();// clearInterval(store.state.weldingInterval);
+                            }
                         }
                     }else{
+                        clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }

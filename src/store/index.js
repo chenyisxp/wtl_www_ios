@@ -65,7 +65,9 @@ const state = {
     modbusCircleTimer:{},
     email:'',
     password:'',
-    userUuid:''
+    userUuid:'',
+    weldingInterval:{},//请求焊接中的电压、电流
+    momeryClickNum:'',
 
 }
 

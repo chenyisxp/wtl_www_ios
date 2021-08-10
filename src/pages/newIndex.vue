@@ -440,6 +440,7 @@ export default {
                   return;
             }
             that.comfromFlag=false;
+            console.log(rst)
             if(JSON.stringify(rst) != "{}"){
                 //发送确认收到的指令给安卓
                 var invalue =data.substring(data.length-4,data.length);
