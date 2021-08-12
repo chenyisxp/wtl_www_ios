@@ -35,7 +35,7 @@ Array.prototype.in_array = function (element) {
             var  modbusCircleTimer={};//modbus循环请求时间器
             var newIndexDataVal="";
             var nowModalIdx ='';//当前模式
-            
+            var momeryDiKey = '';
             //安卓逻辑迁移 循环定时器 
             /**
              * 1、校验数据的当前状态
@@ -878,6 +878,7 @@ Array.prototype.in_array = function (element) {
                         rstInfo = setWeldDataByType(temp10,weldDirctive.tigSyn,pageFrom,_this);
                     }
                 }else if(compareString(dirctiveType,weldDirctive.mma)){
+                    console.log('来到utils-mma')
                     if(store.state.isModbusModal){
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldMmaRealData(data,pageFrom);
@@ -2062,6 +2063,21 @@ Array.prototype.in_array = function (element) {
                             changeNewData ='DA'+content+crc;
                             window.tellVueWelding(changeNewData);
                             break;
+                        case '0A0368':
+                            // 0:没有数据
+                            // 1:按MIG数据结构
+                            // 2:按TIG数据结构
+                            // 3:按MMA数据结构
+                            // 4:按CUT数据结构
+                            //记忆模式是DAD开头 window['broastMemoryFromAndroid'] 
+                            //20190611 新通道规则 byte 876543210 其中 0:是单位 7-1:通道 8位 2t4t
+                            //0A 03 68+通道数+数据结构01+数据长度11
+                            //0A 03 68 0001 1101 0000 0000 0000 0038 ..........
+                            let mod = receiveBleData.substring(12,14);//01
+                            changeNewData ='DAD5'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
+                            window.broastMemoryFromAndroid(changeNewData);
+                            console.log('momery返回：'+momeryDiKey)
+                            break;
                         default:
                             break;
                     }
@@ -2091,6 +2107,7 @@ Array.prototype.in_array = function (element) {
                 if(sendData && sendData.length>11){
                     let directive = sendData.substring(2,4);//指令值
                     let num = sendData.substring(4,8);//数值
+                    let diKey = sendData.substring(4,6);//数值
                     //来自首页信息
                     if(directive == 10){
                         directive = sendData.substring(2,8);//指令值
@@ -2137,13 +2154,14 @@ Array.prototype.in_array = function (element) {
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='2'){
                             clearInterval(store.state.modbusCircleTimer);
                             //momery模式 原来的：DA2001009A71
-                            console.log('momery模式数据'+sData)
+                            console.log('momery模式数据'+sData,num,diKey)
                             // 通道数	1-9对应焊机上的存储通道1-9
                             // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
                             //写第几通道数据 800
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+num;
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;//0A0603200200885F
+                            momeryDiKey = diKey;
                             //延迟500ms请求模式数据
                             setTimeout(() => {
                                 //读数据
@@ -2153,6 +2171,13 @@ Array.prototype.in_array = function (element) {
                                 onlySendFuc(sData2,pageFrom,crc2);//0A03032A003464EA
                             }, 500);
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='3'){
+                            //momery详情 应用
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+num;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;//0A 06 0321 0100 6FD9
+                            clearInterval(store.state.modbusCircleTimer);
+                         
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='4'){
                             //history模式
                             clearInterval(store.state.modbusCircleTimer);
                          
@@ -2555,7 +2580,12 @@ Array.prototype.in_array = function (element) {
             //假如有改动注意  weldDirctive.mma 617行也要考虑
             function changeToOldMmaRealData(receiveBleData,pageFrom){
                 receiveBleData=receiveBleData.replace(/\s*/g,"");
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                let datas = '';
+                if('memory' == pageFrom){
+                    datas =receiveBleData.substring(18,receiveBleData.length);
+                }else{
+                    datas =receiveBleData.substring(10,receiveBleData.length);
+                }
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));

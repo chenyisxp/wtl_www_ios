@@ -109,16 +109,21 @@ export default {
           clearTimeout(this.LoadingTimer)
           //去除空格 截取出通道号
           data = data.replace(/\s+/g,"");
-          var pupnum =data.substring(4,6);//通道号
-          
-          // let temp =parseInt(pupnum,16).toString(2);
-          // pupnum =parseInt(parseInt(pupnum,16).toString(2).substring(1,8),2);
-          //20190611 新通道规则 byte 876543210 其中 0:是单位 7-1:通道 8位 2t4t
-          // 10000010  对应16进制 82
-          //左补零
-          pupnum=parseInt(pupnum,16).toString(2)
-          pupnum =(Array(8).join(0) + pupnum).slice(-8);;
-          pupnum =parseInt(pupnum.substring(1,7),2);
+          var pupnum ="";
+          if(this.isModbusModal){
+            pupnum =parseInt(data.substring(10,14));//通道号
+          }else{
+            pupnum =data.substring(4,6);//通道号
+            
+            // let temp =parseInt(pupnum,16).toString(2);
+            // pupnum =parseInt(parseInt(pupnum,16).toString(2).substring(1,8),2);
+            //20190611 新通道规则 byte 876543210 其中 0:是单位 7-1:通道 8位 2t4t
+            // 10000010  对应16进制 82
+            //左补零
+            pupnum=parseInt(pupnum,16).toString(2)
+            pupnum =(Array(8).join(0) + pupnum).slice(-8);;
+            pupnum =parseInt(pupnum.substring(1,7),2);
+          }
           
           // var newData=data.substring(0,4)+data.substring(6,data.length);
           let newData =data;
@@ -159,7 +164,7 @@ export default {
                   if(this.envType=='env_ios'){
                     this.callSendDataToBleUtil('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue)
                   }else{
-                      window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
+                      window.android?window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue):''; 
                   }
               }
               this.$router.push({path:'/memoryDetail',query:{modelCrc:tmpRstcrc.crcCode,name:tmpRstcrc.name,pupnum:index,remarksText:this.remarksText}});
@@ -294,6 +299,9 @@ export default {
     },
     callMemoryRemarks(){
       return this.$store.state.callMemoryRemarks
+    },
+    isModbusModal(){
+      return this.$store.state.isModbusModal;
     }
   },
   destroyed(){

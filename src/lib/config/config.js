@@ -9,10 +9,10 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:false,//浏览器调试的时候
+    liulanqiConnect:true,//浏览器调试的时候
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
-    LOGFLAG:false,
+    LOGFLAG:true,
     TESTFLAG : false,//测试开关
     TESTDEEPTH:0,//深度
     autoRouterTime:5000,//自动前往焊接中页面的时间：ms
@@ -137,13 +137,31 @@ let BASE_CONFIG = {
    modbusWriteCode:'06',
    modbusSlave:'0A',//从机地址
    callMobusEditDirect:{
+        '21':{
+            type:'3',//类型1代表momery模式数据
+            parentName:'momeryDetail',
+            name:'momeryDetail',
+            modbusWriteAdr:'0321',//起始地址 801
+        },
         '20':{
-            type:'2',//类型1代表模式数据
+            type:'2',//类型1代表momery模式数据
             parentName:'momery',
             name:'momery',
             modbusWriteAdr:'0320',//起始地址 800
             modbusReadAdr:'032A',//起始地址 810
-            modbusNum:'0034',//数量 52个
+            modbusNum:'0034',//数量 52个 104
+            // modbusNumMap:{
+            //     '01':'',
+            //     '02':'',
+            //     '03':'',
+            //     '04':'',
+            //     '0':'',
+            //     '04':'',
+            //     '04':'',
+            //     '04':'',
+            //     '04':'',
+            //     '04':'',
+            // }
         },
         '100000':{
             type:'1',//类型1代表模式数据
