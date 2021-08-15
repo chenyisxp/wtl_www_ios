@@ -400,7 +400,7 @@ export default {
         return this.$store.state.envType;　　//需要监听的数据
       },
       postDataList(){
-        return this.$store.state.postDataList;
+        return this.$store.state.postDataList.reverse();
       },
       logFaceFlag(){
         return this.$store.state.logFaceFlag;

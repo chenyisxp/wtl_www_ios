@@ -987,7 +987,7 @@ Array.prototype.in_array = function (element) {
                             store.state.weldingStatus=0;
                             store.state.getWeldingInfoTimes=0;//重置
                         }
-                        byte1Bean.unit=0;//默认是0 ich单位是1 TODO
+                        byte1Bean.unit=byte0[5];//默认是0 ich单位是1 
                     //等离子新模式modbus
                     rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
                     rstInfo.weldType='CUT';
@@ -1521,7 +1521,8 @@ Array.prototype.in_array = function (element) {
             // //公共 ：安卓蓝牙交互出入口 + 苹果20200817
             Vue.prototype.callSendDataToBleUtil = function(pageFrom,sendData,crc) {
                 console.log(pageFrom,'sendData='+sendData+',crc='+crc)
-                store.state.postDataList.push({type:'callSendDataToBleUtil',data:sendData})
+                store.state.postDataList.push({type:'callSendDataToBleUtil',data:sendData});
+                
                 this.wtlLog(pageFrom,'sendData='+sendData+',crc='+crc);
                 // modbusDataSendFuc(pageFrom,sendData,crc);
                 if(!BASE_CONFIG.TESTFLAG){
@@ -1921,6 +1922,7 @@ Array.prototype.in_array = function (element) {
             window['modbusBroastFromApp'] = (bleReponseData)=>{
                 console.log('modbusSendTimes:'+store.state.modbusSendTimes)
                 store.state.postDataList.push({type:'receive',data:bleReponseData})
+                
                 if(bleReponseData){
                     bleReponseData=bleReponseData.replace(/\s*/g,"");
                     bleReponseData=bleReponseData.toLocaleUpperCase();
@@ -2168,6 +2170,7 @@ Array.prototype.in_array = function (element) {
             function modbusDataSendFuc(pageFrom,sendData,crc){
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
                 store.state.postDataList.push({type:'modbusDataSendFuc',data:sendData})
+                
                 if(store.state.modbusSendTimes==0 || !store.state.modbusSendTimes){
                     //通信验证失败
                     return;
@@ -2218,6 +2221,7 @@ Array.prototype.in_array = function (element) {
                             modbusLastReadData =sData;
                             //重新开启 什么时候清除呢
                             store.state.modbusCircleTimer = setInterval(() => {
+                                console.log('modbusCircleTimer')
                                 onlySendFuc(modbusLastReadData,pageFrom,crc)
                                 console.log('循环发送modebus协议数据：',modbusLastReadData,crc);
                             }, 3000);
@@ -2324,7 +2328,14 @@ Array.prototype.in_array = function (element) {
                             sData = tempData+crc;
                             clearInterval(store.state.modbusCircleTimer);
                          
-                        }else{
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='6'){
+                            //设置单位0000：mm   0001:inch
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+num;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;//DA400100D4B1
+                           
+                        }
+                        else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;
@@ -2556,7 +2567,7 @@ Array.prototype.in_array = function (element) {
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
-                    byte1Bean.unit=0;//默认是0 ich单位是1 TODO
+                    byte1Bean.unit=t8List[10];//默认是0 ich单位是1 TODO
                     rstInfo.nowTypeList.forEach(element => {
                         switch (element.typeName) {
                             case 'MODE':
@@ -2645,7 +2656,7 @@ Array.prototype.in_array = function (element) {
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
-                    byte1Bean.unit=0;//默认是0 ich单位是1 TODO
+                    byte1Bean.unit=t8List[10];// 5	单位	0:mm  1:inch	MIGSYN,MIGMAN
                 rstInfo.nowTypeList.forEach(element => {
                     if(element.typeName=='MODE'){
                         element.chooseKey=t8List[15];
@@ -2703,7 +2714,7 @@ Array.prototype.in_array = function (element) {
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
-                    byte1Bean.unit=0;//默认是0 ich单位是1 TODO
+                    byte1Bean.unit=t0List[2];//13	单位	0:mm  1:inch
                 rstInfo.THINKNESS_VALUE = parseInt(dataList[17],16);
                 rstInfo.nowTypeList.forEach(element => {
                     switch (element.typeName) {
@@ -2777,7 +2788,7 @@ Array.prototype.in_array = function (element) {
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                     }
-                    byte1Bean.unit=0;//默认是0 ich单位是1 TODO
+                    byte1Bean.unit=t0List[6];//默认是0 ich单位是1 
                 rstInfo.THINKNESS_VALUE=parseInt(dataList[7],16);
                 rstInfo.nowTypeList.forEach(element => {
                     switch (element.typeName) {
@@ -2844,7 +2855,7 @@ Array.prototype.in_array = function (element) {
                 let modeValue = mode==1?'4T':'2T';
                 let ifpulseValue = ifpulse==1?'NOPULSE':'PULSE';
                 rstInfo.initBean ={
-                    unit:0,
+                    unit:byte0[2],//13	单位	0:mm  1:inch
                     pfc:0, //干嘛的
                     weldStatus:0,
                     hotStatus:0,

@@ -215,6 +215,9 @@ export default {
             case self.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode://mma
                 self.$router.push({ path: '/weld_mma', query:{type:'MMA',pageBackTo:'/newIndex',pageFrom:'/memoryDetail'} });
                 break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode://cut
+                self.$router.push({ path: '/weld_cut', query:{type:'CUT',pageBackTo:'/newIndex',pageFrom:'/memoryDetail'} });
+                break;
             default:
                 break;
         }
@@ -443,8 +446,11 @@ export default {
             case 'E4':
                 return this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode
                 break;
-            case 'E4':
+            case 'E5':
                 return this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode
+                break;
+            case 'E6':
+                return this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode
                 break;
             default:
                 return that.modelType;
@@ -506,6 +512,8 @@ export default {
                   that.go('/weld_tig_syn');
                 }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode){
                   that.go('/weld_mma');
+                }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode){
+                  that.go('/weld_cut');
                 }else{
                   that.go('/weld_common?type='+rst.weldType);
                 }
