@@ -107,6 +107,7 @@ export default {
     broastFromAndroid(data,pageFrom,index,openTestFlag){
           this.isLoading=false;
           clearTimeout(this.LoadingTimer)
+          console.log("判断是来自哪个模式数据"+data);
           //去除空格 截取出通道号
           data = data.replace(/\s+/g,"");
           var pupnum ="";
@@ -140,6 +141,7 @@ export default {
             return;
           }
           //判断是来自哪个模式数据 d1 d2 判断
+          
           var tmpRstcrc =this.rstModelType(data);
           if(tmpRstcrc==0){
              Toast({

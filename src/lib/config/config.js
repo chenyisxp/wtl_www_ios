@@ -137,6 +137,20 @@ let BASE_CONFIG = {
    modbusWriteCode:'06',
    modbusSlave:'0A',//从机地址
    callMobusEditDirect:{
+        '30':{
+            type:'4',//类型1代表momery模式数据
+            parentName:'CALL_LAST_WELD',
+            name:'CALL_LAST_WELD',
+            modbusWriteAdr:'0320',//起始地址 800
+            modbusReadAdr:'032A',//起始地址 810
+            modbusNum:'0034',//数量 52个 104
+        },
+        '31':{
+            type:'5',//类型1代表history模式数据
+            parentName:'history',
+            name:'history',
+            modbusWriteAdr:'0321',//起始地址 801
+        },
         '21':{
             type:'3',//类型1代表momery模式数据
             parentName:'momeryDetail',

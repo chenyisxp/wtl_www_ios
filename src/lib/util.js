@@ -791,7 +791,12 @@ Array.prototype.in_array = function (element) {
                         //  alert(JSON.stringify(rstInfo))
                         break;
                     case 'hisweldlist':
-                        rstInfo =buidDataByPagefrom('newIndex',dirctiveType,data,this);
+                        if(store.state.isModbusModal){
+                            //hisweldlist
+                            rstInfo =buidDataByPagefrom(pageFrom,dirctiveType,data,this);
+                        }else{
+                            rstInfo =buidDataByPagefrom('newIndex',dirctiveType,data,this);
+                        }
                         break;
                     default:
                         break;
@@ -899,29 +904,35 @@ Array.prototype.in_array = function (element) {
                         rstInfo = setWeldDataByType(temp10,weldDirctive.mma,pageFrom,_this);
                     }
                 }else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='memory'){
-                    var strArr =data.split(' ');
-                    console.log(strArr)
-                    var temp10 =[];
-                    temp10.push(parseInt(("0x"+strArr[0]),16).toString(10));//头DA
-                    temp10.push(parseInt(("0x"+strArr[1]),16).toString(10));//指令
-                    temp10.push(parseInt(("0x"+strArr[2]),16).toString(10));//焊接状态等
-                    temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//MODE+ADCD+2T4T+PULSE
-                    temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//PRE_GAS_VAL
-                    temp10.push(parseInt(("0x"+strArr[6]+strArr[5]),16).toString(10));//START_CUR_VAL
-                    temp10.push(parseInt(("0x"+strArr[7]),16).toString(10));//SLOP_UP
-                    temp10.push(parseInt(("0x"+strArr[9]+strArr[8]),16).toString(10));//WELD_CUR
-                    temp10.push(parseInt(("0x"+strArr[11]+strArr[10]),16).toString(10));//BASE_CUR
-                    temp10.push(parseInt(("0x"+strArr[13]+strArr[12]),16).toString(10));//PULSE_FRE
-                    temp10.push(parseInt(("0x"+strArr[14]),16).toString(10));//DUTY-VAL
-                    temp10.push(parseInt(("0x"+strArr[15]),16).toString(10));//SLOP-DOWN
-                    temp10.push(parseInt(("0x"+strArr[17]+strArr[16]),16).toString(10));//CRATER-CUR
-                    temp10.push(parseInt(("0x"+strArr[18]),16).toString(10));//POST-GAS
-                    temp10.push(parseInt(("0x"+strArr[19]),16).toString(10));//AC-FRE-VAL
-                    temp10.push(parseInt(("0x"+strArr[20]),16).toString(10));//AC-DUTY-VAL
-                    //转成10进制
-                    console.log(temp10)
-                    rstInfo = setWeldDataByType(temp10,weldDirctive.tigMan,pageFrom,_this);
-                }else if(compareString(dirctiveType,weldDirctive.tigMan) && pageFrom=='newIndex'){
+                    if(store.state.isModbusModal){
+                        //这里数据的处理像memory的处理方式，取全部进行分析
+                        rstInfo = changeToOldTigmanRealData(data,pageFrom);
+                    }else{
+                        var strArr =data.split(' ');
+                        console.log(strArr)
+                        var temp10 =[];
+                        temp10.push(parseInt(("0x"+strArr[0]),16).toString(10));//头DA
+                        temp10.push(parseInt(("0x"+strArr[1]),16).toString(10));//指令
+                        temp10.push(parseInt(("0x"+strArr[2]),16).toString(10));//焊接状态等
+                        temp10.push(parseInt(("0x"+strArr[3]),16).toString(10));//MODE+ADCD+2T4T+PULSE
+                        temp10.push(parseInt(("0x"+strArr[4]),16).toString(10));//PRE_GAS_VAL
+                        temp10.push(parseInt(("0x"+strArr[6]+strArr[5]),16).toString(10));//START_CUR_VAL
+                        temp10.push(parseInt(("0x"+strArr[7]),16).toString(10));//SLOP_UP
+                        temp10.push(parseInt(("0x"+strArr[9]+strArr[8]),16).toString(10));//WELD_CUR
+                        temp10.push(parseInt(("0x"+strArr[11]+strArr[10]),16).toString(10));//BASE_CUR
+                        temp10.push(parseInt(("0x"+strArr[13]+strArr[12]),16).toString(10));//PULSE_FRE
+                        temp10.push(parseInt(("0x"+strArr[14]),16).toString(10));//DUTY-VAL
+                        temp10.push(parseInt(("0x"+strArr[15]),16).toString(10));//SLOP-DOWN
+                        temp10.push(parseInt(("0x"+strArr[17]+strArr[16]),16).toString(10));//CRATER-CUR
+                        temp10.push(parseInt(("0x"+strArr[18]),16).toString(10));//POST-GAS
+                        temp10.push(parseInt(("0x"+strArr[19]),16).toString(10));//AC-FRE-VAL
+                        temp10.push(parseInt(("0x"+strArr[20]),16).toString(10));//AC-DUTY-VAL
+                        //转成10进制
+                        console.log(temp10)
+                        rstInfo = setWeldDataByType(temp10,weldDirctive.tigMan,pageFrom,_this);
+                    }
+                    //&& pageFrom=='newIndex'
+                }else if(compareString(dirctiveType,weldDirctive.tigMan)){
                     if(store.state.isModbusModal){
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldTigmanRealData(data);
@@ -949,8 +960,8 @@ Array.prototype.in_array = function (element) {
                     // window.modbusBroastFromApp("0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5");
                     data=data.replace(/\s*/g,"");//.replaceAll(" ","");
                     let datas = "";
-                    if(pageFrom == 'memory'){
-                        datas = data.substring(12,data.length);
+                    if(pageFrom == 'memory' || pageFrom=='hisweldlist'){
+                        datas = data.substring(18,data.length);
                     }else{
                         datas = data.substring(10,data.length);
                     }
@@ -2073,10 +2084,69 @@ Array.prototype.in_array = function (element) {
                             //20190611 新通道规则 byte 876543210 其中 0:是单位 7-1:通道 8位 2t4t
                             //0A 03 68+通道数+数据结构01+数据长度11
                             //0A 03 68 0001 1101 0000 0000 0000 0038 ..........
+                            //1、mig 2、tig 3、mma 4、cut
+                            
+                            let poupNum = parseInt(receiveBleData.substring(8,10),16);//通道号
+                            let beforeZui =poupNum>9?'C':'D';
+                            
                             let mod = receiveBleData.substring(12,14);//01
-                            changeNewData ='DAD5'+receiveBleData+BASE_CONFIG.callWeldTypeData.cut.crcCode;
-                            window.broastMemoryFromAndroid(changeNewData);
-                            console.log('momery返回：'+momeryDiKey)
+                            let ddd ='';
+                            let datas='';
+                            let dataList = [];
+                            
+                            switch (parseInt(mod)) {
+                                case 1:
+                                    datas =receiveBleData.substring(14,receiveBleData.length);
+                                    
+                                    for(let i=0;i<datas.length;i+=4){
+                                        dataList.push(datas.slice(i,i+4));
+                                    }
+                                    //index=8是数组
+                                    console.log(dataList);
+                                    let list =  ((Array(16).join(0) + parseInt(dataList[8],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                                    let a = `${list[11]}${list[12]}${list[13]}`;
+                                    if(a=='001'){
+                                        //migman
+                                        ddd='2';
+                                    }else if(a=='011'){
+                                        //migsyn
+                                        ddd='1';
+                                    }
+                                    break;
+                                case 2:
+                                    datas =receiveBleData.substring(14,receiveBleData.length);
+                                
+                                    for(let i=0;i<datas.length;i+=4){
+                                        dataList.push(datas.slice(i,i+4));
+                                    }
+                                    //index=8是数组
+                                    console.log(dataList);
+                                    let list1 =  ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
+                                    let rsta = `${list1[4]}${list1[5]}${list1[6]}`;
+                                    if(rsta=='001'){
+                                        //tigman
+                                        ddd='4';
+                                    }else if(rsta=='011'){
+                                        //tigsyn
+                                        ddd='3';
+                                    }
+                                    break;
+                                case 3:
+                                    ddd='5'
+                                    break;
+                                case 4:
+                                    ddd='6'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            changeNewData =`DA${beforeZui}${ddd}${receiveBleData}`;
+                            console.log('momery和history返回：'+changeNewData)
+                            if(beforeZui=='D'){
+                                window.broastMemoryFromAndroid(changeNewData);
+                            }else{
+                                window.broastHistoryFromAndroid(changeNewData);
+                            }
                             break;
                         default:
                             break;
@@ -2104,6 +2174,7 @@ Array.prototype.in_array = function (element) {
                 }
                 let newVal ="";
                 // DAB15c00E718 =12长 首页模式数据：DA 100000 0570
+                // DA3001005F70 migsyn hisweldlist
                 if(sendData && sendData.length>11){
                     let directive = sendData.substring(2,4);//指令值
                     let num = sendData.substring(4,8);//数值
@@ -2154,7 +2225,7 @@ Array.prototype.in_array = function (element) {
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='2'){
                             clearInterval(store.state.modbusCircleTimer);
                             //momery模式 原来的：DA2001009A71
-                            console.log('momery模式数据'+sData,num,diKey)
+                            console.log('momery和history模式数据：type='+modbusInfo.type,sData,num,diKey)
                             // 通道数	1-9对应焊机上的存储通道1-9
                             // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
                             //写第几通道数据 800
@@ -2179,6 +2250,78 @@ Array.prototype.in_array = function (element) {
                          
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='4'){
                             //history模式
+                            clearInterval(store.state.modbusCircleTimer);
+                            //history模式 DA3005009F72
+                            console.log('momery和history模式数据：type='+modbusInfo.type,sData,num,diKey)
+                            // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
+                            let newNum ='';
+                            switch (parseInt(diKey)) {
+                                case 0:
+                                    newNum ='0A00'
+                                    break;
+                                case 1:
+                                    newNum ='0B00'
+                                    break;
+                                case 2:
+                                    newNum ='0C00'
+                                    break;
+                                case 3:
+                                    newNum ='0D00'
+                                    break;
+                                case 4:
+                                    newNum ='0E00'
+                                    break;
+                                case 5:
+                                    newNum ='0F00'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // 通道数	1-9对应焊机上的存储通道1-9
+                            // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
+                            //写第几通道数据 800
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+newNum;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;//0A0603200200885F
+                            momeryDiKey = diKey;
+                            //延迟500ms请求模式数据
+                            setTimeout(() => {
+                                //读数据
+                                let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusReadAdr+modbusInfo.modbusNum;
+                                let crc2 = crcModelBusClacQuery(td2);
+                                let sData2 = td2+crc;
+                                onlySendFuc(sData2,pageFrom,crc2);//0A03032A003464EA
+                            }, 500);
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='5'){
+                            //history详情 应用
+                            // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
+                            let newNum ='';
+                            switch (parseInt(diKey)) {
+                                case 0:
+                                    newNum ='0A00'
+                                    break;
+                                case 1:
+                                    newNum ='0B00'
+                                    break;
+                                case 2:
+                                    newNum ='0C00'
+                                    break;
+                                case 3:
+                                    newNum ='0D00'
+                                    break;
+                                case 4:
+                                    newNum ='0E00'
+                                    break;
+                                case 5:
+                                    newNum ='0F00'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+newNum;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;
                             clearInterval(store.state.modbusCircleTimer);
                          
                         }else{
@@ -2380,7 +2523,14 @@ Array.prototype.in_array = function (element) {
             //modbus用：改动时另一处记得一起
             function changeToOldMigsynRealData(receiveBleData,pageFrom){
                 receiveBleData=receiveBleData.replace(/\s*/g,"");
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                console.log(receiveBleData)
+                let datas='';
+                if(pageFrom=='memory' || pageFrom=='hisweldlist'){
+                    datas =receiveBleData.substring(18,receiveBleData.length);
+                }else{
+                    datas =receiveBleData.substring(10,receiveBleData.length);
+                }
+                
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));
@@ -2461,8 +2611,15 @@ Array.prototype.in_array = function (element) {
             }
             //modbus用：改动时另一处记得一起
             function changeToOldMigmanRealData(receiveBleData,pageFrom){
+                
                 receiveBleData=receiveBleData.replace(/\s*/g,"");
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                let datas ='';
+                if(pageFrom=='memory' || pageFrom=='hisweldlist'){
+                    datas =receiveBleData.substring(18,receiveBleData.length);
+                }else{
+                    datas =receiveBleData.substring(10,receiveBleData.length);
+                }
+                
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));
@@ -2516,7 +2673,12 @@ Array.prototype.in_array = function (element) {
             //modbus用：改动时另一处记得一起
             function changeToOldTigsynRealData(receiveBleData,pageFrom){
                 receiveBleData=receiveBleData.replace(/\s*/g,"");
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                let datas ='';
+                if(pageFrom=='memory' || pageFrom=='hisweldlist'){
+                    datas =receiveBleData.substring(18,receiveBleData.length);
+                }else{
+                    datas =receiveBleData.substring(10,receiveBleData.length);
+                }
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));
@@ -2581,7 +2743,7 @@ Array.prototype.in_array = function (element) {
             function changeToOldMmaRealData(receiveBleData,pageFrom){
                 receiveBleData=receiveBleData.replace(/\s*/g,"");
                 let datas = '';
-                if('memory' == pageFrom){
+                if('memory' == pageFrom || pageFrom=='hisweldlist'){
                     datas =receiveBleData.substring(18,receiveBleData.length);
                 }else{
                     datas =receiveBleData.substring(10,receiveBleData.length);
@@ -2656,11 +2818,16 @@ Array.prototype.in_array = function (element) {
             }
             //假如有改动注意  weldDirctive.tigMan 555行也要考虑
             // tigman数据转换机制--去别的地方再做处理
-            function changeToOldTigmanRealData(receiveBleData){
+            function changeToOldTigmanRealData(receiveBleData,pageFrom){
                 
                 // DA E4 0A 03 60 00 00 00 00 00 00 00 00.................
                 receiveBleData=receiveBleData.replace(/\s*/g,"");
-                let datas =receiveBleData.substring(10,receiveBleData.length);
+                let datas ='';
+                if(pageFrom=='memory' || pageFrom=='hisweldlist'){
+                    datas =receiveBleData.substring(18,receiveBleData.length);
+                }else{
+                    datas =receiveBleData.substring(10,receiveBleData.length);
+                }
                 var dataList = [];
                 for(var i=0;i<datas.length;i+=4){
                     dataList.push(datas.slice(i,i+4));

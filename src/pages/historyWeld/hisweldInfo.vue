@@ -160,8 +160,8 @@ export default {
           //   Array(4).join("0") + parseInt(self.type, 10).toString(16)
           // ).slice(-4);
            var num =self.jinzhiChangeFuc(self.type);
-          var crc = self.crcModelBusClacQuery(dirctCode + num, true);
-          var sendData = "DA" + dirctCode + num + crc;
+        var crc = self.crcModelBusClacQuery(dirctCode + num, true);
+        var sendData = "DA" + dirctCode + num + crc;
          
            self.callSendDataToBleUtil('hisWeldInfo',sendData,crc);
            self.isLoading =true;
