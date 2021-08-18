@@ -36,7 +36,16 @@ Array.prototype.in_array = function (element) {
             var newIndexDataVal="";
             var nowModalIdx ='';//当前模式
             var momeryDiKey = '';
-            //安卓逻辑迁移 循环定时器 
+            var longTimer ={};//接收那些太长的数据
+            var ifLongFlag=false;
+            var modbusGlobalReceiveList=[];
+            var modbusGlobalReceiveInterval='';
+            var checkDataModbus={};
+            var checkPageModbus={};
+            var checkStatusModbus={};
+            var checkTimeModbus={};
+            var checkSendTimesModbus={};
+            //安卓逻辑迁移 循环定时器
             /**
              * 1、校验数据的当前状态
              * 2、正确性
@@ -1291,7 +1300,7 @@ Array.prototype.in_array = function (element) {
             //crc16位数字处理 注意这里定义了两个相同的方法要改一起改 下 
             //旧逻辑crc校验不包含 da
              function crcModelBusClacQuery(data){   
-                console.log('crcModelBusClacQuery开始')
+                // console.log('crcModelBusClacQuery开始')
                 var CRC = {};
                 CRC._auchCRCHi = [
                     0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0,
@@ -1447,7 +1456,7 @@ Array.prototype.in_array = function (element) {
                 // console.log(CRC.ToCRC16('12345678', false));
                 // console.log(CRC.ToModbusCRC16('12345678', true));
                 // console.log(Date.parse(new Date()));
-                console.log('crcModelBusClacQuery结束')
+                // console.log('crcModelBusClacQuery结束')
                 return CRC.ToModbusCRC16(data, true);
                 
         }
@@ -1919,10 +1928,60 @@ Array.prototype.in_array = function (element) {
                 mayTooLongList =templist;
             }
             //负责接收来自app的 新modbus版本ble信息 注意modbus的返回crc是反的
-            window['modbusBroastFromApp'] = (bleReponseData)=>{
+            window['modbusBroastFromApp'] = (bleReponseOrignData)=>{
+                store.state.postDataList.push({type:'receive',data:bleReponseOrignData})
+                modbusGlobalReceiveList.push(bleReponseOrignData);//存储起来避免太快丢失
                 console.log('modbusSendTimes:'+store.state.modbusSendTimes)
-                store.state.postDataList.push({type:'receive',data:bleReponseData})
+                console.log('****bleReponseOrignData****:'+bleReponseOrignData)
+                console.log('****modbusGlobalReceiveList****:'+modbusGlobalReceiveList)
+                if(!modbusGlobalReceiveInterval){
+                    modbusGlobalReceiveInterval=setInterval(() =>{
+                        let beginIdx=0;
+                        let endIdx ='none';
+                        let bleReponseData="";
+                       //遍历处理数据
+                       for (let index = 0; index < modbusGlobalReceiveList.length; index++) {
+                            const tempCenter = modbusGlobalReceiveList[index];
+                            bleReponseData+=tempCenter;
+                            let oldCrc = bleReponseData.substring(bleReponseData.length-4,bleReponseData.length);
+                            let tempMidData =bleReponseData.substring(0,bleReponseData.length-4);
+                            let newCrc = crcModelBusClacQuery(tempMidData, true);
+                            let reverseCrc = newCrc.substring(2,4)+newCrc.substring(0,2);
+                            if(oldCrc == reverseCrc){
+                                endIdx=index;
+                                modbusDataReceiveFuc(bleReponseData);
+                                break;
+                            }
+                       }
+                       if(endIdx!='none'){
+                        modbusGlobalReceiveList =modbusGlobalReceiveList.slice(endIdx+1,modbusGlobalReceiveList.length);
+                       } 
+                    }, 500);
+                }
+                //间隔不到150ms是可以连续接收：节流、避免丢失
+                // if(!ifLongFlag){
+                //     ifLongFlag=true;
+                //     clearTimeout(longTimer);
+                //     if(modbusTooLongList.length==0){
+                //         modbusDataReceiveBuild(bleReponseOrignData);
+                //         console.log("===modbusTooLongList_1====",modbusTooLongList)
+                //     }else{
+                //         modbusTooLongList.push(bleReponseOrignData);
+                //         longTimer = setTimeout(() =>{
+                //             ifLongFlag=false;
+                //             modbusDataReceiveBuild(bleReponseOrignData);
+                //             console.log("===modbusTooLongList_2====",modbusTooLongList)
+                //         }, 120);
+                //     }
+                    
+                // }else{
+                //    //可能是太长的
+                //    modbusTooLongList.push(bleReponseOrignData);
+                //    console.log("===modbusTooLongList_3====",modbusTooLongList)
+                // }
                 
+            }
+            function modbusDataReceiveBuild(bleReponseData){
                 if(bleReponseData){
                     bleReponseData=bleReponseData.replace(/\s*/g,"");
                     bleReponseData=bleReponseData.toLocaleUpperCase();
@@ -1989,7 +2048,7 @@ Array.prototype.in_array = function (element) {
                     
                     if(before6 == '0A0302'){
                         //通信成功
-                        store.state.modbusSendTimes=1;
+                        store.state.modbusSendTimes=5;
                         store.state.isModbusModal=true;//是否是modbus协议模式
                     }else if(before4!='0A03'){
                         //进入旧的通信区
@@ -2159,6 +2218,7 @@ Array.prototype.in_array = function (element) {
             }
             //请求一个模式确认是不是modbus协议版本机器
             Vue.prototype.callSendModbusSystemData = (sendData,pageFrom) =>{
+                console.log('callSendModbusSystemData');
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
                 var crc = crcModelBusClacQuery(sendData);
                 onlySendFuc(sendData+crc,pageFrom,crc);
@@ -2220,8 +2280,10 @@ Array.prototype.in_array = function (element) {
                             sData = tempData+crc;
                             modbusLastReadData =sData;
                             //重新开启 什么时候清除呢
+                
                             store.state.modbusCircleTimer = setInterval(() => {
                                 console.log('modbusCircleTimer')
+                                modbusGlobalReceiveList=[];//清空
                                 onlySendFuc(modbusLastReadData,pageFrom,crc)
                                 console.log('循环发送modebus协议数据：',modbusLastReadData,crc);
                             }, 3000);
@@ -2237,12 +2299,14 @@ Array.prototype.in_array = function (element) {
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;//0A0603200200885F
                             momeryDiKey = diKey;
+                            
                             //延迟500ms请求模式数据
                             setTimeout(() => {
                                 //读数据
                                 let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusReadAdr+modbusInfo.modbusNum;
                                 let crc2 = crcModelBusClacQuery(td2);
                                 let sData2 = td2+crc;
+                                modbusGlobalReceiveList=[];//清空
                                 onlySendFuc(sData2,pageFrom,crc2);//0A03032A003464EA
                             }, 500);
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='3'){
@@ -2294,6 +2358,7 @@ Array.prototype.in_array = function (element) {
                                 let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusReadAdr+modbusInfo.modbusNum;
                                 let crc2 = crcModelBusClacQuery(td2);
                                 let sData2 = td2+crc;
+                                modbusGlobalReceiveList=[];//清空
                                 onlySendFuc(sData2,pageFrom,crc2);//0A03032A003464EA
                             }, 500);
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='5'){
@@ -2341,6 +2406,7 @@ Array.prototype.in_array = function (element) {
                             sData = tempData+crc;
                             
                         }
+                        modbusTooLongList=[];//清空记录
                         console.log('modebus协议数据write：',sData,crc);
                         onlySendFuc(sData,pageFrom,crc)
                         

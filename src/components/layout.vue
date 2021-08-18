@@ -334,9 +334,9 @@ export default {
             }else{
               let status = window.android?window.android.getConStatus():BASE_CONFIG.liulanqiConnect?'connected':'';
               this.$store.state.getConnectStatus = status;
-              if(status == 'connected' && this.modbusSendTimes == 0 && this.modbusSendDataTimes<5){
+              if(status == 'connected'  && this.modbusSendDataTimes<5){
                   //发出系统信息请求
-                  this.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+                  this.callSendModbusSystemData('0A0303E80001','blueToothManage');//模拟响应：0A03020000851D
               }
             }
             if(this.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
@@ -400,7 +400,7 @@ export default {
         return this.$store.state.envType;　　//需要监听的数据
       },
       postDataList(){
-        return this.$store.state.postDataList.reverse();
+        return this.$store.state.postDataList;
       },
       logFaceFlag(){
         return this.$store.state.logFaceFlag;

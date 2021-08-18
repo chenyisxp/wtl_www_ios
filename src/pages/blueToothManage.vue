@@ -826,7 +826,7 @@ export default {
             // }
             if('connected'==scanStatus){
                 clearInterval(this.timeInterval1)
-                if(this.modbusSendTimes == 0){
+                if(this.modbusSendTimes <5){
                     //发出系统信息请求
                     this.callSendModbusSystemData('0A0303E80001','blueToothManage');//模拟响应：0A03020000851D
                 }
@@ -836,7 +836,7 @@ export default {
         window['handleGetBleStateThenToNewIndex']= () => {
             this.$store.state.getConnectStatus='connected';
             clearInterval(this.timerInterval)
-            if(this.modbusSendTimes == 0){
+            if(this.modbusSendTimes <5){
                 //发出验证请求
                 this.callSendModbusSystemData('0A0303E80001','blueToothManage');//模拟响应：0A03020000851D
             }

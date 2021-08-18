@@ -859,7 +859,7 @@ export default {
           }else{
             that.$store.state.getConnectStatus = window.android?window.android.getConStatus():BASE_CONFIG.liulanqiConnect?'connected':''// window.android.getConStatus();
             that.nowConnectStatus =that.$store.state.getConnectStatus;
-            if(that.nowConnectStatus=='connected' && that.modbusSendTimes == 0 && that.modbusSendDataTimes<5){
+            if(that.nowConnectStatus=='connected' && that.modbusSendDataTimes<5){
                 //发出系统信息请求
                 that.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
             }
