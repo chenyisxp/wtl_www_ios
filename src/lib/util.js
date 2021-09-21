@@ -2399,8 +2399,12 @@ Array.prototype.in_array = function (element) {
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;//DA400100D4B1
                            
-                        }
-                        else{
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='7'){
+                            //getready操作
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;//DA400100D4B1
+                        }else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;
@@ -2661,10 +2665,10 @@ Array.prototype.in_array = function (element) {
                                 break;
                         }
                     });
-                   
-                    rstInfo.INDUCTANCE =parseInt(`${t8List[0]}${t8List[1]}${t8List[2]}${t8List[3]}`,2).toString(10);//机器上发不能改 不知道干嘛的
-                    //bit0-3
-                    rstInfo.RECOMMEND_INDUCTANCE =parseInt(`${t8List[4]}${t8List[5]}${t8List[6]}${t8List[7]}`,2).toString(10);//机器上发不能改 不知道干嘛的
+                    // console.log('/////',t8List) 13~15
+                    rstInfo.INDUCTANCE =parseInt(`${t8List[2]}${t8List[1]}${t8List[0]}}`,2).toString(10);//机器上发不能改 不知道干嘛的
+                    //bit0-3 8~12
+                    rstInfo.RECOMMEND_INDUCTANCE =parseInt(`${t8List[7]}${t8List[6]}${t8List[5]}${t8List[4]}${t8List[3]}`,2).toString(10);//机器上发不能改 不知道干嘛的
 
                     rstInfo.RECOMMEND_SPEED_DISPLAY=parseInt(dataList[23],16);;//推荐值
                     rstInfo.SPEED_DISPLAY =parseInt(dataList[29],16);//送丝速度

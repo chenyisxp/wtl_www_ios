@@ -275,7 +275,7 @@ export default {
         timerPosition1:'',//定时器避免重复点击 造成连续发送
         touchStartFlag:false,
         InDangerFlag:false,
-        paramIncreaseDistance:0.1,//加减法 按钮的增长幅度
+        paramIncreaseDistance:1,//加减法 按钮的增长幅度
         // 电流控制器 end
          // 电压控制器 begin
          myPosition2:{
@@ -295,7 +295,7 @@ export default {
         timerPosition2:'',//定时器避免重复点击 造成连续发送
         touchStartFlag2:false,
         InDangerFlag2:false,
-        paramIncreaseDistance2:0.1,//加减法 按钮的增长幅度
+        paramIncreaseDistance2:1,//加减法 按钮的增长幅度
         // 电压控制器 end
         model_0:'2T',
         model_1:'AC',
@@ -740,7 +740,7 @@ export default {
                 // var data = self.getDirective(self.typeName, 'Getready')+ '0000';
                 var data = "";
                 if(this.isModbusModal){
-                    data = this.getDirective(this.typeName, 'Getready')+ '0180';//0110000000 CUT
+                    data = this.getDirective(this.typeName, 'Getready')+ '0300';//1100000000 CUT 
                 }else{
                     data = this.getDirective(this.typeName, 'Getready')+ '0000';
                 }
@@ -1027,7 +1027,8 @@ export default {
                     myWidth=0;
                 }
                 // this.nowPosionX=Math.round(this.block*(Math.round(myWidth)/100));//四舍五入取舍
-                this.nowPosionX=Math.round(this.block*(Math.round(myWidth)/100)*10)/10+this.min;//四舍五入保留一位小数
+                // this.nowPosionX=Math.round(this.block*(Math.round(myWidth)/100)*10)/10+this.min;//四舍五入保留一位小数
+                this.nowPosionX=Math.round(Math.round(this.block*(Math.round(myWidth)/100)*10)/10+this.min);//四舍五入
 				if(this.myPosition.isBtn == 1){//判断焦点
 					this.myPosition.left = myWidth
 					rightBtn.style.left = myWidth+'%' 
@@ -1404,18 +1405,18 @@ export default {
                         }
                  });               
              },
-            nowPosionX2(val, oldVal){//普通的watch监听
-                    var now = val+'';
-                    if(now.indexOf('.')<0){
-                        this.nowPosionX2+='.0';
-                    }
-            },
-            nowPosionX(val, oldVal){//普通的watch监听
-                var now = val+'';
-                if(now.indexOf('.')<0){
-                    this.nowPosionX+='.0';
-                }
-            }
+            // nowPosionX2(val, oldVal){//普通的watch监听
+            //         var now = val+'';
+            //         if(now.indexOf('.')<0){
+            //             this.nowPosionX2+='.0';
+            //         }
+            // },
+            // nowPosionX(val, oldVal){//普通的watch监听
+            //     var now = val+'';
+            //     if(now.indexOf('.')<0){
+            //         this.nowPosionX+='.0';
+            //     }
+            // }
   }
 
 }

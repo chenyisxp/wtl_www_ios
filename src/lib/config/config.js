@@ -9,7 +9,7 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:false,//浏览器调试的时候
+    liulanqiConnect:true,//浏览器调试的时候
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
     LOGFLAG:true,
@@ -279,6 +279,7 @@ let BASE_CONFIG = {
             modbusAdr:'000F'//14
         },
         'AE':{
+            type:'7',//类型1代表模式数据
             parentName:'migsyn',
             name:'getready',
             modbusAdr:'0000'//0
@@ -299,6 +300,7 @@ let BASE_CONFIG = {
             modbusAdr:'0003'//3
         },
         'BE':{
+            type:'7',//类型1代表模式数据
             parentName:'migsyn',
             name:'getready',
             modbusAdr:'0000'//0
@@ -339,6 +341,7 @@ let BASE_CONFIG = {
             modbusAdr:'00C8'//200
         },
         'CE':{
+            type:'7',//类型1代表模式数据
             parentName:'tigsyn',
             name:'getready',
             modbusAdr:'00C8'//200
@@ -421,6 +424,7 @@ let BASE_CONFIG = {
             modbusAdr:'00D4'//212 ac_fre 交流频率
         },
         'DE':{
+            type:'7',//类型1代表模式数据
             parentName:'tigman',
             name:'getready',
             modbusAdr:'00C8'//200 
@@ -468,9 +472,10 @@ let BASE_CONFIG = {
         'E5':{
             parentName:'mma',
             name:'weld_cur_val',
-            modbusAdr:'0198'//408
+            modbusAdr:'0191'//401
         },
         'EE':{
+            type:'7',//类型1代表模式数据
             parentName:'mma',
             name:'getready',
             modbusAdr:'0190'//400
@@ -496,6 +501,7 @@ let BASE_CONFIG = {
             modbusAdr:'0259'// 601
         },
         'FE':{
+            type:'7',//类型1代表模式数据
             parentName:'cut',
             name:'getready',
             modbusAdr:'0258'// 600

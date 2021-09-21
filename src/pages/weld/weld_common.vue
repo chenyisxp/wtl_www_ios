@@ -805,9 +805,17 @@ export default {
             //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
                 //new 新规则
                 var num =this.jinzhiChangeFuc(value);
+                //这里mysyn的modbus协议进行处理
+                if(type == 'MODE' && this.typeName=='MIGSYN' && this.isModbusModal){
+                    if(value==1){
+                        num='0200'
+                    }
+                }
                 var crc =this.crcModelBusClacQuery(directCode+num, true);
                 var sendData =this.GLOBAL_CONFIG.DirectStart+directCode+num+crc;
                 // if(!this.GLOBAL_CONFIG.TESTFLAG){
+                console.log('xxxxxxxxxx:'+type+":"+value+"::"+sendData)
+                
                 this.callSendDataToBleUtil('weld_common',sendData,crc);
                 // }
                 // if(!this.GLOBAL_CONFIG.TESTFLAG){

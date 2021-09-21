@@ -718,6 +718,12 @@ export default {
             //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
               //new 新规则
                 var num =this.jinzhiChangeFuc(value);
+                //这里mysyn的modbus协议进行处理
+                if(type == 'MODE' && this.isModbusModal){
+                    if(value==1){
+                        num='0001'//主动颠倒了
+                    }
+                }
                var crc =this.crcModelBusClacQuery(dirctCode+num, true);
                var sendData =this.GLOBAL_CONFIG.DirectStart+dirctCode+num+crc;
                this.callSendDataToBleUtil('weld_tig_syn',sendData,crc);
