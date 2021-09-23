@@ -983,6 +983,7 @@ Array.prototype.in_array = function (element) {
                     }
                     let byte0 =((Array(16).join(0) + parseInt(strArr[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                     var byte1Bean ={};
+                        byte1Bean.isReadyFlag=`${byte0[8]}${byte0[7]}${byte0[6]}` == '011'?1:0,//7-9;
                         byte1Bean.weldStatus=byte0[15];//0:未焊接  1:在焊接
                         if(byte1Bean.weldStatus==1){
                             if(pageFrom=='newIndex'){
@@ -997,6 +998,17 @@ Array.prototype.in_array = function (element) {
                             store.state.getWeldingInfoTimes=0;//重置
                         }
                         byte1Bean.unit=byte0[5];//默认是0 ich单位是1 
+                        byte1Bean.bitInfoList = {
+                            cut01:byte0[15],//引弧成功
+                            cut02:byte0[14],//切割电源准备状态
+                            cut03:byte0[13],//切割电源故障
+                            cut04:byte0[12],//枪开关状态
+                            cut05:byte0[11],//小弧状态
+                            cut06:byte0[10],//主弧状态
+                            cut07:byte0[9],
+                            cut08:`${byte0[6]}${byte0[7]}${byte0[8]}`,//9-7 焊接电源工作模式 110
+                            cut09:byte0[5]//单位
+                        };
                     //等离子新模式modbus
                     rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
                     rstInfo.weldType='CUT';
@@ -1194,7 +1206,7 @@ Array.prototype.in_array = function (element) {
                         bean.ifhf =secdArr[5]
                     //3|pulse
                         bean.ifpulse =secdArr[4]
-                        bean.ifpulseValue =bean.ifpulse==1?'NOPULSE':'PULSE';
+                        bean.ifpulseValue =bean.ifpulse==1?'PULSE':'NOPULSE';
                     //4|空
                         bean.empty20 =secdArr[3]
                     //5|空
@@ -1549,6 +1561,8 @@ Array.prototype.in_array = function (element) {
                         if("FF"!=directive && store.state.isModbusModal){
                             modbusDataSendFuc(pageFrom,sendData,crc);
                             return;
+                        }else if("FF"==directive && store.state.isModbusModal){
+                            return;
                         }
                         
                         //0、初始化 开始定时器
@@ -1612,6 +1626,23 @@ Array.prototype.in_array = function (element) {
                 tempNum= tempNum.substring(2,4)+tempNum.substring(0,2);
                 return tempNum;
             } 
+            //公共 ：10机制数转成 高低位按规则变动的 16进制数
+            Vue.prototype.jinzhiChange2jinzhiFuc = function(num) {
+                //规则1
+                 // var tempNum = ((Array(8).join(0) + parseInt(num,10).toString(2)).slice(-8));
+                 // parseInt(tempNum.substring(4,8),2).toString(16);//低位
+                 // parseInt(tempNum.substring(0,4),2).toString(16);//高位
+             //   ((Array(2).join(0) + parseInt('00010001'.substring(0,4),2).toString(16)).slice(-2));
+             //低+高    
+             // return ((Array(2).join(0) + parseInt(tempNum.substring(4,8),2).toString(16)).slice(-2))
+             //             +((Array(2).join(0) + parseInt(tempNum.substring(0,4),2).toString(16)).slice(-2));
+ 
+                 
+                 
+                 var tempNum = ((Array(4).join(0) + parseInt(num,2).toString(16)).slice(-4));
+                //  tempNum= tempNum.substring(2,4)+tempNum.substring(0,2);
+                 return tempNum;
+             } 
             //字符串首字母大写
             Vue.prototype.changeStrShowName = function(str) {
                 // if(str.indexOf('-')>0){
@@ -2624,6 +2655,7 @@ Array.prototype.in_array = function (element) {
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 let t8List = ((Array(16).join(0) + parseInt(dataList[8],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 var byte1Bean ={};
+                    byte1Bean.isReadyFlag=`${t0List[13]}${t0List[14]}${t0List[15]}` == '011'?1:0,//2-4;
                     byte1Bean.weldStatus=t0List[15];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
@@ -2638,6 +2670,10 @@ Array.prototype.in_array = function (element) {
                         store.state.getWeldingInfoTimes=0;//重置
                     }
                     byte1Bean.unit=t8List[10];//默认是0 ich单位是1 TODO
+                    byte1Bean.bitInfoList={
+                        l0:t0List,
+                        l8:t8List
+                    };
                     rstInfo.nowTypeList.forEach(element => {
                         switch (element.typeName) {
                             case 'MODE':
@@ -2713,6 +2749,7 @@ Array.prototype.in_array = function (element) {
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 let t8List = ((Array(16).join(0) + parseInt(dataList[8],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 var byte1Bean ={};
+                    byte1Bean.isReadyFlag=`${t0List[13]}${t0List[14]}${t0List[15]}` == '001'?1:0,//2-4;
                     byte1Bean.weldStatus=t0List[15];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
@@ -2727,6 +2764,10 @@ Array.prototype.in_array = function (element) {
                         store.state.getWeldingInfoTimes=0;//重置
                     }
                     byte1Bean.unit=t8List[10];// 5	单位	0:mm  1:inch	MIGSYN,MIGMAN
+                    byte1Bean.bitInfoList={
+                        l0:t0List,
+                        l8:t8List,
+                    };
                 rstInfo.nowTypeList.forEach(element => {
                     if(element.typeName=='MODE'){
                         element.chooseKey=t8List[15];
@@ -2771,6 +2812,7 @@ Array.prototype.in_array = function (element) {
                 rstInfo.weldTypeNum=BASE_CONFIG.callWeldTypeData.tigsyn.newIndex;//这个和首页里的配对
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 var byte1Bean ={};
+                    byte1Bean.isReadyFlag=`${t0List[6]}${t0List[5]}${t0List[4]}` == '011'?1:0,//9-11;
                     byte1Bean.weldStatus=t0List[3];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
@@ -2785,6 +2827,27 @@ Array.prototype.in_array = function (element) {
                         store.state.getWeldingInfoTimes=0;//重置
                     }
                     byte1Bean.unit=t0List[2];//13	单位	0:mm  1:inch
+                    //焊接模式
+                    // 0:短焊    1:长焊  2:点焊    3:重复
+                    // 0:无高频   1:有高频
+                    // 0:非脉冲   1:脉冲
+                    // 0:气冷       1:水冷
+                    // 0:交流       1:直流
+                    // 0:短焊    1:长焊
+                    // 焊接电源工作模式
+                    // 引弧成功,焊接中
+                    // 单位
+                    byte1Bean.bitInfoList = {
+                        tigmanWeldMode:`${t0List[14]}${t0List[15]}`,
+                        tigmanPinglv:t0List[13],
+                        tigmanMc:t0List[12],
+                        tigmanGas:t0List[11],
+                        tigmanCurrent:`${t0List[8]}${t0List[9]}${t0List[10]}`,//5-7
+                        tigsynWeldMode:t0List[7],//5-7
+                        tigMode:`${t0List[4]}${t0List[5]}${t0List[6]}`,//9-11
+                        tigIsWeiding:t0List[3],
+                        tigUnit:t0List[2]
+                    };
                 rstInfo.THINKNESS_VALUE = parseInt(dataList[17],16);
                 rstInfo.nowTypeList.forEach(element => {
                     switch (element.typeName) {
@@ -2845,6 +2908,7 @@ Array.prototype.in_array = function (element) {
                 
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 var byte1Bean ={};
+                    byte1Bean.isReadyFlag=`${t0List[10]}${t0List[9]}${t0List[8]}` == '011'?1:0,//5-7;
                     byte1Bean.weldStatus=t0List[7];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
@@ -2859,6 +2923,14 @@ Array.prototype.in_array = function (element) {
                         store.state.getWeldingInfoTimes=0;//重置
                     }
                     byte1Bean.unit=t0List[6];//默认是0 ich单位是1 
+                    byte1Bean.bitInfoList = {
+                        acdc:`${t0List[13]}${t0List[14]}${t0List[15]}`,//交流直流
+                        ifvrd:t0List[12],
+                        unname:t0List[11],
+                        isReady:`${t0List[8]}${t0List[9]}${t0List[10]}`,//7-5
+                        iswelding:t0List[7],
+                        ichemm:t0List[6]//单位
+                    };
                 rstInfo.THINKNESS_VALUE=parseInt(dataList[7],16);
                 rstInfo.nowTypeList.forEach(element => {
                     switch (element.typeName) {
@@ -2923,7 +2995,7 @@ Array.prototype.in_array = function (element) {
                 let mode =  parseInt(byte0[14]+byte0[15],2);
                 let ifpulse = parseInt(byte0[12],2);
                 let modeValue = mode==1?'4T':'2T';
-                let ifpulseValue = ifpulse==1?'NOPULSE':'PULSE';
+                let ifpulseValue = ifpulse==1?'PULSE':'NOPULSE';
                 rstInfo.initBean ={
                     unit:byte0[2],//13	单位	0:mm  1:inch
                     pfc:0, //干嘛的
@@ -2931,12 +3003,33 @@ Array.prototype.in_array = function (element) {
                     hotStatus:0,
                     flowStatus:0,
                     empty1:0,
-                    isReadyFlag:0,
+                    isReadyFlag:`${byte0[4]}${byte0[5]}${byte0[6]}` == '001'?1:0,//9-11
                     ifhf:parseInt(byte0[13],2),
                     ifpulse:ifpulse,
                     polatrity:parseInt(byte0[8]+byte0[9]+byte0[10],2),
                     mode:mode,
-                    nowChooseModel:modeValue+'_'+ifpulseValue+'_DC',
+                    nowChooseModel:modeValue+'_'+ifpulseValue+'_DC',//bean.nowChooseModel=bean.modeValue+'_'+bean.ifpulseValue+'_DC';
+                    //焊接模式
+                    // 0:短焊    1:长焊  2:点焊    3:重复
+                    // 0:无高频   1:有高频
+                    // 0:非脉冲   1:脉冲
+                    // 0:气冷       1:水冷
+                    // 0:交流       1:直流
+                    // 0:短焊    1:长焊
+                    // 焊接电源工作模式
+                    // 引弧成功,焊接中
+                    // 单位
+                    bitInfoList : {
+                        tigmanWeldMode:`${byte0[14]}${byte0[15]}`,
+                        tigmanPinglv:byte0[13],
+                        tigmanMc:byte0[12],
+                        tigmanGas:byte0[11],
+                        tigmanCurrent:`${byte0[8]}${byte0[9]}${byte0[10]}`,//5-7
+                        tigsynWeldMode:byte0[7],//5-7
+                        tigMode:`${byte0[4]}${byte0[5]}${byte0[6]}`,//9-11
+                        tigIsWeiding:byte0[3],
+                        tigUnit:byte0[2]
+                    }
                 }
                 rstInfo.nowTypeList.forEach(element => {
                     switch (element.typeName) {

@@ -276,7 +276,7 @@ let BASE_CONFIG = {
         'A6':{
             parentName:'migsyn',
             name:'v_welding',
-            modbusAdr:'000F'//14
+            modbusAdr:'000E'//14
         },
         'AE':{
             type:'7',//类型1代表模式数据

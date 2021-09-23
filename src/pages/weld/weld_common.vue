@@ -767,10 +767,21 @@ export default {
                 //执行焊接
                 var data = "";
                 if(self.isModbusModal){
-                    if(self.typeName=='MIGMAN'){
-                        data =  self.getDirective(self.typeName, 'Getready')+ '0006';//00110 migman
+                    var list  ={};
+                    if(self.pageBackTo=='/memoryManage'){//来自momery页
+                        list  =self.$store.state.memoryInfo;
                     }else{
-                        data =  self.getDirective(self.typeName, 'Getready')+ '000e';//01110 migsyn
+                        list  =self.$store.state.rstInfo;
+                    }
+                    let bitInfoList0 = list.initBean.bitInfoList.l0;
+                    let bitInfoList8 = list.initBean.bitInfoList.l8;
+                    let num='';
+                    if(self.typeName=='MIGMAN'){
+                        num =self.jinzhiChange2jinzhiFuc(`000100${bitInfoList0[1]}0}`);
+                        data =  self.getDirective(self.typeName, 'Getready')+ num;//100 migman
+                    }else{
+                        num =self.jinzhiChange2jinzhiFuc(`000110${bitInfoList0[1]}0}`);
+                        data =  self.getDirective(self.typeName, 'Getready')+ num;//110 migsyn
                     }
                 }else{
                     data =  self.getDirective(self.typeName, 'Getready')+ '0000';
@@ -804,12 +815,30 @@ export default {
                 
             //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
                 //new 新规则
-                var num =this.jinzhiChangeFuc(value);
+                
                 //这里mysyn的modbus协议进行处理
-                if(type == 'MODE' && this.typeName=='MIGSYN' && this.isModbusModal){
-                    if(value==1){
-                        num='0200'
+                if(type == 'MODE' && this.isModbusModal){
+                    // if(value==1){
+                    //     num='0200'
+                    // }
+                    // && this.typeName=='MIGSYN' 
+                    var list  ={};
+                    if(this.pageBackTo=='/memoryManage'){//来自momery页
+                        list  =this.$store.state.memoryInfo;
+                    }else{
+                        list  =this.$store.state.rstInfo;
                     }
+                    let bitInfoList = list.initBean.bitInfoList.l8;
+                    let tempNum ='';
+                    if(this.typeName=='MIGSYN'){
+                        tempNum =this.jinzhiChange2jinzhiFuc(`${bitInfoList[13]}${value}${bitInfoList[15]}`);
+                    }else{
+                        tempNum =this.jinzhiChange2jinzhiFuc(`${bitInfoList[13]}${bitInfoList[14]}${value}`);
+                    }
+                    num= tempNum.substring(2,4)+tempNum.substring(0,2);//兼容旧的规则口径
+
+                }else{
+                    var num =this.jinzhiChangeFuc(value);
                 }
                 var crc =this.crcModelBusClacQuery(directCode+num, true);
                 var sendData =this.GLOBAL_CONFIG.DirectStart+directCode+num+crc;

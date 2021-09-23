@@ -742,7 +742,16 @@ export default {
                 //执行焊接
                 var data = "";
                 if(self.isModbusModal){
-                    data =  self.getDirective(self.typeName, 'Getready')+ '0060';//01100000 mma
+                    var list  ={};
+                    if(self.pageBackTo=='/memoryManage'){//来自momery页
+                        list  =self.$store.state.memoryInfo;
+                    }else{
+                        list  =self.$store.state.rstInfo;
+                    }
+                    let bitInfoList = list.initBean.bitInfoList;
+                    let num =self.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.ichemm}${bitInfoList.iswelding}110${bitInfoList.unname}${bitInfoList.ifvrd}${bitInfoList.acdc}`);
+                    
+                    data =  self.getDirective(self.typeName, 'Getready')+ num;// mma
                 }else{
                     data =  self.getDirective(self.typeName, 'Getready')+ '0000';
                 }
@@ -765,8 +774,32 @@ export default {
                 var dirctCode = this.getDirective(this.typeName,type);
                 // (Array(2).join('0') + parseInt(1,10).toString(16)).slice(-2)
                 //var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
-              //new 新规则
-                var num =this.jinzhiChangeFuc(value);
+                //new 新规则
+                //new 新规则
+                        let num='';
+                        if(this.isModbusModal){
+                            var list  ={};
+                            if(this.pageBackTo=='/memoryManage'){//来自momery页
+                                list  =this.$store.state.memoryInfo;
+                            }else{
+                                list  =this.$store.state.rstInfo;
+                            }
+                            let bitInfoList = list.initBean.bitInfoList;
+                            console.log(type)
+                            // 0~1	焊接模式
+                                switch (type) {
+                                    case 'POLATRITY':
+                                    //0:交流       1:直流
+                                    let tempNum =this.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.ichemm}${bitInfoList.iswelding}000${bitInfoList.unname}${bitInfoList.ifvrd}00${element.chooseKey}`);
+                                    num= tempNum.substring(2,4)+tempNum.substring(0,2);//兼容旧的规则口径
+                                    break;
+                                    default:
+                                    break;
+                                }
+                        }else{
+                            num =this.jinzhiChangeFuc(element.chooseKey);
+                        }
+                // var num =this.jinzhiChangeFuc(value);
                 var crc =this.crcModelBusClacQuery(dirctCode+num, true);
                 var sendData =this.GLOBAL_CONFIG.DirectStart+dirctCode+num+crc;
                 this.callSendDataToBleUtil('weld_tig_syn',sendData,crc);
@@ -795,7 +828,7 @@ export default {
                     element.chooseKey=element.comList[0].id;//第一个元素的
                     //计算 查找 发送请求给ble告知 修改了
                     var dirctCode = this.getDirective(this.typeName,type);
-                    //new 新规则
+                    
                     var num =this.jinzhiChangeFuc(element.chooseKey);
                     var crc =this.crcModelBusClacQuery(dirctCode+num, true);
                     var sendData =this.GLOBAL_CONFIG.DirectStart+dirctCode+num+crc;
@@ -812,8 +845,9 @@ export default {
                 //计算 查找 发送请求给ble告知 修改了
                 var dirctCode = this.getDirective(this.typeName,type);
                 // (Array(2).join('0') + parseInt(1,10).toString(16)).slice(-2)
-            //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
-              let num = this.jinzhiChangeFuc(value);
+                //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
+                let num =this.jinzhiChangeFuc(value);
+                
                var crc =this.crcModelBusClacQuery(dirctCode+num, true);
                var sendData =this.GLOBAL_CONFIG.DirectStart+dirctCode+num+crc;
                this.callSendDataToBleUtil('weld_mma',sendData,crc);

@@ -683,6 +683,14 @@ export default {
             //执行焊接
             var data = "";
             if(this.isModbusModal){
+                var list  ={};
+                if(this.pageBackTo=='/memoryManage'){//来自momery页
+                    list  =this.$store.state.memoryInfo;
+                }else{
+                    list  =this.$store.state.rstInfo;
+                }
+                let bitInfoList = list.initBean.bitInfoList;
+                let num =this.jinzhiChange2jinzhiFuc(`0000011${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
                 data =  this.getDirective(this.typeName, 'Getready')+ '0600';//011000000000 tigsyn
             }else{
                 data =  this.getDirective(this.typeName, 'Getready')+ '0000';
@@ -715,14 +723,36 @@ export default {
                 //计算 查找 发送请求给ble告知 修改了
                 var dirctCode = this.getDirective(this.typeName,type);
                 // (Array(2).join('0') + parseInt(1,10).toString(16)).slice(-2)
-            //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
-              //new 新规则
-                var num =this.jinzhiChangeFuc(value);
-                //这里mysyn的modbus协议进行处理
-                if(type == 'MODE' && this.isModbusModal){
-                    if(value==1){
-                        num='0001'//主动颠倒了
+                //    var num = (Array(4).join('0') + parseInt(value,10).toString(16)).slice(-4);
+                //new 新规则
+                let num ='';
+                if(this.isModbusModal){
+                var list  ={};
+                if(this.pageBackTo=='/memoryManage'){//来自momery页
+                    list  =this.$store.state.memoryInfo;
+                }else{
+                    list  =this.$store.state.rstInfo;
+                }
+                let bitInfoList = list.initBean.bitInfoList;
+                    // 0~1	焊接模式
+                    // 0:短焊    1:长焊
+                    // 2:点焊    3:重复
+                    // 2	0:无高频   1:有高频
+                    // 3	0:非脉冲   1:脉冲
+                    // 4	0:气冷       1:水冷
+                    // 5~7	0:交流       1:直流
+                    // 8	0:短焊    1:长焊
+                    // 9~11	焊接电源工作模式
+                    switch (type) {
+                        case 'MODE':
+                        num =this.jinzhiChange2jinzhiFuc(`00000000${value}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+                        break;
+                        default:
+                            reurn;
+                        break;
                     }
+                }else{
+                    num =this.jinzhiChangeFuc(value);
                 }
                var crc =this.crcModelBusClacQuery(dirctCode+num, true);
                var sendData =this.GLOBAL_CONFIG.DirectStart+dirctCode+num+crc;

@@ -545,7 +545,15 @@ export default {
         //执行焊接
         var data = "";
         if(this.isModbusModal){
-          data = this.getDirective(this.typeName, 'Getready')+ '0200';//001000000000 tigman
+          var list  ={};
+          if(this.pageBackTo=='/memoryManage'){//来自momery页
+              list  =this.$store.state.memoryInfo;
+          }else{
+              list  =this.$store.state.rstInfo;
+          }
+          let bitInfoList = list.initBean.bitInfoList;
+          let num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+          data = this.getDirective(this.typeName, 'Getready')+ num;//001000000000 tigman
         }else{
           data = this.getDirective(this.typeName, 'Getready')+ '0000';
         }
@@ -563,7 +571,49 @@ export default {
         console.log(type+"||"+value+"||"+index);
         //计算 查找 发送请求给ble告知 修改了 特殊合成的key
         let dirctCode = TIGMAN_DIRECTIVE_MAP.get(type);
-        let num =this.jinzhiChangeFuc(value);
+        let num ='';
+        if(this.isModbusModal){
+          var list  ={};
+          if(this.pageBackTo=='/memoryManage'){//来自momery页
+              list  =this.$store.state.memoryInfo;
+          }else{
+              list  =this.$store.state.rstInfo;
+          }
+          let bitInfoList = list.initBean.bitInfoList;
+          // 0~1	焊接模式
+          // 0:短焊    1:长焊
+          // 2:点焊    3:重复
+          // 2	0:无高频   1:有高频
+          // 3	0:非脉冲   1:脉冲
+          // 4	0:气冷       1:水冷
+          // 5~7	0:交流       1:直流
+          // 8	0:短焊    1:长焊
+          // 9~11	焊接电源工作模式
+          switch (type) {
+            case 'MODE':
+              num =this.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}0${value}`);
+              break;
+            case 'POLATRITY':
+              //0:交流       1:直流
+              num =this.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}0${value}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+              break;
+            case 'Pulse':
+              //0:非脉冲   1:脉冲
+              num =this.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.tigsynWeldMode}0${value}${bitInfoList.tigmanGas}0${value}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+              break;
+            case 'HF':
+              //0:无高频   1:有高频
+              num =this.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}0${value}0${value}${bitInfoList.tigmanWeldMode}`);
+              break;
+            default:
+              break;
+          }
+          
+          num= num.substring(2,4)+num.substring(0,2);//兼容旧的规则口径
+        }else{
+          num =this.jinzhiChangeFuc(value);
+        }
+        console.log(num)
         let crc = this.crcModelBusClacQuery(dirctCode + num, true);
         let sendData = "DA" + dirctCode + num + crc;
         console.log(dirctCode,sendData)
@@ -1529,7 +1579,7 @@ export default {
       //滑动组件赋值
       
       var tempInfo = this.keysRangeMap.get(this.nowChooseLineKey);
-       console.log(this.nowChooseLineKey)
+       console.log(this.nowChooseLineKey,tempInfo)
       this.max2 = tempInfo.max;
       this.min2 = tempInfo.min;
       this.unit2 = tempInfo.unit;
@@ -2073,7 +2123,7 @@ export default {
        if(this.envType=='env_ios' && this.nowChooseLineKey){
          this.globalSendMsgToIos("handSaveWrite","tig_man_nowChooseLineKey",this.nowChooseLineKey);
        }else{
-         window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey);
+         window.android?window.android.saveKeyStorage('tig_man_nowChooseLineKey',this.nowChooseLineKey):'';
        }
       }
   }

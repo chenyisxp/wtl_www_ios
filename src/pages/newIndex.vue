@@ -1014,6 +1014,9 @@ export default {
       },
       modbusSendDataTimes(){
         return this.$store.state.modbusSendDataTimes;
+      },
+      isModbusModal(){
+            return this.$store.state.isModbusModal;
       }
   },watch: {
     isConnectStatus (newVal, oldVal) {
