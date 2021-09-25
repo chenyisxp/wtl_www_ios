@@ -777,10 +777,10 @@ export default {
                     let bitInfoList8 = list.initBean.bitInfoList.l8;
                     let num='';
                     if(self.typeName=='MIGMAN'){
-                        num =self.jinzhiChange2jinzhiFuc(`000100${bitInfoList0[1]}0}`);
+                        num =self.jinzhiChange2jinzhiFuc(`000001${bitInfoList0[1]}0}`);
                         data =  self.getDirective(self.typeName, 'Getready')+ num;//100 migman
                     }else{
-                        num =self.jinzhiChange2jinzhiFuc(`000110${bitInfoList0[1]}0}`);
+                        num =self.jinzhiChange2jinzhiFuc(`000011${bitInfoList0[1]}0}`);
                         data =  self.getDirective(self.typeName, 'Getready')+ num;//110 migsyn
                     }
                 }else{

@@ -749,7 +749,7 @@ export default {
                         list  =self.$store.state.rstInfo;
                     }
                     let bitInfoList = list.initBean.bitInfoList;
-                    let num =self.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.ichemm}${bitInfoList.iswelding}110${bitInfoList.unname}${bitInfoList.ifvrd}${bitInfoList.acdc}`);
+                    let num =self.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.ichemm}${bitInfoList.iswelding}011${bitInfoList.unname}${bitInfoList.ifvrd}${bitInfoList.acdc}`);
                     
                     data =  self.getDirective(self.typeName, 'Getready')+ num;// mma
                 }else{
