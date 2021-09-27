@@ -92,7 +92,12 @@ export default {
         this.$store.state.momeryClickNum = mid;//modbus协议需要
         var dirctCode = this.getDirective('CALL_MEMORY','CALL_MEMORY');
         // var num = (Array(4).join('0') + parseInt(mid,10).toString(16)).slice(-4);
-         let  num =this.jinzhiChangeFuc(mid)
+        let  num='';
+        if(this.isModbusModal){
+          num =this.jinzhiChange10jinzhiFuc(mid);
+        }else{
+          num =this.jinzhiChangeFuc(mid);
+        }
         var crc =this.crcModelBusClacQuery(dirctCode+num, true);
         var sendData ="DA"+dirctCode+num+crc;
         //测试开关

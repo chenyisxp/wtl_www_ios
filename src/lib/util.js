@@ -1626,6 +1626,10 @@ Array.prototype.in_array = function (element) {
                 tempNum= tempNum.substring(2,4)+tempNum.substring(0,2);
                 return tempNum;
             } 
+            Vue.prototype.jinzhiChange10jinzhiFuc = function(num) {
+                 var tempNum = ((Array(4).join(0) + parseInt(num,10).toString(16)).slice(-4));
+                 return tempNum;
+             } 
             //公共 ：10机制数转成 高低位按规则变动的 16进制数
             Vue.prototype.jinzhiChange2jinzhiFuc = function(num) {
                 //规则1
@@ -2356,22 +2360,22 @@ Array.prototype.in_array = function (element) {
                             let newNum ='';
                             switch (parseInt(diKey)) {
                                 case 0:
-                                    newNum ='0A00'
+                                    newNum ='000A'
                                     break;
                                 case 1:
-                                    newNum ='0B00'
+                                    newNum ='000B'
                                     break;
                                 case 2:
-                                    newNum ='0C00'
+                                    newNum ='000C'
                                     break;
                                 case 3:
-                                    newNum ='0D00'
+                                    newNum ='000D'
                                     break;
                                 case 4:
-                                    newNum ='0E00'
+                                    newNum ='000E'
                                     break;
                                 case 5:
-                                    newNum ='0F00'
+                                    newNum ='000F'
                                     break;
                                 default:
                                     break;
