@@ -1295,7 +1295,7 @@ export default {
       var weldCurY = 70-(this.keysRangeMap.get('weld_cur').nowValue-this.keysRangeMap.get("weld_cur").min) * 70/this.keysRangeMap.get("weld_cur").block+20;
       var pulseDutyX= 40-(this.keysRangeMap.get('pulse_duty').nowValue-this.keysRangeMap.get("pulse_duty").min) * 40/this.keysRangeMap.get("pulse_duty").block+130;//130-170 留10间距
       var baseCur=  70-(this.keysRangeMap.get('base_cur').nowValue-this.keysRangeMap.get("base_cur").min) * 70/this.keysRangeMap.get("base_cur").block+20;
-
+      // pulse_fre=>slow_down方向
        // !!联动beign
       var desvalue=(this.keysRangeMap.get('pulse_fre').nowValue-this.keysRangeMap.get("pulse_fre").min) * 60/this.keysRangeMap.get("pulse_fre").block;
       var pulseFre=180-desvalue*5;//180-20=160
@@ -1438,8 +1438,8 @@ export default {
         element.y -= 20;
       });
        self.paddingLeftNum =0 + "px";
-      //key数值
-      self.keyArr = ["pre_gas","start_cur_end", "slop_up", "weld_cur", 'pulse_duty','base_cur','pulse_fre',"crater_cur","slop_down", "post_gas"];
+      //key数值 注意实际图上的移动顺序
+      self.keyArr = ["pre_gas","start_cur_end", "slop_up", "weld_cur", 'pulse_duty','base_cur','pulse_fre',"slop_down","crater_cur", "post_gas"];
     },
     //AC模式
     build_AC_MapData(){

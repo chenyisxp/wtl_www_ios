@@ -747,7 +747,7 @@ export default {
                         list  =this.$store.state.rstInfo;
                     }
                     let bitInfoList = list.initBean.bitInfoList;
-                    let num =this.jinzhiChange2jinzhiFuc(`${bitInfoList.cut09}011${bitInfoList.cut07}${bitInfoList.cut06}${bitInfoList.cut05}${bitInfoList.cut04}${bitInfoList.cut03}${bitInfoList.cut02}${bitInfoList.cut01}`);
+                    // let num =this.jinzhiChange2jinzhiFuc(`${bitInfoList.cut09}011${bitInfoList.cut07}${bitInfoList.cut06}${bitInfoList.cut05}${bitInfoList.cut04}${bitInfoList.cut03}${bitInfoList.cut02}${bitInfoList.cut01}`);
                     data = this.getDirective(this.typeName, 'Getready')+ '0300';//1100000000 CUT 
                 }else{
                     data = this.getDirective(this.typeName, 'Getready')+ '0000';
