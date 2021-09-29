@@ -117,7 +117,7 @@ export default {
           data = data.replace(/\s+/g,"");
           var pupnum ="";
           if(this.isModbusModal){
-            pupnum =parseInt(data.substring(10,14));//通道号
+            pupnum =parseInt(data.substring(12,14));//通道号
           }else{
             pupnum =data.substring(4,6);//通道号
             

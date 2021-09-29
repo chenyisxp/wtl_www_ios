@@ -103,7 +103,12 @@ export default {
         this.nowChooseId =mid;
         var dirctCode = this.getDirective('CALL_MEMORY','CALL_MEMORY');
         // var num = (Array(4).join('0') + parseInt(mid,10).toString(16)).slice(-4);
-        let num = this.jinzhiChangeFuc(mid);
+        let num='';
+        if(this.isModbusModal){
+          num =this.jinzhiChange10jinzhiFuc(mid);
+        }else{
+          num = this.jinzhiChangeFuc(mid);
+        }
         var crc =this.crcModelBusClacQuery(dirctCode+num, true);
         var sendData ="DA"+dirctCode+num+crc;
         console.log('sendData'+sendData);
@@ -119,16 +124,23 @@ export default {
     },
     //for android 给安卓用的方法 begin
     broastFromAndroid(data,pageFrom,index,openTestFlag){
-      
+          console.log(data)
           this.isLoading=false;
           clearTimeout(this.LoadingTimer)
           //去除空格 截取出通道号
           data = data.replace(/\s+/g,"");
-          var pupnum =data.substring(4,6);//通道号
+          var pupnum ='';
+          if(this.isModbusModal){
+            // DAD60A0368000411010..........
+            pupnum =parseInt(data.substring(12,14),16);
+          }else{
+            pupnum =data.substring(4,6);//通道号
             //左补零
-          pupnum=parseInt(pupnum,16).toString(2)
-          pupnum =(Array(8).join(0) + pupnum).slice(-8);;
-          pupnum =parseInt(pupnum.substring(1,7),2);
+            pupnum=parseInt(pupnum,16).toString(2)
+            pupnum =(Array(8).join(0) + pupnum).slice(-8);;
+            pupnum =parseInt(pupnum.substring(1,7),2);
+          }
+          
           // var newData=data.substring(0,4)+data.substring(6,data.length);
           let newData =data;
          
@@ -166,7 +178,7 @@ export default {
               var invalue =data.substring(data.length-4,data.length);
               //新规则: 指令ff+crc+检验crc
           
-              if(!openTestFlag){
+              if(!openTestFlag && !this.isModbusModal){
                   if(this.envType=='env_ios'){
                     this.callSendDataToBleUtil('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue)
                   }else{
@@ -186,6 +198,7 @@ export default {
           } 
     },
     rstModelType(data){
+      console.log(data.substring(2,4).toLocaleUpperCase())
       switch (data.substring(2,4).toLocaleUpperCase()) {
         case 'D1':
           return this.GLOBAL_CONFIG.callWeldTypeData.migsyn;
@@ -201,6 +214,9 @@ export default {
           break;
         case 'D5':
           return this.GLOBAL_CONFIG.callWeldTypeData.mma;
+          break;
+        case 'D6':
+          return this.GLOBAL_CONFIG.callWeldTypeData.cut;
           break;
         default:
         return 0;
@@ -269,7 +285,7 @@ export default {
     //1、请求九个通道数据 默认每个通道都有值
     window['broastMemoryFromAndroid'] = (data,pageFrom) => {
         //  alert(data)
-        self.wtlLog('saveManage','broastHistoryFromAndroid='+data);
+        self.wtlLog('saveManage','broastMemoryFromAndroid='+data);
         self.broastFromAndroid(data,pageFrom,self.nowChooseId,self.GLOBAL_CONFIG.TESTFLAG);
     }
     // this.buildData('newIndex',this.GLOBAL_CONFIG.callWeldTypeData.migsyn.crcCode,'dae1 00 00 00 00 02 00 003C 003D 00b4 00c8 02 09 5952'.replace(/\s+/g,"").replace(/(.{2})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, ""));
@@ -278,7 +294,7 @@ export default {
       // newString ="test_m_1||||test_m_2||||test_m_3||||test_m_41||||test_m_5||||test_m_6||||test_m_7||||test_m_8||||test_m_9";
       newString="";
     }else{
-      if(envType=='env_ios'){
+      if(this.envType=='env_ios'){
         this.callMemoryRemarks.forEach((element,i) => {
           if(i<9){
              this.mList[i].remarksTtile=element.remarkInfo || '';
@@ -304,6 +320,9 @@ export default {
     },
     callMemoryRemarks(){
       return this.$store.state.callMemoryRemarks
+    },
+    isModbusModal(){
+      return this.$store.state.isModbusModal;
     }
   },
   destroyed(){

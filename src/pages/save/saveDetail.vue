@@ -186,6 +186,9 @@ export default {
             case '4':
                 return this.GLOBAL_CONFIG.callEditDirect.mma.memory;
                 break;
+            case '5':
+                return this.GLOBAL_CONFIG.callEditDirect.cut.memory;
+                break;
             default:
                 break;
         }
@@ -199,12 +202,17 @@ export default {
         // Array(4).join("0") + parseInt(this.pupnum, 10).toString(16)
         // ).slice(-4);
         //新规则
-         var num =this.jinzhiChangeFuc(this.pupnum);
+        var num='';
+        if(this.isModbusModal){
+            num =this.jinzhiChange10jinzhiFuc(this.pupnum);
+        }else{
+            num =this.jinzhiChangeFuc(this.pupnum); 
+        }
         var crc = this.crcModelBusClacQuery(dirctCode + num, true);
         var sendData = "DA" + dirctCode + num + crc; 
-        this.callSendDataToBleUtil('save_Detail',sendData,crc);
-         //2、前往 参数可以修改的页面
-          this.goWeldPage(this.nowModalTypeId+'');
+        this.callSendDataToBleUtil('save_Detail',sendData,crc);//覆盖第几通道数据
+        //2、前往 参数可以修改的页面
+        this.goWeldPage(this.nowModalTypeId+'');
         
     },
     //应该是去之前的焊接页
@@ -228,6 +236,9 @@ export default {
                 break;
             case self.GLOBAL_CONFIG.callWeldTypeData.mma.newIndex://mma
                 self.$router.push({ path: '/weld_mma', query:{type:'MMA',pageBackTo:'/saveManage'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.cut.newIndex://mma
+                self.$router.push({ path: '/weld_cut', query:{type:'CUT',pageBackTo:'/saveManage'} });
                 break;
             default:
                 break;
@@ -535,6 +546,9 @@ export default {
   computed: {
     envType(){
       return this.$store.state.envType;
+    },
+    isModbusModal(){
+      return this.$store.state.isModbusModal;
     }
   }
 };

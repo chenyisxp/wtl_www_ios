@@ -12,15 +12,16 @@
     </div> -->
     <div class="main">
         <div class="welding">{{typeShowName}}</div>
+       
         <div class="m-main">
-            <div class="fl left">{{weldingCur}}{{unit1}}</div>
-            <div class="fl mid"></div>
-            <div class="fl right">{{weldingVoltage}}{{unit2}}</div>
+            <div class="fl left" :class="typeShowName=='CUT'?'oneClass':''">{{weldingCur}}{{unit1}}</div>
+            <div class="fl mid" v-if="typeShowName!='CUT'"></div>
+            <div class="fl right" v-if="typeShowName!='CUT'">{{weldingVoltage}}{{unit2}}</div>
         </div>
-         <div class="m-mainbtf">
-            <div class="fl left">current</div>
-            <div class="fl mid"></div>
-            <div class="fl right">voltage</div>
+         <div class="m-mainbtf" >
+            <div class="fl left" :class="typeShowName=='CUT'?'oneClass':''">current</div>
+            <div class="fl mid" v-if="typeShowName!='CUT'"></div>
+            <div class="fl right" v-if="typeShowName!='CUT'">voltage</div>
         </div>
         <div class="midLine"></div>
         <!-- 滑动块1 -->
@@ -1058,6 +1059,9 @@ export default {
      }
   }
   }
+}
+.oneClass{
+    width: 100% !important;
 }
 .env_ios_gClass{
     .main{

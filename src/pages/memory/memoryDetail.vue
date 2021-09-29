@@ -171,7 +171,13 @@ export default {
         // var num = (
         // Array(4).join("0") + parseInt(this.pupnum, 10).toString(16)
         // ).slice(-4);
-         var num =this.jinzhiChangeFuc(this.pupnum);
+        var num='';
+        if(this.isModbusModal){
+            num =this.jinzhiChange10jinzhiFuc(this.pupnum);
+        }else{
+            num =this.jinzhiChangeFuc(this.pupnum);
+        }
+         
          
         var crc = this.crcModelBusClacQuery(dirctCode + num, true);
         var sendData = "DA" + dirctCode + num + crc;
@@ -571,6 +577,9 @@ export default {
     envType(){
         return this.$store.state.envType;
     },
+    isModbusModal(){
+      return this.$store.state.isModbusModal;
+    }
   },
   destroyed(){
        window.removeEventListener('popstate', this.goBack, false);

@@ -1978,7 +1978,10 @@ export default {
               if(this.envType=='env_ios'){
                 result=this.tigManChooseLineKey;
               }else{
-                result =window.android?window.android.queryKeyStorage('tig_man_nowChooseLineKey'):'';
+                // pulse_duty
+                // result='pulse_duty'
+                // result =window.android?window.android.queryKeyStorage('tig_man_nowChooseLineKey'):'';
+                result='empty';
               }
               
               if(result && result!='empty'){

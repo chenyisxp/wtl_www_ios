@@ -159,7 +159,12 @@ export default {
           // var num = (
           //   Array(4).join("0") + parseInt(self.type, 10).toString(16)
           // ).slice(-4);
-           var num =self.jinzhiChangeFuc(self.type);
+          var num='';
+            if(self.isModbusModal){
+                num =self.jinzhiChange10jinzhiFuc(self.type);
+            }else{
+                num =self.jinzhiChangeFuc(self.type);
+            }
         var crc = self.crcModelBusClacQuery(dirctCode + num, true);
         var sendData = "DA" + dirctCode + num + crc;
          

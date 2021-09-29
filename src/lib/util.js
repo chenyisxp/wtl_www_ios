@@ -983,7 +983,7 @@ Array.prototype.in_array = function (element) {
                     }
                     let byte0 =((Array(16).join(0) + parseInt(strArr[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                     var byte1Bean ={};
-                        byte1Bean.isReadyFlag=`${byte0[8]}${byte0[7]}${byte0[6]}` == '011'?1:0,//7-9;
+                        byte1Bean.isReadyFlag=`${byte0[6]}${byte0[7]}${byte0[8]}` == '011'?1:0,//7-9;
                         byte1Bean.weldStatus=byte0[15];//0:未焊接  1:在焊接
                         if(byte1Bean.weldStatus==1){
                             if(pageFrom=='newIndex'){
@@ -1086,17 +1086,19 @@ Array.prototype.in_array = function (element) {
             function   weldingInfoQuery(){
                 let sendData    ="";
                 let crc    ="";
+                
+                clearInterval(store.state.modbusCircleTimer)//清除模式数据循环
                 store.state.weldingInterval=setInterval(() => {
                     switch (nowModalIdx) {
                         case 'B1':
                             //MIG地址101 数量2                                                              
                             sendData='0A0300650002';
-                            crc='D56F';
+                            crc='6FD5';
                             break;
                         case 'B2':
                             //MIG地址101 数量2                                                              
                             sendData='0A0300650002';
-                            crc='D56F';
+                            crc='6FD5';
                             break;
                         case 'B3':
                             //TIG地址348 数量2                                                              
@@ -1111,12 +1113,12 @@ Array.prototype.in_array = function (element) {
                         case 'B5':
                             //MMA地址501 数量2                                                              
                             sendData='0A0301F50002';
-                            crc='D4BE';
+                            crc='BED4';
                             break;
                         case 'B6':
                             //CUT地址711 数量2                                                              
                             sendData='0A0302C70002';
-                            crc='7535';
+                            crc='3575';//3575 正向
                             break;
                         default:
                             break;
@@ -1964,6 +1966,7 @@ Array.prototype.in_array = function (element) {
             }
             //负责接收来自app的 新modbus版本ble信息 注意modbus的返回crc是反的
             window['modbusBroastFromApp'] = (bleReponseOrignData)=>{
+                bleReponseOrignData = (bleReponseOrignData +"").replace(/\s*/g,"");
                 store.state.postDataList.push({type:'receive',data:bleReponseOrignData})
                 modbusGlobalReceiveList.push(bleReponseOrignData);//存储起来避免太快丢失
                 console.log('modbusSendTimes:'+store.state.modbusSendTimes)
@@ -2176,16 +2179,18 @@ Array.prototype.in_array = function (element) {
                             // 2:按TIG数据结构
                             // 3:按MMA数据结构
                             // 4:按CUT数据结构
-                            //记忆模式是DAD开头 window['broastMemoryFromAndroid'] 
+                            //记忆模式是DAD开头 window['broastMemoryFromAndroid']   DAC是save
                             //20190611 新通道规则 byte 876543210 其中 0:是单位 7-1:通道 8位 2t4t
                             //0A 03 68+通道数+数据结构01+数据长度11
                             //0A 03 68 0001 1101 0000 0000 0000 0038 ..........
                             //1、mig 2、tig 3、mma 4、cut
                             
-                            let poupNum = parseInt(receiveBleData.substring(8,10),16);//通道号
+                            let poupNum = parseInt(receiveBleData.substring(8,10),16);//通道号  0001的01
+                           
                             let beforeZui =poupNum>9?'C':'D';
                             
-                            let mod = receiveBleData.substring(12,14);//01
+                            let mod = receiveBleData.substring(12,14);//1101的01
+                            console.log('11111111',receiveBleData,mod,beforeZui)
                             let ddd ='';
                             let datas='';
                             let dataList = [];
@@ -2402,22 +2407,22 @@ Array.prototype.in_array = function (element) {
                             let newNum ='';
                             switch (parseInt(diKey)) {
                                 case 0:
-                                    newNum ='0A00'
+                                    newNum ='000A'
                                     break;
                                 case 1:
-                                    newNum ='0B00'
+                                    newNum ='000B'
                                     break;
                                 case 2:
-                                    newNum ='0C00'
+                                    newNum ='000C'
                                     break;
                                 case 3:
-                                    newNum ='0D00'
+                                    newNum ='000D'
                                     break;
                                 case 4:
-                                    newNum ='0E00'
+                                    newNum ='000E'
                                     break;
                                 case 5:
-                                    newNum ='0F00'
+                                    newNum ='000F'
                                     break;
                                 default:
                                     break;
@@ -2439,6 +2444,11 @@ Array.prototype.in_array = function (element) {
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num;
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;//DA400100D4B1
+                        }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='override'){
+                            //save detail里的override操作
+                            tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num;
+                            crc = crcModelBusClacQuery(tempData);
+                            sData = tempData+crc;
                         }else{
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusAdr+num[2]+num[3]+num[0]+num[1];
                             crc = crcModelBusClacQuery(tempData);
@@ -2816,7 +2826,7 @@ Array.prototype.in_array = function (element) {
                 rstInfo.weldTypeNum=BASE_CONFIG.callWeldTypeData.tigsyn.newIndex;//这个和首页里的配对
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 var byte1Bean ={};
-                    byte1Bean.isReadyFlag=`${t0List[6]}${t0List[5]}${t0List[4]}` == '011'?1:0,//9-11;
+                    byte1Bean.isReadyFlag=`${t0List[4]}${t0List[5]}${t0List[6]}` == '011'?1:0,//9-11;
                     byte1Bean.weldStatus=t0List[3];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
@@ -2912,7 +2922,7 @@ Array.prototype.in_array = function (element) {
                 
                 let t0List = ((Array(16).join(0) + parseInt(dataList[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                 var byte1Bean ={};
-                    byte1Bean.isReadyFlag=`${t0List[10]}${t0List[9]}${t0List[8]}` == '011'?1:0,//5-7;
+                    byte1Bean.isReadyFlag=`${t0List[8]}${t0List[9]}${t0List[10]}` == '011'?1:0,//5-7;
                     byte1Bean.weldStatus=t0List[7];//0:未焊接  1:在焊接
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){

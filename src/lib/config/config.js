@@ -9,7 +9,7 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:false,//浏览器调试的时候
+    liulanqiConnect:true,//浏览器调试的时候
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
     LOGFLAG:true,
@@ -130,6 +130,11 @@ let BASE_CONFIG = {
             weld_cur_val:'E5',
             getready:'ED',
             memory:'EF'
+        },
+        // 新模式为了兼容旧的
+        cut:{
+            getready:'FD',
+            memory:'FG'//FF会冲突
         }
 
     },
@@ -284,6 +289,12 @@ let BASE_CONFIG = {
             name:'getready',
             modbusAdr:'0000'//0
         },
+        'AF':{
+            type:'override',
+            parentName:'migsyn',
+            name:'override',
+            modbusAdr:'0322'//802 
+        },
         'B0':{
             parentName:'migman',
             name:'mode',
@@ -301,9 +312,15 @@ let BASE_CONFIG = {
         },
         'BE':{
             type:'7',//类型1代表模式数据
-            parentName:'migsyn',
+            parentName:'migman',
             name:'getready',
             modbusAdr:'0000'//0
+        },
+        'BF':{
+            type:'override',
+            parentName:'migman',
+            name:'override',
+            modbusAdr:'0322'//802
         },
         'C0':{
             parentName:'tigsyn',
@@ -345,6 +362,12 @@ let BASE_CONFIG = {
             parentName:'tigsyn',
             name:'getready',
             modbusAdr:'00C8'//200
+        },
+        'CF':{
+            type:'override',
+            parentName:'tigsyn',
+            name:'override',
+            modbusAdr:'0322'//802
         },
         // tigman:{
         //     tacdchfpulse:'D0',
@@ -423,16 +446,22 @@ let BASE_CONFIG = {
             name:'AC_fre_val',
             modbusAdr:'00D4'//212 ac_fre 交流频率
         },
+        'DC':{
+            parentName:'tigman',
+            name:'AC_duty_val',
+            modbusAdr:'00D5'//213 ac_balance 交流占空比
+        },
         'DE':{
             type:'7',//类型1代表模式数据
             parentName:'tigman',
             name:'getready',
             modbusAdr:'00C8'//200 
         },
-        'DC':{
+        'DF':{
+            type:'override',
             parentName:'tigman',
-            name:'AC_duty_val',
-            modbusAdr:'00D5'//213 ac_balance 交流占空比
+            name:'override',
+            modbusAdr:'0322'//802
         },
         // mma:{
         //     acdc:'E0',
@@ -480,6 +509,12 @@ let BASE_CONFIG = {
             name:'getready',
             modbusAdr:'0190'//400
         },
+        'EF':{
+            type:'override',
+            parentName:'mma',
+            name:'override',
+            modbusAdr:'0322'//802
+        },
         'F0':{
             parentName:'cut',
             name:'mode',
@@ -500,12 +535,13 @@ let BASE_CONFIG = {
             name:'weld_cur_val',
             modbusAdr:'0259'// 601
         },
-        'FE':{
+        'FG':{
             type:'7',//类型1代表模式数据
             parentName:'cut',
             name:'getready',
-            modbusAdr:'0258'// 600
+            modbusAdr:'0322'// 600
         },
+        
     },
    
    //根据版本号指定不同 最大最小区间值

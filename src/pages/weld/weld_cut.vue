@@ -668,7 +668,8 @@ export default {
         var directCode = this.getDirective(this.typeName,type);
         var num ='';
             //新规则占两个字节的字段需要特殊处理
-            num =this.jinzhiChangeFuc(value*10);
+            // 还有就是CUT的电流 不需要*10
+            num =this.jinzhiChangeFuc(value);
             //num =(Array(4).join('0') + parseInt(value*10,10).toString(16)).slice(-4);
             //num= num.substring(2,4)+num.substring(0,2);
             
