@@ -1000,6 +1000,7 @@ export default {
                 sliderBtn.style.left = (this.nowPosionX-this.min)/this.block*100+'%' 
                 //01、初始化 危险区域位置
                 dangerRange.style.width=((this.diffMax-this.diffMin)/this.block) *mySliderWidth+'px';
+                console.log(this.diffMax,this.diffMin,this.block,mySliderWidth)
                 dangerRange.style.left =((this.diffMin-this.min)/this.block)*100+'%';
 
                 let myWidth = 0;
@@ -1269,20 +1270,17 @@ export default {
         this.max = list.CUT_MAX_CUR;//要根据单位区分
         this.nowPosionX=list.CUT_CURRENT_VAL;
         this.oldPosionX =this.nowPosionX;
-             //送丝速度初始化  推荐值正负10即可
-            this.diffMin =Math.round((parseInt(list.CUT_RECOMMEND_CURRENT)-20));
-            this.diffMax =Math.round((parseInt(list.CUT_RECOMMEND_CURRENT)+20));
-            this.block =this.max-this.min;
-        //电压初始化  推荐值正负10即可
-        // this.min2=10;
-        // this.max2 =list.MAX_WELD_V_DISPLAY;
-        // this.nowPosionX2 =list.V_WELDING/10;
-        // this.oldNowPosionX2 =this.nowPosionX2;
-        //      //电压初始化  推荐值正负20即可
-        //     this.diffMin2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)-20))/10;
-        //     this.diffMax2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)+20))/10;
-        //     this.block2 =this.max2-this.min2; 
-    //    this.sepecialDiameter();    
+        //推荐范围为推荐值~推荐值+5
+        this.diffMin =Math.round((parseInt(list.CUT_RECOMMEND_CURRENT)));
+        this.diffMax =Math.round((parseInt(list.CUT_RECOMMEND_CURRENT)+5));
+        if(this.diffMax>this.max){
+            this.diffMax=this.max;
+        }
+        if(this.diffMin< this.min){
+            this.diffMin= this.min;
+        }
+        this.block =this.max-this.min;
+        // alert(this.block)
     }
   
     //初始化 电流控制器

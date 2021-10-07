@@ -831,9 +831,9 @@ export default {
                     let bitInfoList = list.initBean.bitInfoList.l8;
                     let tempNum ='';
                     if(this.typeName=='MIGSYN'){
-                        tempNum =this.jinzhiChange2jinzhiFuc(`${bitInfoList[13]}${value}${bitInfoList[15]}`);
+                        tempNum =this.jinzhiChange2jinzhiFuc(`${bitInfoList[10]}${value}${bitInfoList[15]}`);
                     }else{
-                        tempNum =this.jinzhiChange2jinzhiFuc(`${bitInfoList[13]}${bitInfoList[14]}${value}`);
+                        tempNum =this.jinzhiChange2jinzhiFuc(`${bitInfoList[10]}${bitInfoList[14]}${value}`);
                     }
                     num= tempNum.substring(2,4)+tempNum.substring(0,2);//兼容旧的规则口径
 
@@ -1394,6 +1394,12 @@ export default {
              //送丝速度初始化  推荐值正负10即可
             this.diffMin =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)-9))/10;
             this.diffMax =Math.round((parseInt(list.RECOMMEND_SPEED_DISPLAY)+9))/10;
+            if(this.diffMax>this.max){
+                this.diffMax=this.max;
+            }
+            if(this.diffMin< this.min){
+                this.diffMin= this.min;
+            }
             this.block =this.max-this.min;
         //电压初始化  推荐值正负10即可
         this.min2=list.MIN_WELD_V_DISPLAY || 10;//10;
@@ -1403,6 +1409,12 @@ export default {
              //电压初始化  推荐值正负20即可
             this.diffMin2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)-20))/10;
             this.diffMax2 =Math.round((parseInt(list.RECOMMEND_V_WELDING)+20))/10;
+            if(this.diffMax2>this.max2){
+                this.diffMax2=this.max2;
+            }
+            if(this.diffMin2< this.min2){
+                this.diffMin2= this.min2;
+            }
             this.block2 =this.max2-this.min2; 
        this.sepecialDiameter();    
     }
@@ -1695,6 +1707,7 @@ export default {
             rgba(23,61,74,.6)  100%);
   }
   .electricCurrent{
+        overflow:hidden;
       margin: 25px 15px;
           padding: 20px 0;
       border-radius: 5px;

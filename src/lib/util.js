@@ -1598,13 +1598,13 @@ Array.prototype.in_array = function (element) {
                         }
                     }else{
                         let directive =sendData.substring(2,4);
+                        store.state.nowPageFrom=pageFrom;
                         //新逻辑modbus西协议20210711
                         if("FF"!=directive && store.state.isModbusModal){
                             modbusDataSendFuc(pageFrom,sendData,crc);
                             return;
                         }
-                        store.state.nowPageFrom=pageFrom;
-                        if(window.android){
+                        if(window.android && !store.state.isModbusModal){
                             window.android.callSendDataToBle(pageFrom,sendData,crc);
                         }else{
                             console.log('warn:',pageFrom,sendData,crc);
@@ -2715,10 +2715,10 @@ Array.prototype.in_array = function (element) {
                                 break;
                         }
                     });
-                    // console.log('/////',t8List) 13~15
-                    rstInfo.INDUCTANCE =parseInt(`${t8List[2]}${t8List[1]}${t8List[0]}}`,2).toString(10);//机器上发不能改 不知道干嘛的
-                    //bit0-3 8~12
-                    rstInfo.RECOMMEND_INDUCTANCE =parseInt(`${t8List[7]}${t8List[6]}${t8List[5]}${t8List[4]}${t8List[3]}`,2).toString(10);//机器上发不能改 不知道干嘛的
+                    // console.log('//',t8List) 12~15
+                    rstInfo.INDUCTANCE =parseInt(`${t8List[0]}${t8List[1]}${t8List[2]}${t8List[3]}}`,2).toString(10);//机器上发不能改 不知道干嘛的
+                    //bit0-3 8~11
+                    rstInfo.RECOMMEND_INDUCTANCE =parseInt(`${t8List[4]}${t8List[5]}${t8List[6]}${t8List[7]}`,2).toString(10);//机器上发不能改 不知道干嘛的
 
                     rstInfo.RECOMMEND_SPEED_DISPLAY=parseInt(dataList[23],16);;//推荐值
                     rstInfo.SPEED_DISPLAY =parseInt(dataList[29],16);//送丝速度
