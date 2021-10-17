@@ -564,6 +564,7 @@ export default {
     } 
     let that =this;
      window['broastFromAndroid'] = (data,pageFrom) => {
+         alert(data)
           //如果和现在选的模式不一致，不进行跳转
           //  alert(data)
         //   if(that.$store.state.oldBroastData && that.$store.state.oldBroastData===data){
@@ -584,7 +585,7 @@ export default {
             that.$store.state.AdroidNewMsg =data;
             that.$store.state.AdroidOldMsg=data;
           }
-          that.wtlLog('newIndex','broastFromAndroid3='+data); 
+          that.wtlLog('hisweldinfo','broastFromAndroid3='+data); 
           that.broastFromAndroid3(data,pageFrom,that);
           
       }
@@ -634,6 +635,11 @@ export default {
       top: 50%;
       transform: translate(0,-50%)
     }
+  }
+  &.env_ios_gClass{
+      .header .ivu-icon{
+          top:30px
+      }
   }
   .maginname{
       margin-top: 20px;

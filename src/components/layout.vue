@@ -336,7 +336,7 @@ export default {
               this.$store.state.getConnectStatus = status;
               if(status == 'connected'  && this.modbusSendDataTimes<5){
                   //发出系统信息请求
-                  this.callSendModbusSystemData('0A0303E80001','blueToothManage');//模拟响应：0A03020000851D
+                  this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
               }
             }
             if(this.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
@@ -432,6 +432,7 @@ export default {
         if(newVal=='connected'){
           clearTimeout(this.layoutTimer);
           this.displayType=0;
+          
         }else{
           //开启扫描
           if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
@@ -464,6 +465,17 @@ export default {
             this.displayType=0;
           }, 10000);
         }
+      }else if(this.$store.state.nowRouter!='/newIndex' || this.$store.state.nowRouter!='/blueToothManage' ){
+          //几次验证是modbus,有些场合不行
+          let aaa=1;
+          let bbb = setInterval(()=>{
+              if(aaa>4){
+                clearInterval(bbb);
+              }
+              aaa++
+              //发出系统信息请求
+              this.callSendModbusSystemData('0A0303E80001','0105','layout请求系统信息');//模拟响应：0A03020000851D
+          },1500)
       }
       
     },

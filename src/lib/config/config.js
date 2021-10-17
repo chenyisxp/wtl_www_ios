@@ -9,7 +9,7 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:false,//浏览器调试的时候
+    liulanqiConnect:false,//浏览器调试的时候 !!!!!!!!!!!
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
     LOGFLAG:true,
@@ -17,7 +17,7 @@ let BASE_CONFIG = {
     TESTDEEPTH:0,//深度
     autoRouterTime:5000,//自动前往焊接中页面的时间：ms
     scaningDuring:15000,//扫描时间
-    ENV_IOS_FLAG : false,//true:ios、fasle:安卓环境
+    ENV_IOS_FLAG : false,//true:ios、fasle:安卓环境 !!!!!!!!!!!!!!!!!!!!!!!!!!
     DirectStart:'DA',
     callWeldTypeData:{//注意utils中有独立crccode注意一起改
        migsyn:{data:'100000',crcCode:'0570',name:'MIG SYN',modelKey:'MIGSYN',url:'/weld_common?type=MIGSYN',newIndex:0},
@@ -535,11 +535,11 @@ let BASE_CONFIG = {
             name:'weld_cur_val',
             modbusAdr:'0259'// 601
         },
-        'FG':{
+        'FD':{
             type:'7',//类型1代表模式数据
             parentName:'cut',
             name:'getready',
-            modbusAdr:'0322'// 600
+            modbusAdr:'0258'// 600
         },
         
     },

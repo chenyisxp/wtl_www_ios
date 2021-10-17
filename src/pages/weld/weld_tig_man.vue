@@ -552,7 +552,9 @@ export default {
               list  =this.$store.state.rstInfo;
           }
           let bitInfoList = list.initBean.bitInfoList;
+          // 0000001000000000
           let num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+          console.log(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`,bitInfoList)
           data = this.getDirective(this.typeName, 'Getready')+ num;//001000000000 tigman
         }else{
           data = this.getDirective(this.typeName, 'Getready')+ '0000';

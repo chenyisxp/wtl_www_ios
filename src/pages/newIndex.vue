@@ -861,7 +861,7 @@ export default {
             that.nowConnectStatus =that.$store.state.getConnectStatus;
             if(that.nowConnectStatus=='connected' && that.modbusSendDataTimes<5){
                 //发出系统信息请求
-                that.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+                that.callSendModbusSystemData('0A0303e80001','0105','blueToothManage');//模拟响应：0A03020000851D
             }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
