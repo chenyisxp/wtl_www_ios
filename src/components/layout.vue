@@ -297,7 +297,7 @@ export default {
     if (/android/.test(userAgent )) {
         // alert("Android客户端");
         this.$store.state.envType = 'env_android'
-    }else if (/iphone|ipad|ipod|apple|webkit/.test(userAgent )) {
+    }else if (/iphone|ipad|ipod|apple|webkit/.test(userAgent ) && BASE_CONFIG.ENV_IOS_FLAG) {
       // Toast({
       //       message: "Ios客户端",
       //       position: 'middle',
@@ -306,7 +306,7 @@ export default {
       // });
         // alert("Ios客户端");
         this.iosVersonCenter();
-       this.$store.state.envType = 'env_android'//env_ios
+       this.$store.state.envType = 'env_ios'//env_ios
        this.globalSendMsgToIos("handleStartScan","","");
     } else {
         this.$store.state.envType = 'env_pc'

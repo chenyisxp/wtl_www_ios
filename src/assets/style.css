@@ -396,3 +396,7 @@ html{ overflow:-moz-scrollbars-vertical;} */
   height: 65px !important;
 }
 }
+
+.env_ios_gClass .header .ivu-icon{
+  top:30px!important;
+}

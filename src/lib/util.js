@@ -302,9 +302,9 @@ Array.prototype.in_array = function (element) {
                 cutTypeList:[
                     {
                         typeName:'MODE',
-                        chooseKey:'Normal',//默认选中
+                        chooseKey:'Grid',//默认选中
                         comList:[
-                            {id:0,key:'Normal',value:'Normal'},{id:1,key:'Grid',value:'Grid'},
+                            {id:0,key:'Grid',value:'Grid'},{id:1,key:'Normal',value:'Normal'},
                             {id:2,key:'Gouging',value:'Gouging'},{id:3,key:'Marking',value:'Marking'}
                         ],
                         inchComList:[
@@ -732,7 +732,12 @@ Array.prototype.in_array = function (element) {
             //比较字符串是否相等 忽略大小写
             function  compareString(subStr,str){
                 var reg = eval("/"+subStr+"/ig");
-                return reg.test(str);
+                if(reg){
+                    return reg.test(str);
+                }else{
+                    return false;
+                }
+                
              }
              //计算max最大送丝速度
              function maxSpeedBuild(unit,pfc){
@@ -783,6 +788,10 @@ Array.prototype.in_array = function (element) {
                     case 'newIndex':
                         //首页去除 放外面会导致memory也去除
                         if(store.state.nowModelDirectice!='' &&dirctiveType!=store.state.nowModelDirectice){
+                            return;
+                        }
+                        //CUT不知道为啥会解析到0A06
+                        if(data.indexOf('0A06')>-1){
                             return;
                         }
                         // if(newIndexDataVal == data){
@@ -987,6 +996,7 @@ Array.prototype.in_array = function (element) {
                     console.log(byte0)
                         byte1Bean.isReadyFlag=`${byte0[5]}${byte0[6]}${byte0[7]}` == '011'?1:0,//7-9;
                         byte1Bean.weldStatus=byte0[15];//0:未焊接  1:在焊接
+                        // alert(byte1Bean.weldStatus)
                         if(byte1Bean.weldStatus==1){
                             if(pageFrom=='newIndex'){
                                 store.state.weldingStatus=1
@@ -1080,6 +1090,9 @@ Array.prototype.in_array = function (element) {
                     //    alert(JSON.stringify(rstInfo))
                     store.state.memoryInfo = rstInfo;
                 }else{
+                    rstInfo.pageFrom = pageFrom;
+                    rstInfo.dirctiveType = dirctiveType;
+                    rstInfo.data = data;
                     store.state.rstInfo = rstInfo;
                 }
                 console.log(rstInfo)
@@ -1749,16 +1762,20 @@ Array.prototype.in_array = function (element) {
                     console.log(data)
                     //调用通用处理
                     //第一次是否是modbus版本
-                    
                     if(modbusIosReceiveTime==1){
                         ++modbusIosReceiveTime;
-                        let firstHide = bleReponseData.substring(0,2);
-                        if(mTimes == 'DA'){
+                        let firstHide = (bleReponseData+"").substring(0,2);
+                        if(firstHide == 'DA'){
                             window.iosBleDataLayoutFuc(data);
                             return;
                         }else{
                             window.modbusBroastFromApp(data);
                         }
+                    //第二次后是否是
+                    }else if(store.state.isModbusModal){
+                        window.modbusBroastFromApp(data);
+                    }else{
+                        window.iosBleDataLayoutFuc(data);
                     }
                 }
             }
@@ -2442,24 +2459,31 @@ Array.prototype.in_array = function (element) {
                             //history详情 应用
                             // 10~15分别对应history里的MIGSYN,MIGMAN,TIGSYN,TIGMAN,MMA,CUT
                             let newNum ='';
+                            let modbusMainInfo ={};
                             switch (parseInt(diKey)) {
                                 case 0:
                                     newNum ='000A'
+                                    modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100000'];//MIGSYN
                                     break;
                                 case 1:
                                     newNum ='000B'
+                                    modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100100'];
                                     break;
                                 case 2:
                                     newNum ='000C'
+                                    modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100200'];
                                     break;
                                 case 3:
                                     newNum ='000D'
+                                    modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100300'];
                                     break;
                                 case 4:
                                     newNum ='000E'
+                                    modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100400'];
                                     break;
                                 case 5:
                                     newNum ='000F'
+                                    modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100500'];
                                     break;
                                 default:
                                     break;
@@ -2470,14 +2494,17 @@ Array.prototype.in_array = function (element) {
                             sData = tempData+crc;
                             clearInterval(store.state.modbusCircleTimer);
                             //延迟500ms请求模式数据
-                            // setTimeout(() => {
-                            //     //读数据
-                            //     let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusInfo.modbusReadAdr+modbusInfo.modbusNum;
-                            //     let crc2 = crcModelBusClacQuery(td2);
-                            //     let sData2 = td2+crc;
-                            //     modbusGlobalReceiveList=[];//清空
-                            //     onlySendFuc(sData2,pageFrom,crc2);//0A03032A003464EA
-                            // }, 500);
+                            setTimeout(() => {
+                                //读数据
+                                store.state.modbusCircleTimer = setInterval(() => {
+                                    // 0A03UNDEFINED000F3307
+                                    let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusMainInfo.modbusAdr+modbusMainInfo.modbusNum;
+                                    let crc2 = crcModelBusClacQuery(td2);
+                                    let sData2 = td2+crc;
+                                    modbusGlobalReceiveList=[];//清空
+                                    onlySendFuc(sData2,'newIndex',crc2);//0A03032A003464EA
+                                },3000)
+                            }, 500);
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='6'){
                             //设置单位0000：mm   0001:inch
                             tempData = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusWriteCode+modbusInfo.modbusWriteAdr+num;

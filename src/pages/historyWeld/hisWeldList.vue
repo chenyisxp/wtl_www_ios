@@ -266,6 +266,13 @@ export default {
       transform: translate(0,-50%)
     }
   }
+   &.env_ios_gClass{
+       /deep/ .header{
+       .ivu-icon{
+            top:30px!important;
+        }
+      }
+  }
   .maginname{
     //   background: #1a4759;
       color: #fff;

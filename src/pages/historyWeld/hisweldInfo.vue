@@ -637,8 +637,10 @@ export default {
     }
   }
   &.env_ios_gClass{
-      .header .ivu-icon{
-          top:30px
+       /deep/ .header{
+       .ivu-icon{
+            top:30px!important;
+        }
       }
   }
   .maginname{

@@ -1,5 +1,5 @@
 <template>
-  <div class="memoryManage">
+  <div class="memoryManage" :class="envType=='env_ios'?'env_ios_gClass':''">
    <!-- <div class="header">
        <div class="licon" @click="go('/newIndex')">
             <span></span>
@@ -323,6 +323,13 @@ export default {
    width: 100%;
    min-height: 100vh;
    background: #053342;
+   &.env_ios_gClass{
+       /deep/ .header{
+       .ivu-icon{
+            top:30px!important;
+        }
+      }
+  }
   .header {
     position: relative;
     height: 50px;

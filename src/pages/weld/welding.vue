@@ -76,7 +76,8 @@
                 {{min2}}~{{max2}}{{unitslider2}}
             </div>
         </div>
-
+       <!-- <div style="color:#fff"> {{$store.state.rstInfo}}</div>
+       <div style="color:#fff"> {{getNowWeldStatus}}</div> -->
         <!-- 滑动块2 -->
     </div>
 
@@ -806,6 +807,13 @@ export default {
    width: 100%;
    min-height: 100vh;
    background: #053342;
+   &.env_ios_gClass{
+        /deep/ .header{
+        .ivu-icon{
+                top:30px!important;
+            }
+        }
+    }
   .header {
     position: relative;
     height: 50px;

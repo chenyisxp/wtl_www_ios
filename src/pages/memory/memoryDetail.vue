@@ -594,6 +594,13 @@ export default {
     display: flex;
     min-height: 100vh;
     flex-flow: row wrap;
+    &.env_ios_gClass{
+        /deep/ .header{
+        .ivu-icon{
+                top:30px!important;
+            }
+        }
+    }
 .mmp{
     width: 100%;
     align-self: flex-start;
