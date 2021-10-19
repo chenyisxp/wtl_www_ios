@@ -914,7 +914,7 @@ export default {
         //     message: 'newindex'+data+'||',
         //     position: 'middle',
         //     iconClass: 'icon icon-success',
-        //     duration: 11500
+        //     duration: 3500
         //   });
          console.log('newindex_broastFromAndroid',data)
             // 20190623 比较大的改动主调这两个不知道会不会有影响

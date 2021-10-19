@@ -1781,7 +1781,12 @@ Array.prototype.in_array = function (element) {
             }
 
             function iosBleDataLayoutFuc(bleReponseData){
-               
+                // Toast({
+                //     message: 'util'+'::'+bleReponseData,
+                //     position: 'middle',
+                //     iconClass: 'icon icon-success',
+                //     duration: 1500
+                // });
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',')
                 try {
@@ -2030,6 +2035,7 @@ Array.prototype.in_array = function (element) {
                         let beginIdx=0;
                         let endIdx ='none';
                         let bleReponseData="";
+                        let before4 ='';
                        //遍历处理数据
                        for (let index = 0; index < modbusGlobalReceiveList.length; index++) {
                             const tempCenter = modbusGlobalReceiveList[index];
@@ -2040,7 +2046,10 @@ Array.prototype.in_array = function (element) {
                             let reverseCrc = newCrc.substring(2,4)+newCrc.substring(0,2);
                             if(oldCrc == reverseCrc){
                                 endIdx=index;
-                                modbusDataReceiveFuc(bleReponseData);
+                                before4=(bleReponseData+"").substring(0,4);//20211020补充去除
+                                if(before4!='0A06'){
+                                    modbusDataReceiveFuc(bleReponseData);
+                                }
                                 break;
                             }
                        }
@@ -2142,6 +2151,16 @@ Array.prototype.in_array = function (element) {
                         store.state.modbusSendTimes=5;
                         store.state.isModbusModal=true;//是否是modbus协议模式
                     }else if(before4!='0A03'){
+                        // Toast({
+                        //     message: 'util旧'+'::'+receiveBleData,
+                        //     position: 'middle',
+                        //     iconClass: 'icon icon-success',
+                        //     duration: 3500
+                        // });
+                        //不知道为什么会收到0a06de数据
+                        // if(before4=='0A06'){
+                        //     return;
+                        // }
                         //进入旧的通信区
                         window.broastFromAndroid(receiveBleData);
                         return;

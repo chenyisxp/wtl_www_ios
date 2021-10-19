@@ -113,8 +113,9 @@ export default {
                 // if(!openTestFlag){
                 //    window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
                 // }
-                this.callSendDataToBleUtil('hisWeldList','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
-               
+                if(!this.isModbusModal){
+                    this.callSendDataToBleUtil('hisWeldList','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
+                }
                 this.$router.push({ path: '/hisWeldInfo', query: {name:this.chooseTypeName,type:this.chooseType,modelCrc:this.chooseTypeCrc}});
             } 
         },
@@ -231,6 +232,9 @@ export default {
   computed:{
     envType(){
         return this.$store.state.envType;
+    },
+    isModbusModal(){
+      return this.$store.state.isModbusModal;
     }
   },destroyed(){
     this.isLoading=false;

@@ -452,12 +452,12 @@ export default {
         else{
           // alert(22)
              that.$store.state.nowModelDirectice=that.modelType;
-              // Toast({
-              //       message: 'this.mo222delType'+data,
-              //       position: 'middle',
-              //       iconClass: 'icon icon-success',
-              //       duration: 1500
-              //     });
+            //   Toast({
+            //         message: 'this.mo222delType'+data,
+            //         position: 'middle',
+            //         iconClass: 'icon icon-success',
+            //         duration: 1500
+            //       });
             //  var rst =this.buildData('newIndex',this.GLOBAL_CONFIG.callWeldTypeData.migsyn.crcCode,'dae1 00 00 00 00 02 00 003C 003D 00b4 00c8 02 09 5952'.replace(/\s+/g,"").replace(/(.{2})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, ""));
             that.$store.state.nowModelDirectice =that.modelType
             that.wtlLog('newIndex_bfa3','this.modelType'+that.modelType+"comfromFlag"+that.comfromFlag);
@@ -485,7 +485,6 @@ export default {
                 if(that.$store.state.weldingStatus==1){
                   return;
                 }
-                
                 if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode){
                   that.go('/weld_tig_man');//最复杂
                 }else if(that.modelType==that.GLOBAL_CONFIG.callWeldTypeData.tigsyn.crcCode){
@@ -564,7 +563,17 @@ export default {
     } 
     let that =this;
      window['broastFromAndroid'] = (data,pageFrom) => {
-         alert(data)
+        //  Toast({
+        //     message: 'hisweldinfo'+data+'||',
+        //     position: 'middle',
+        //     iconClass: 'icon icon-success',
+        //     duration: 3500
+        //   });
+         let before4 = (data+"").substring(0,4);
+         //不知为何有这种数据 不做处理
+          if(this.isModbusModal && before4=='0A06'){
+              return;
+          }
           //如果和现在选的模式不一致，不进行跳转
           //  alert(data)
         //   if(that.$store.state.oldBroastData && that.$store.state.oldBroastData===data){
