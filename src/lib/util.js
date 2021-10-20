@@ -2428,7 +2428,49 @@ Array.prototype.in_array = function (element) {
                             crc = crcModelBusClacQuery(tempData);
                             sData = tempData+crc;//0A 06 0321 0100 6FD9
                             clearInterval(store.state.modbusCircleTimer);
-                         
+                            
+                            //延迟500ms请求模式数据
+                            setTimeout(() => {
+                                //读数据
+                                store.state.modbusCircleTimer = setInterval(() => {
+                                    // 0A03UNDEFINED000F3307
+                                    // let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusMainInfo.modbusAdr+modbusMainInfo.modbusNum;
+                                    // let crc2 = crcModelBusClacQuery(td2);
+                                    // let sData2 = td2+crc;
+                                    // modbusGlobalReceiveList=[];//清空
+                                    // onlySendFuc(sData2,'newIndex',crc2);//0A03032A003464EA
+                                    let modbusMainInfo ='';
+                                    let aaaa= store.state.momeryApplyModel;
+                                    console.log(aaaa)
+                                    switch (aaaa) {
+                                        case 'MIG SYN':
+                                            modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100000'];//MIGSYN
+                                            break;
+                                        case 'MIG MAN':
+                                            modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100100'];//MIGMAN
+                                            break;
+                                        case 'TIG SYN':
+                                            modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100200'];//
+                                            break;
+                                        case 'TIG MAN':
+                                            modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100300'];//
+                                            break;
+                                        case 'MMA':
+                                            modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100400'];//
+                                            break;
+                                        case 'CUT':
+                                            modbusMainInfo = BASE_CONFIG.callMobusEditDirect['100500'];//
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                    let td2 = BASE_CONFIG.modbusSlave+BASE_CONFIG.modbusReadCode+modbusMainInfo.modbusAdr+modbusMainInfo.modbusNum;
+                                    let crc2 = crcModelBusClacQuery(td2);
+                                    let sData2 = td2+crc;
+                                    modbusGlobalReceiveList=[];//清空
+                                    onlySendFuc(sData2,'newIndex',crc2);//0A03032A003464EA
+                                },3000)
+                            }, 500);
                         }else if(modbusInfo && modbusInfo.type && modbusInfo.type=='4'){
                             //history模式
                             clearInterval(store.state.modbusCircleTimer);

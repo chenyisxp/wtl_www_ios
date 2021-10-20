@@ -181,7 +181,7 @@ export default {
          
         var crc = this.crcModelBusClacQuery(dirctCode + num, true);
         var sendData = "DA" + dirctCode + num + crc;
-       
+        this.$store.state.momeryApplyModel = this.name;
         this.callSendDataToBleUtil('memoryDetail',sendData,crc);
         
          //前往 参数可以修改的页面
