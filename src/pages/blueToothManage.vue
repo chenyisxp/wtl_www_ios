@@ -829,7 +829,9 @@ export default {
                 clearInterval(this.timeInterval1)
                 if(this.modbusSendTimes <5){
                     //发出系统信息请求
-                    this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                    // this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                    //20211024 读取全部
+                    this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A03020000851D
                 }
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
             }
@@ -839,7 +841,9 @@ export default {
             clearInterval(this.timerInterval)
             if(this.modbusSendTimes <5){
                 //发出验证请求
-                this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                // this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                //20211024 读取全部
+                this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
             }
             setTimeout(() => {
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});

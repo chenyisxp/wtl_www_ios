@@ -77,7 +77,10 @@ export default {
         //确认是否注册过
         InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
-                this.go('/registerStep2')
+                Toast("邮件已发送请注意查收！")
+                setTimeout(() => {
+                    this.go('/registerStep2')
+                }, 1000);
             }else{
                 Toast("邮件验证码发送失败")
             }

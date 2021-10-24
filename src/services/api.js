@@ -191,8 +191,11 @@ const interMap = [
     { method: 'insertUuidFuc', code: "ac010005" },//插入uuid
     { method: 'registerAcct', code: "ac010006" },//注册
     { method: 'queryUserInfo', code: "ac010007" },//校验邮箱用户是否已经存在
+    { method: 'resetPassword', code: "ac010008" },//重置密码
+    
     
     { method: 'upLoadData', code: "ac020001" },//上传数据
+    { method: 'addMachineInfo', code: "ac020002" },//机器信息记录
     
     
 

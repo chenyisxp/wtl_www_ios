@@ -844,6 +844,29 @@ export default {
   },
   mounted: function () {
      let that = this;
+     let wtlEmail = localStorage.getItem("wtl_email");;
+     let wtl_without_login =localStorage.getItem("wtl_without_login");
+     let times= localStorage.getItem("wtl_app_times") || 0;
+     //没有邮箱且没有点过不登录按钮 弹
+     //没有邮箱且点过不登录按钮且超过使用次数5 弹
+     if((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2)){
+       MessageBox.confirm('',{
+        title:'提示',
+        message:'是否登录',
+        confirmButtonText:'确认',
+        cancelButtonText:'取消'
+      }).then(action => {
+        if (action == 'confirm') {
+          console.log('点击确认'); 
+          this.$router.push({path:'/loginIndex',query:{}});
+        }
+      }).catch(error =>{
+        if(error == 'cancel'){
+          console.log('点击取消');
+        }
+      });
+
+     }
     //  this.callSendDataToBleUtil('newIndex','DA100000','0570');
     //  window.iosBleDataLayoutFuc([218, 225, 74, 0, 1, 3, 3, 163, 39, 0, 58, 0, 160, 0, 160, 0, 2, 12, 136, 137])
       // console.log(this.crcModelBusClacQuery('E14A0133A32703A0A00A002C0', true))
@@ -861,7 +884,8 @@ export default {
             that.nowConnectStatus =that.$store.state.getConnectStatus;
             if(that.nowConnectStatus=='connected' && that.modbusSendDataTimes<5){
                 //发出系统信息请求
-                that.callSendModbusSystemData('0A0303e80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                // that.callSendModbusSystemData('0A0303e80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
             }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){

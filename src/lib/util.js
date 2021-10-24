@@ -41,6 +41,8 @@ Array.prototype.in_array = function (element) {
             var modbusGlobalReceiveList=[];
             var modbusGlobalReceiveInterval='';
             var modbusIosReceiveTime=1;
+            var modbusIsBeginWeld=0;//是否开始焊接了
+            var modbusWeldLongTime=0;//是否开始焊接了
             var checkDataModbus={};
             var checkPageModbus={};
             var checkStatusModbus={};
@@ -1005,6 +1007,11 @@ Array.prototype.in_array = function (element) {
                                 }
                             }
                         }else{
+                            if(modbusIsBeginWeld==1){
+                                upLoadDataFuc(data,'util','weld_end',{weldTime:modbusWeldLongTime});
+                            }
+                            modbusIsBeginWeld=0;//重置
+                            modbusWeldLongTime=0;
                             clearInterval(store.state.weldingInterval);
                             store.state.weldingStatus=0;
                             store.state.getWeldingInfoTimes=0;//重置
@@ -1101,9 +1108,11 @@ Array.prototype.in_array = function (element) {
             function   weldingInfoQuery(){
                 let sendData    ="";
                 let crc    ="";
+                //记录每次焊接开始
                 
                 // clearInterval(store.state.modbusCircleTimer)//清除模式数据循环
                 store.state.weldingInterval=setInterval(() => {
+                    ++modbusWeldLongTime;//焊接时间 秒为单位
                     switch (nowModalIdx) {
                         case 'B1':
                             //MIG地址101 数量2                                                              
@@ -1139,6 +1148,11 @@ Array.prototype.in_array = function (element) {
                             break;
                     }
                     onlySendFuc(sendData+crc,'weldingInfoQuery',crc);
+                    if(modbusIsBeginWeld===0){
+                        modbusIsBeginWeld=1;
+                        modbusWeldLongTime=0;
+                        upLoadDataFuc(sendData,'APP','weld_begin');
+                    }
                 }, 1000);
             }
             //获取指令
@@ -1769,6 +1783,7 @@ Array.prototype.in_array = function (element) {
                             window.iosBleDataLayoutFuc(data);
                             return;
                         }else{
+                            store.state.isModbusModal=true;
                             window.modbusBroastFromApp(data);
                         }
                     //第二次后是否是
@@ -2145,8 +2160,14 @@ Array.prototype.in_array = function (element) {
 
                     let before4 = receiveBleData.substring(0,4);
                     let before6 = receiveBleData.substring(0,6);
-                    
-                    if(before6 == '0A0302'){
+                    // Toast({
+                    //         message: 'before6:'+'::'+before6,
+                    //         position: 'middle',
+                    //         iconClass: 'icon icon-success',
+                    //         duration: 3500
+                    //     });
+                    // before6 == '0A0302' ||
+                    if(before6 == '0A033C'){
                         //通信成功
                         store.state.modbusSendTimes=5;
                         store.state.isModbusModal=true;//是否是modbus协议模式
@@ -2177,6 +2198,22 @@ Array.prototype.in_array = function (element) {
                     let headKey = receiveBleData.substring(0,6);
                     let changeNewData ="";
                     switch (headKey) {
+                        case '0A033C':
+                            //60长度
+                            // window.modbusBroastFromApp("0A 03 3C 04 01 33 00 2C 34 34 31 42 2C 2C 35 41 42 34 2C 2C 31 37 39 4D 00 47 41 43 49 41 20 2F 43 43 44 50 2F 41 4C 4D 53 20 41 30 32 43 30 0A 0D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F8 78")
+                            //发送机器信息
+                            if(receiveBleData.length>60){
+                                let patch = receiveBleData.substring(4,6);//厂商33
+                                let btAddress=receiveBleData.substring(6,24);;//蓝牙地址
+                                let machineType=receiveBleData.substring(24,30);;//机器型号
+                                store.state.btAddress=btAddress;//放到store里
+                                InterfaceService.addMachineInfo({patch:patch,btAddress:btAddress,machineType:machineType,content:receiveBleData,app_uuid:store.state.userUuid},(data)=>{
+                    
+                                },function(data){
+                                    
+                                });
+                            }
+                            break;
                         case '0A033E'://migsyn 返回31(1F)个数据*2=62个字节
                             // changeNewData =changeToOldMigSynData(receiveBleData);
                             //假如不是同一个焊接中的数据返回
@@ -2812,6 +2849,11 @@ Array.prototype.in_array = function (element) {
                             }
                         }
                     }else{
+                        if(modbusIsBeginWeld==1){
+                            upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
+                        }
+                        modbusIsBeginWeld=0;//重置
+                        modbusWeldLongTime=0;
                         clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
@@ -2908,6 +2950,11 @@ Array.prototype.in_array = function (element) {
                             }
                         }
                     }else{
+                        if(modbusIsBeginWeld==1){
+                            upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
+                        }
+                        modbusIsBeginWeld=0;//重置
+                        modbusWeldLongTime=0;
                         clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
@@ -2971,6 +3018,11 @@ Array.prototype.in_array = function (element) {
                             }
                         }
                     }else{
+                        if(modbusIsBeginWeld==1){
+                            upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
+                        }
+                        modbusIsBeginWeld=0;//重置
+                        modbusWeldLongTime=0;
                         clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
@@ -3067,6 +3119,11 @@ Array.prototype.in_array = function (element) {
                             }
                         }
                     }else{
+                        if(modbusIsBeginWeld==1){
+                            upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
+                        }
+                        modbusIsBeginWeld=0;//重置
+                        modbusWeldLongTime=0;
                         clearInterval(store.state.weldingInterval);
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
@@ -3344,7 +3401,9 @@ Array.prototype.in_array = function (element) {
                     // upLoadDataFuc(sendDt,pageFrom);
                 }
             }
-            function upLoadDataFuc(sendData,pageFrom,type){
+            //核心上发函数 发送数据 、当前画面使用路由、类型 、weldTime:modbusWeldLongTime}
+            function upLoadDataFuc(sendData,pageFrom,type,params){
+                params = params?params:{};
                 if(!upLoadLastData){
                     upLoadLastData = sendData
                 }else if(upLoadLastData == sendData){
@@ -3353,8 +3412,8 @@ Array.prototype.in_array = function (element) {
                 }else{
                     upLoadLastData=sendData;
                 }
-                return;
-                InterfaceService.upLoadData({uuid:store.state.userUuid,allData:sendData,pageName:pageFrom,type:type?type:'SEND'},(data)=>{
+                // return;
+                InterfaceService.upLoadData({uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime},(data)=>{
                     
                 },function(data){
                     

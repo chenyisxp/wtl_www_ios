@@ -336,7 +336,8 @@ export default {
               this.$store.state.getConnectStatus = status;
               if(status == 'connected'  && this.modbusSendDataTimes<5){
                   //发出系统信息请求
-                  this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                  // this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
+                  this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
               }
             }
             if(this.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
@@ -474,7 +475,8 @@ export default {
               }
               aaa++
               //发出系统信息请求
-              this.callSendModbusSystemData('0A0303E80001','0105','layout请求系统信息');//模拟响应：0A03020000851D
+              // this.callSendModbusSystemData('0A0303E80001','0105','layout请求系统信息');//模拟响应：0A03020000851D
+              this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
           },1500)
       }
       

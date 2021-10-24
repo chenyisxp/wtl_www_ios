@@ -1,6 +1,8 @@
 <template>
     <div class="loginIndex">
-        <div class="logoBox"><img src="../../assets/images/jian.png"></div>
+        <div class="logoBox">
+            <!-- <img src="../../assets/images/jian.png"> -->
+        </div>
         <div class="attenWord">Sign in with your Email</div>
         <div class="inBox i-1">
             <input placeholder="Email" v-model="email"/>
@@ -15,7 +17,7 @@
         <div class="btnBox b-2">
             <div class="signBox" @click.stop="handleGo(2)">Sign Up</div>
         </div>
-        <div class="lastWord">Use it without an account ></div>
+        <div class="lastWord" @click="handleToIndex">Use it without an account ></div>
     </div>
 </template>
 
@@ -30,6 +32,10 @@ export default {
     };
   },
   methods: {
+    handleToIndex(){
+        localStorage.setItem("wtl_without_login",1);
+        this.$router.push({path:'/newIndex',query:{}});
+    },
     handleGo(num){
         // alert(11)
         this.$store.state.nowLoginStauts = num;
@@ -70,7 +76,10 @@ export default {
             this.$store.state.email=this.email;
             localStorage.setItem("wtl_email",this.email);
             if(data && data.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length>0){
-                this.$router.push('/newIndex');
+                Toast("登录成功！");
+                setTimeout(() => {
+                    this.$router.push('/newIndex');
+                }, 1000);
                 //登录成功
             }else{
                 Toast("请检查帐号或密码是否正确");
@@ -104,6 +113,7 @@ export default {
     padding: 0 1.5rem;
     position: relative;
     .logoBox{
+        padding-bottom: 7rem;
         text-align: center;
         img{
           

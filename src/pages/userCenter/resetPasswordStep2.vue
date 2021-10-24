@@ -81,6 +81,8 @@ export default {
                 InterfaceService.checkEmailCode({email:this.email,uuid:this.userUuid,emailCode:this.emailCode},(data)=>{
                     if(data && data.respData && data.respData.respCode == '0000'){
                         this.go('/ResetPasswordStep3')
+                    }else{
+                        Toast(data.respData.respMsg || '请输入正确的验证码')
                     }
                 },function(data){
                 

@@ -55,7 +55,11 @@ export default {
         // this.go('/newIndex')
         InterfaceService.registerAcct({email:this.email,uuid:this.userUuid,password:this.password},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
+                //成功
+                localStorage.setItem("wtl_login_email",this.email);
                 this.go('/newIndex')
+            }else{
+                localStorage.setItem("wtl_login_email",'');
             }
         },function(data){
             
