@@ -24,26 +24,30 @@
            <!-- parweld的电话 -->
            <!-- Tel: 01299 266800 -->
           </div>
-          <div class="connnect">Wiring diagram</div>
+          <div class="help" v-if="loginName">username:{{loginName || '未登录'}}</div>
+          <div class="help" v-else>未登录</div>
+
+          <!-- <div class="connnect">Wiring diagram</div>
           <div class="tabs">
                <div class="m-li">
                 <div class="tab"  @click="chooseIMG(4)" :class="chooseModel==4?'choosedImg':''">MIG</div>
                 <div class="tab"   @click="chooseIMG(2)" :class="chooseModel==2?'choosedImg':''">TIG</div>
                 <div  class="tab"   @click="chooseIMG(1)" :class="chooseModel==1?'choosedImg':''">MMA</div>  
-                  <!-- <div class="tab big"  @click="chooseIMG(3)" :class="chooseModel==3?'choosedImg':''">MIG FAWS-G</div> -->
+                  
                </div>
-          </div>
-          <div class="connect-linesImg">
-            <!-- <img v-if="chooseModel==1" src="../../assets/images/weld_setting_1.jpeg">
+          </div> -->
+           <!-- <img v-if="chooseModel==1" src="../../assets/images/weld_setting_1.jpeg">
             <img v-if="chooseModel==2" src="../../assets/images/weld_setting_2.jpeg">
             <img v-if="chooseModel==3" src="../../assets/images/weld_setting_3.jpeg">
             <img v-if="chooseModel==4" src="../../assets/images/weld_setting_4.jpg"> -->
+          <!-- <div class="connect-linesImg">
+           
             <img v-if="chooseModel==1" src="../../assets/images/weld_setting_mma.jpg">
             <img v-if="chooseModel==2" src="../../assets/images/weld_setting_tig.jpg">
             <img v-if="chooseModel==4" @click="goDevleper" src="../../assets/images/weld_setting_mig.jpg">
           </div>
           <div class="resetBtn" @click="handleRestore">Restore  settings</div>
-          <div class="resetBtn" @click="handleOpen">打开面板信息</div>
+          <div class="resetBtn" @click="handleOpen">打开面板信息</div> -->
       </div>
 
     </div>
@@ -56,6 +60,7 @@ export default {
   components: {},
   data() {
     return {
+      loginName:'',
        nowchoose:'mm',
        chooseModel:4,
        clickTimes:0
@@ -124,6 +129,7 @@ export default {
     //   history.pushState(null, null, document.URL);
     //   window.addEventListener('popstate', this.goBack, false);
     // } 
+    this.loginName = localStorage.getItem("wtl_login_email");
     if (window.history && window.history.pushState) {
         history.pushState(null, null, document.URL);
         window.addEventListener('popstate', this.goBack, false);

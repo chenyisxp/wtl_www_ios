@@ -102,7 +102,7 @@ let Common = {
                 });*/
                 if (STATE_CODE.ERROR_CODE.test(data.respCode)) {
                     Toast({
-                        message: '系统异常',
+                        message: '系统异常'+JSON.stringify(data),
                         position: 'middle',
                         duration: 1500
                     });
@@ -130,7 +130,7 @@ let Common = {
 
         function failCallbacks(resp){
             Toast({
-                  message: '系统异常',
+                  message: '系统异常'+JSON.stringify(resp),
                   position: 'middle',
                   duration: 1500
             }); 
@@ -457,7 +457,7 @@ let Common = {
                 typeof callback === 'function' && callback(response);
             }else{
                 Toast({
-                    message: '系统异常',
+                    message: '系统异常'+JSON.stringify(response),
                     position: 'middle',
                     duration: 1500
                 });
@@ -467,7 +467,7 @@ let Common = {
         .catch(function (error) {
             console.log(error);
             Toast({
-                message: '系统异常',
+                message: '系统异常'+JSON.stringify(error),
                 position: 'middle',
                 duration: 1500
             });

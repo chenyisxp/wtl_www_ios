@@ -691,7 +691,7 @@ export default {
                 }
                 let bitInfoList = list.initBean.bitInfoList;
                 let num =this.jinzhiChange2jinzhiFuc(`0000011${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
-                data =  this.getDirective(this.typeName, 'Getready')+ '0600';//011000000000 tigsyn
+                data =  this.getDirective(this.typeName, 'Getready')+num;//011000000000 tigsyn
             }else{
                 data =  this.getDirective(this.typeName, 'Getready')+ '0000';
             }

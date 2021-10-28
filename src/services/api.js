@@ -167,6 +167,8 @@ let InterfaceService = {
                 console.log(response)
                 if(response.status===200){
                     typeof callback === 'function' && callback(response.data);
+                }else{
+                    Toast(JSON.stringify(response))
                 }
             }) 
         
@@ -184,6 +186,7 @@ let InterfaceService = {
 
 } 
 const interMap = [
+    { method: 'checkNetWork', code: "ac000000" },//检查网络
     { method: 'login', code: "ac010001" },//登录
     { method: 'getMainCheckCode', code: "ac010002" },//获取验证码
     { method: 'sendEmailCode', code: "ac010003" },//获取验证码

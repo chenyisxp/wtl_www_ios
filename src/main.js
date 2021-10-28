@@ -289,6 +289,7 @@ new Vue({
           localStorage.setItem("wtl_app_times",0);
         }
       }
+      
       //1、先查询手机本地存储是否存在uuid
       //2、存在直接使用，不存在创建
        //用于生成uuid
@@ -299,6 +300,7 @@ new Vue({
         if(uuid=="" || uuid== null){
           uuid = this.creatUUID();
           localStorage.setItem("wtl_uuid",uuid);
+         
           //是否联网了
           InterfaceService.insertUuidFuc(
             { 
@@ -310,7 +312,7 @@ new Vue({
               windowHeight:window.innerHeight,
               envFlag:BASE_CONFIG.ENV_IOS_FLAG?1:0
             },(data)=>{
-            
+              this.$store.state.netWorkStatus='online';
           },function(data){
           });
         }else{
@@ -318,8 +320,9 @@ new Vue({
             { 
               uuid:uuid
             },(data)=>{
-            
+              this.$store.state.netWorkStatus='online';
           },function(data){
+            
           });
         }
         this.$store.state.userUuid = uuid;
@@ -341,7 +344,16 @@ new Vue({
             console.log(element,listenerCount[element])
           }
         });
-
+        //每三十秒一次请求
+        setInterval(()=>{
+          InterfaceService.checkNetWork(
+            {},(data)=>{
+              this.$store.state.netWorkStatus='online';
+          },function(data){
+            //没有网络
+            this.$store.state.netWorkStatus='';
+          });
+        },30000)
 
    },destroyed () {
    }

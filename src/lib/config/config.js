@@ -1,15 +1,17 @@
 
 
-// const ROOT_URL = 'http://bozhi.greenlandfs.com';//http://47.98.83.29';
-// const ROOT_URL = 'http://10.105.113.211:11001';//永刚本地ip
-// const ROOT_URL = 'http://10.105.113.212:11001';//赛老板本地ip
-const ROOT_URL = 'http://127.0.0.1:3001';//本地
+
+// const ROOT_URL = 'http://127.0.0.1:3001';//本地
+// const ROOT_URL = 'http://47.242.175.65:3001';//sit
+const ROOT_URL = 'http://api.shwtl.net';//sit
+
+
 
 let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:true,//浏览器调试的时候 !!!!!!!!!!!
+    liulanqiConnect:false,//浏览器调试的时候 !!!!!!!!!!!
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
     LOGFLAG:true,
@@ -17,7 +19,7 @@ let BASE_CONFIG = {
     TESTDEEPTH:0,//深度
     autoRouterTime:5000,//自动前往焊接中页面的时间：ms
     scaningDuring:15000,//扫描时间
-    ENV_IOS_FLAG : false,//true:ios、fasle:安卓环境 !!!!!!!!!!!!!!!!!!!!!!!!!!
+    ENV_IOS_FLAG : true,//true:ios、fasle:安卓环境 !!!!!!!!!!!!!!!!!!!!!!!!!!
     DirectStart:'DA',
     callWeldTypeData:{//注意utils中有独立crccode注意一起改
        migsyn:{data:'100000',crcCode:'0570',name:'MIG SYN',modelKey:'MIGSYN',url:'/weld_common?type=MIGSYN',newIndex:0},

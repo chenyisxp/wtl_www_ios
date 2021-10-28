@@ -98,9 +98,15 @@ export default {
   mounted() {
     //   this.$router.push('/forgotPassword');
     this.email = localStorage.getItem("wtl_email") || '';
+    
   },created () {
    
   
+  },
+  computed:{
+      netWorkStatus(){
+          return this.$store.state.netWorkStatus;
+      }
   }
 };
 </script>

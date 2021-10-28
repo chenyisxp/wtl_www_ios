@@ -849,23 +849,23 @@ export default {
      let times= localStorage.getItem("wtl_app_times") || 0;
      //没有邮箱且没有点过不登录按钮 弹
      //没有邮箱且点过不登录按钮且超过使用次数5 弹
-     if((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2)){
-       MessageBox.confirm('',{
-        title:'提示',
-        message:'是否登录',
-        confirmButtonText:'确认',
-        cancelButtonText:'取消'
-      }).then(action => {
-        if (action == 'confirm') {
-          console.log('点击确认'); 
-          this.$router.push({path:'/loginIndex',query:{}});
-        }
-      }).catch(error =>{
-        if(error == 'cancel'){
-          console.log('点击取消');
-        }
-      });
-
+     if(this.netWorkStatus =='online' && ((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2))){
+        MessageBox.confirm('',{
+          title:'提示',
+          message:'是否登录',
+          confirmButtonText:'确认',
+          cancelButtonText:'取消'
+        }).then(action => {
+          if (action == 'confirm') {
+            console.log('点击确认'); 
+            this.$router.push({path:'/loginIndex',query:{}});
+          }
+        }).catch(error =>{
+          if(error == 'cancel'){
+            console.log('点击取消');
+          }
+        });
+    
      }
     //  this.callSendDataToBleUtil('newIndex','DA100000','0570');
     //  window.iosBleDataLayoutFuc([218, 225, 74, 0, 1, 3, 3, 163, 39, 0, 58, 0, 160, 0, 160, 0, 2, 12, 136, 137])
@@ -1019,6 +1019,10 @@ export default {
     
   },
   computed:{
+    
+    netWorkStatus(){
+      return this.$store.state.netWorkStatus;
+    },
       envType(){
         return this.$store.state.envType;　　//需要监听的数据
       },

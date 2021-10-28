@@ -34,6 +34,7 @@ export default {
         InterfaceService.getCheckCode('/api/getCaptcha/',(data)=>{
             console.log(data)
             this.checkCodeSvg=data;
+            Toast("2222222")
         })
     },
     getMainCheckCode(){
