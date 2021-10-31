@@ -400,3 +400,12 @@ html{ overflow:-moz-scrollbars-vertical;} */
 .env_ios_gClass .header .ivu-icon{
   top:30px!important;
 }
+/* ios不能输入 */
+input{
+  -webkit-user-select:auto!important;
+  user-select:auto!important;
+}
+/*  下面这句是解决placeholder在ios 端的input框中显示偏上 */
+input::-webkit-input-placeholder {
+  line-height: normal;
+}
