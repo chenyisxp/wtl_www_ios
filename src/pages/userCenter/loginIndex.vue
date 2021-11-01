@@ -71,7 +71,7 @@ export default {
             return;
         }
         // Toast("Sign in successful")
-        var param={'email':this.email,password:this.password}
+        var param={'email':this.email,password:this.password,uuid:this.userUuid}
         InterfaceService.login(param,(data)=>{
             this.$store.state.email=this.email;
             localStorage.setItem("wtl_email",this.email);
@@ -106,7 +106,11 @@ export default {
   computed:{
       netWorkStatus(){
           return this.$store.state.netWorkStatus;
+      },
+      userUuid(){
+          return this.$store.state.userUuid;
       }
+      
   }
 };
 </script>

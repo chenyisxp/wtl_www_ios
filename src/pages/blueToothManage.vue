@@ -844,10 +844,11 @@ export default {
                 // this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
                 //20211024 读取全部
                 this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
+            }else{
+                setTimeout(() => {
+                    this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
+                }, 100);
             }
-            setTimeout(() => {
-                this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
-            }, 100);
         }
         //模拟多个： Sd8eab80c2c18b79bC,DE0EA5ED-978E-07AF-6E90-9BB27D274EF5||HC-08,663E99B6-39F0-CD53-CF0C-BEB6CA13B875
         //ios蓝牙扫描结果
