@@ -54,6 +54,7 @@ export default {
         let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
         if(this.email && !re.test(this.email)){
             Toast("邮箱格式不正确")
+             return;
         }
         if(!this.checkCode || this.checkCode.length<4){
             Toast("请输入验证码")
@@ -130,6 +131,7 @@ export default {
         right: 1.5rem;
         top:1rem;
         color: #03a2c0;
+        padding: 0.4rem 0.0rem 1rem 1rem;
     }
     .logoBox{
         text-align: center;

@@ -58,7 +58,10 @@ export default {
         }
         let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
         if(this.email && !re.test(this.email)){
-            Toast("邮箱格式不正确")
+            Toast("邮箱格式不正确");
+            return;
+        }else{
+            localStorage.setItem("wtl_email",this.email);
         }
         if(!this.password){
             Toast("请输入密码")
@@ -66,7 +69,7 @@ export default {
         }
         if(this.GLOBAL_CONFIG.TESTFLAG){
             Toast("登录成功");
-            localStorage.setItem("wtl_email",this.email);
+            localStorage.setItem("wtl_login_email",this.email);
             this.$router.push('/newIndex');
             return;
         }
@@ -74,13 +77,18 @@ export default {
         var param={'email':this.email,password:this.password,uuid:this.userUuid}
         InterfaceService.login(param,(data)=>{
             this.$store.state.email=this.email;
-            localStorage.setItem("wtl_email",this.email);
+            localStorage.setItem("wtl_login_email",this.email);
             if(data && data.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length>0){
                 Toast("登录成功！");
                 setTimeout(() => {
                     this.$router.push('/newIndex');
                 }, 1000);
                 //登录成功
+            }else if(data && data.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length==0){
+                Toast("该邮箱还未注册");
+                setTimeout(() => {
+                   this.handleGo(2);
+                }, 1000);
             }else{
                 Toast("请检查帐号或密码是否正确");
             }

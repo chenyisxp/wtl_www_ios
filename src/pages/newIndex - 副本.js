@@ -830,7 +830,9 @@ export default {
             that.nowConnectStatus =that.$store.state.getConnectStatus;
             if(that.nowConnectStatus=='connected' && that.modbusSendTimes == 0 && that.modbusSendDataTimes<5){
                 //发出系统信息请求
-                that.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+                // that.callSendModbusSystemData('0A0303e80001','blueToothManage');//模拟响应：0A03020000851D
+                //20211102
+                this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
             }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){

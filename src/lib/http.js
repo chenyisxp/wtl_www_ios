@@ -40,13 +40,13 @@ let Common = {
         }
         let currentdate = date.getFullYear() + month + strDate + date.getHours() + date.getMinutes() + date.getSeconds();
 
-
+        reqParams['tenantID']=BASE_CONFIG.tenantID;
         let params = {
             txCode: txCode || '000000',
-            deviceId: localStorage.getItem('deviceID') || '',
-            sessionId: sessionStorage.getItem('sessionID') || '',
-            custId: sessionStorage.getItem('customID') || '',
-            currentTenantId:"/vW0BLN5Zhk4QjB9rPTYE6ccLzk9ATt7PLHbsr7dmmU=",
+            // deviceId: localStorage.getItem('deviceID') || '',
+            // sessionId: sessionStorage.getItem('sessionID') || '',
+            // custId: sessionStorage.getItem('customID') || '',
+            // currentTenantId:"/vW0BLN5Zhk4QjB9rPTYE6ccLzk9ATt7PLHbsr7dmmU=",
             timestamp:currentdate||'',
             reqParams: reqParams || {}
         };

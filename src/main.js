@@ -268,6 +268,87 @@ new Vue({
     }
    },
    mounted () {
+     
+    //获得本地三天记录
+    //let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
+    //ios
+    if(BASE_CONFIG.ENV_IOS_FLAG){
+      // Toast('weldInfo3DaysFuc')
+      this.globalSendMsgToIos("handSaveReadByFuction","weldInfo3DaysFuc","");//请求最后连接蓝牙名字
+      window['weldInfo3DaysFuc']= (weldInfo3DaysList) => {
+        try {
+          this.$store.state.weldInfo3Days=JSON.parse(weldInfo3DaysList || '[]');
+        } catch (error) {
+          
+          this.globalSendMsgToIos("handSaveWrite","weldInfo3DaysFuc","");//请求最后连接蓝牙名字
+          this.$store.state.weldInfo3Days=[];
+        }
+          
+      }
+      //获取网络状态
+      setInterval(()=>{
+        this.globalSendMsgToIos("getNetWorkStatus","","");//请求最后连接蓝牙名字
+      },5000)
+      
+    }else{
+      //安卓
+
+    }
+    
+
+     let haveSend =false;
+     window['sendToHtmlNetState']= (netStatus) => {
+      //  Toast(netStatus)
+       if((netStatus+"").indexOf("Online")>-1){
+        this.$store.state.netWorkStatus='online';
+       }else{
+        this.$store.state.netWorkStatus='offLine';
+        return;
+       }
+       //每次启动的第一次 且联网了请求
+        if(!haveSend && (netStatus+"").indexOf("Online")>-1){
+          haveSend=true;
+          //每次启动都重置 希望用户登录
+          localStorage.setItem("wtl_without_login",'');
+          //1、先查询手机本地存储是否存在uuid
+          //2、存在直接使用，不存在创建
+          //用于生成uuid
+            let uuid = localStorage.getItem("wtl_uuid");
+            let userAgent =navigator.userAgent || '';
+            let osVersion = this.getOsVersion() || '';
+            let osLanguage = navigator.languages || '';
+            let params ={ 
+                  uuid:uuid,
+                  osVersion:osVersion.substring(0,49),
+                  userAgent:userAgent.substring(0,599),
+                  osLanguage:(osLanguage+"").substring(0,59),
+                  windowWidth:window.innerWidth,
+                  windowHeight:window.innerHeight,
+                  envFlag:BASE_CONFIG.ENV_IOS_FLAG?1:0
+                } 
+            if(uuid=="" || uuid== null){
+              uuid = this.creatUUID();
+              localStorage.setItem("wtl_uuid",uuid);
+            
+              //是否联网了
+              InterfaceService.insertUuidFuc(
+                params,(data)=>{
+                  this.$store.state.netWorkStatus='online';
+              },function(data){
+              });
+            }else{
+              InterfaceService.insertUuidFuc(
+                params,(data)=>{
+                  this.$store.state.netWorkStatus='online';
+              },function(data){
+                
+              });
+            }
+            this.$store.state.userUuid = uuid;
+            // console.log(this.getOsVersion())
+            // navigator.onLine //是否联网
+        }
+     }
     //禁止使用返回键
       // window.history.pushState(null, null, "#");
       // window.addEventListener("popstate", function(e) {
@@ -277,83 +358,29 @@ new Vue({
       // InterfaceService.getUpdateInfo((data)=>{
       //   console.log(data)
       // })
-      let wtl_without_login = localStorage.getItem("wtl_without_login");
-      //有点击不想登录按钮
+      // let wtl_without_login = localStorage.getItem("wtl_without_login");
+      // //有点击不想登录按钮
       
-      if(wtl_without_login==1){
-        let times= localStorage.getItem("wtl_app_times") || 0;
-        if(times<3){
-          localStorage.setItem("wtl_app_times",++times);
-        }else{
-          //重置
-          localStorage.setItem("wtl_app_times",0);
-        }
-      }
+      // if(wtl_without_login==1){
+      //   let times= localStorage.getItem("wtl_app_times") || 0;
+      //   if(times<3){
+      //     localStorage.setItem("wtl_app_times",++times);
+      //   }else{
+      //     //重置
+      //     localStorage.setItem("wtl_app_times",0);
+      //   }
+      // }
       
-      //1、先查询手机本地存储是否存在uuid
-      //2、存在直接使用，不存在创建
-       //用于生成uuid
-        let uuid = localStorage.getItem("wtl_uuid");
-        let userAgent =navigator.userAgent || '';
-        let osVersion = this.getOsVersion() || '';
-        let osLanguage = navigator.languages || '';
-        if(uuid=="" || uuid== null){
-          uuid = this.creatUUID();
-          localStorage.setItem("wtl_uuid",uuid);
-         
-          //是否联网了
-          InterfaceService.insertUuidFuc(
-            { 
-              uuid:uuid,
-              osVersion:osVersion.substring(0,49),
-              userAgent:userAgent.substring(0,599),
-              osLanguage:(osLanguage+"").substring(0,59),
-              windowWidth:window.innerWidth,
-              windowHeight:window.innerHeight,
-              envFlag:BASE_CONFIG.ENV_IOS_FLAG?1:0
-            },(data)=>{
-              this.$store.state.netWorkStatus='online';
-          },function(data){
-          });
-        }else{
-          InterfaceService.insertUuidFuc(
-            { 
-              uuid:uuid
-            },(data)=>{
-              this.$store.state.netWorkStatus='online';
-          },function(data){
-            
-          });
-        }
-        this.$store.state.userUuid = uuid;
-        // console.log(this.getOsVersion())
-        // navigator.onLine //是否联网
-
-        let listenerCount={};
-        for (let index = 0; index < 10; index++) {
-          const key = this.creatUUID();
-          if(listenerCount[key]){
-            listenerCount[key]=listenerCount[key]+1;
-          }else{
-            listenerCount[key]=1;
-          }
-        }
-        console.log(listenerCount)
-        Object.keys(listenerCount).forEach(element => {
-          if(listenerCount[element]>1){
-            console.log(element,listenerCount[element])
-          }
-        });
         //每三十秒一次请求
-        setInterval(()=>{
-          InterfaceService.checkNetWork(
-            {},(data)=>{
-              this.$store.state.netWorkStatus='online';
-          },function(data){
-            //没有网络
-            this.$store.state.netWorkStatus='';
-          });
-        },30000)
+        // setInterval(()=>{
+        //   InterfaceService.checkNetWork(
+        //     {},(data)=>{
+        //       this.$store.state.netWorkStatus='online';
+        //   },function(data){
+        //     //没有网络
+        //     this.$store.state.netWorkStatus='';
+        //   });
+        // },30000)
 
    },destroyed () {
    }

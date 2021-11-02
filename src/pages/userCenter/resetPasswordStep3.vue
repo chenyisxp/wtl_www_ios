@@ -42,6 +42,7 @@ export default {
         let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
         if(this.email && !re.test(this.email)){
             Toast("邮箱格式不正确")
+             return;
         }
         if(!this.password){
             Toast("请输入密码")
@@ -56,7 +57,10 @@ export default {
         InterfaceService.resetPassword({email:this.email,uuid:this.userUuid,password:this.password},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 localStorage.setItem("wtl_login_email",this.email);
-                this.go('/newIndex')
+                Toast("密码重置成功！")
+                setTimeout(() => {
+                   this.go('/newIndex')
+                }, 1000);
             }else{
                 Toast("修改失败，请重试");
                 localStorage.setItem("wtl_login_email",'');
@@ -105,6 +109,7 @@ export default {
         right: 1.5rem;
         top:1rem;
         color: #03a2c0;
+        padding: 0.4rem 0.0rem 1rem 1rem;
     }
     .attenWord{
         height: 30px;

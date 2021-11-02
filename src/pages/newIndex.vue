@@ -811,6 +811,9 @@ export default {
     },
     initTouch(){
       let newIndexRef = this.$refs.newIndexRef;
+      if(!newIndexRef){
+        return;
+      }
       newIndexRef.addEventListener('touchstart',(e)=>{//屏幕触摸事件
         this.touchStartNum =e.changedTouches[0].pageX;
         
@@ -844,27 +847,32 @@ export default {
   },
   mounted: function () {
      let that = this;
-     let wtlEmail = localStorage.getItem("wtl_email");;
+     let wtlEmail = localStorage.getItem("wtl_login_email");;
      let wtl_without_login =localStorage.getItem("wtl_without_login");
      let times= localStorage.getItem("wtl_app_times") || 0;
+     console.log(wtlEmail,wtl_without_login,times)
+     console.log( this.netWorkStatus =='online',!wtlEmail, wtl_without_login=='')
      //没有邮箱且没有点过不登录按钮 弹
      //没有邮箱且点过不登录按钮且超过使用次数5 弹
-     if(this.netWorkStatus =='online' && ((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2))){
-        MessageBox.confirm('',{
-          title:'提示',
-          message:'是否登录',
-          confirmButtonText:'确认',
-          cancelButtonText:'取消'
-        }).then(action => {
-          if (action == 'confirm') {
-            console.log('点击确认'); 
-            this.$router.push({path:'/loginIndex',query:{}});
-          }
-        }).catch(error =>{
-          if(error == 'cancel'){
-            console.log('点击取消');
-          }
-        });
+     // this.netWorkStatus =='online' && ((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2))
+     if(this.netWorkStatus =='online' && !wtlEmail && wtl_without_login==''){
+        // MessageBox.confirm('',{
+        //   title:'提示',
+        //   message:'是否登录',
+        //   confirmButtonText:'确认',
+        //   cancelButtonText:'取消'
+        // }).then(action => {
+        //   if (action == 'confirm') {
+        //     console.log('点击确认'); 
+        //     this.$router.push({path:'/loginIndex',query:{}});
+        //   }
+        // }).catch(error =>{
+        //   if(error == 'cancel'){
+        //     console.log('点击取消');
+        //   }
+        // });
+        // Toast("需要登录")；
+        this.$router.push('/loginIndex');
     
      }
     //  this.callSendDataToBleUtil('newIndex','DA100000','0570');
@@ -886,6 +894,8 @@ export default {
                 //发出系统信息请求
                 // that.callSendModbusSystemData('0A0303e80001','0105','blueToothManage');//模拟响应：0A03020000851D
                 this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
+                //20211102
+                // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
             }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){

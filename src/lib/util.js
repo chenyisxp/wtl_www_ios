@@ -1924,7 +1924,7 @@ Array.prototype.in_array = function (element) {
                                     //     iconClass: 'icon icon-success',
                                     //     duration: 6000
                                     // });
-                                    window.broastFromAndroid(data,checkPage[crc]);
+                                    window.broastFromAndroid(data,checkPage[crc]);is
                                     delete(checkStatus[crc]);
                                     delete(checkData[crc]);
                                     delete(checkPage[crc]);
@@ -2166,8 +2166,9 @@ Array.prototype.in_array = function (element) {
                     //         iconClass: 'icon icon-success',
                     //         duration: 3500
                     //     });
-                    // before6 == '0A0302' ||
+                    //不包含五个模式时长的
                     if(before6 == '0A033C'){
+                    // if(before6 == '0A0346'){
                         //通信成功
                         store.state.modbusSendTimes=5;
                         store.state.isModbusModal=true;//是否是modbus协议模式
@@ -2198,6 +2199,7 @@ Array.prototype.in_array = function (element) {
                     let headKey = receiveBleData.substring(0,6);
                     let changeNewData ="";
                     switch (headKey) {
+                        // case '0A0346':
                         case '0A033C':
                             //60长度
                             // window.modbusBroastFromApp("0A 03 3C 04 01 33 00 2C 34 34 31 42 2C 2C 35 41 42 34 2C 2C 31 37 39 4D 00 47 41 43 49 41 20 2F 43 43 44 50 2F 41 4C 4D 53 20 41 30 32 43 30 0A 0D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F8 78")
@@ -2365,6 +2367,7 @@ Array.prototype.in_array = function (element) {
                     // alert("heeee:"+receiveBleData)
                 }
             }
+            //init 初始化请求
             //请求一个模式确认是不是modbus协议版本机器
             Vue.prototype.callSendModbusSystemData = (sendData,crc,pageFrom) =>{
                 console.log('callSendModbusSystemData');
@@ -3381,6 +3384,7 @@ Array.prototype.in_array = function (element) {
                     sendDt = sendDt.substring(0,sendDt.length-4);
                     sendDt=sendDt+crc.substring(2,4)+crc.substring(0,2);
                     if(BASE_CONFIG.ENV_IOS_FLAG){
+                        
                         var message = {"method":"handleSendData","sendDt":sendDt};
                         if(window.webkit){
                             upLoadDataFuc(sendDt,pageFrom);
@@ -3412,12 +3416,20 @@ Array.prototype.in_array = function (element) {
                 }else{
                     upLoadLastData=sendData;
                 }
-                // return;
-                InterfaceService.upLoadData({uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime},(data)=>{
-                    
-                },function(data){
-                    
-                });
+                let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
+                //网络状态 判断
+                if(store.state.netWorkStatus=='online'){
+                    InterfaceService.upLoadData(pInfo,(data)=>{
+                        
+                    },function(data){
+                        
+                    });    
+                }else if(type == 'weld_end'){
+                    //假如是焊接时长 需记录本地三天数据
+                    //取出旧的三个 pInfo
+                    store.state.weldInfo3Days.push(pInfo);
+                    this.globalSendMsgToIos("handSaveWrite","weldInfo3Days",JSON.stringify(store.state.weldInfo3Days)); 
+                }
             }
             function circleDataSendFuc(indexInfo){
                 let sendDt = indexInfo.sendData+indexInfo.crc;
