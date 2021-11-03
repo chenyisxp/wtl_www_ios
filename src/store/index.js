@@ -69,7 +69,7 @@ const state = {
     weldingInterval:{},//请求焊接中的电压、电流
     momeryClickNum:'',
     momeryApplyModel:'',//应用了通道，里面之前是什么模式的数据 modbus要请求回来
-    netWorkStatus:'',
+    netWorkStatus:'online',
     weldInfo3Days:[]//本地三天存储焊接中时长
     
 

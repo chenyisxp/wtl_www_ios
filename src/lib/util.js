@@ -2167,8 +2167,8 @@ Array.prototype.in_array = function (element) {
                     //         duration: 3500
                     //     });
                     //不包含五个模式时长的
-                    if(before6 == '0A033C'){
-                    // if(before6 == '0A0346'){
+                    // if(before6 == '0A033C'){
+                    if(before6 == '0A0350'){
                         //通信成功
                         store.state.modbusSendTimes=5;
                         store.state.isModbusModal=true;//是否是modbus协议模式
@@ -2199,8 +2199,8 @@ Array.prototype.in_array = function (element) {
                     let headKey = receiveBleData.substring(0,6);
                     let changeNewData ="";
                     switch (headKey) {
-                        // case '0A0346':
-                        case '0A033C':
+                        case '0A0350':
+                        // case '0A033C':
                             //60长度
                             // window.modbusBroastFromApp("0A 03 3C 04 01 33 00 2C 34 34 31 42 2C 2C 35 41 42 34 2C 2C 31 37 39 4D 00 47 41 43 49 41 20 2F 43 43 44 50 2F 41 4C 4D 53 20 41 30 32 43 30 0A 0D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F8 78")
                             //发送机器信息

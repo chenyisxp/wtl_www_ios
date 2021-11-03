@@ -77,20 +77,23 @@ export default {
         var param={'email':this.email,password:this.password,uuid:this.userUuid}
         InterfaceService.login(param,(data)=>{
             this.$store.state.email=this.email;
-            localStorage.setItem("wtl_login_email",this.email);
-            if(data && data.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length>0){
+            
+            if(data && data.respData.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length>0){
                 Toast("登录成功！");
+                localStorage.setItem("wtl_login_email",this.email);
                 setTimeout(() => {
                     this.$router.push('/newIndex');
                 }, 1000);
                 //登录成功
-            }else if(data && data.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length==0){
-                Toast("该邮箱还未注册");
+            }else if(data && data.respData.respCode=='1001'){
+                // respCode: "1001"
+                // respMsg: "当前邮箱还未注册"
+                Toast( data.respData.respMsg);
                 setTimeout(() => {
                    this.handleGo(2);
                 }, 1000);
             }else{
-                Toast("请检查帐号或密码是否正确");
+                Toast(data.respData.respMsg || "请检查帐号或密码是否正确");
             }
         },function(data){
         });

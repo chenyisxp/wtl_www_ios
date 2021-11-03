@@ -265,7 +265,7 @@ new Vue({
         }
       }
       return version
-    }
+    },
    },
    mounted () {
      
@@ -295,10 +295,34 @@ new Vue({
 
     }
     
+    //uuid请求参数赋值
+    //每次启动都重置 希望用户登录
+    localStorage.setItem("wtl_without_login",''); 
+    //用于生成uuid
+    let uuid = localStorage.getItem("wtl_uuid");
+    let userAgent =navigator.userAgent || '';
+    let osVersion = this.getOsVersion() || '';
+    let osLanguage = navigator.languages || '';
+    
+    //1、先查询手机本地存储是否存在uuid
+    //2、存在直接使用，不存在创建
+    if(uuid=="" || uuid== null){
+       uuid = this.creatUUID();
+        localStorage.setItem("wtl_uuid",uuid);
+    }
 
+      let params ={     
+            uuid:uuid,
+            osVersion:osVersion.substring(0,49),
+            userAgent:userAgent.substring(0,599),
+            osLanguage:(osLanguage+"").substring(0,59),
+            windowWidth:window.innerWidth,
+            windowHeight:window.innerHeight,
+            envFlag:BASE_CONFIG.ENV_IOS_FLAG?1:0
+      } 
+      this.$store.state.userUuid = uuid;
      let haveSend =false;
      window['sendToHtmlNetState']= (netStatus) => {
-      //  Toast(netStatus)
        if((netStatus+"").indexOf("Online")>-1){
         this.$store.state.netWorkStatus='online';
        }else{
@@ -308,45 +332,11 @@ new Vue({
        //每次启动的第一次 且联网了请求
         if(!haveSend && (netStatus+"").indexOf("Online")>-1){
           haveSend=true;
-          //每次启动都重置 希望用户登录
-          localStorage.setItem("wtl_without_login",'');
-          //1、先查询手机本地存储是否存在uuid
-          //2、存在直接使用，不存在创建
-          //用于生成uuid
-            let uuid = localStorage.getItem("wtl_uuid");
-            let userAgent =navigator.userAgent || '';
-            let osVersion = this.getOsVersion() || '';
-            let osLanguage = navigator.languages || '';
-            let params ={ 
-                  uuid:uuid,
-                  osVersion:osVersion.substring(0,49),
-                  userAgent:userAgent.substring(0,599),
-                  osLanguage:(osLanguage+"").substring(0,59),
-                  windowWidth:window.innerWidth,
-                  windowHeight:window.innerHeight,
-                  envFlag:BASE_CONFIG.ENV_IOS_FLAG?1:0
-                } 
-            if(uuid=="" || uuid== null){
-              uuid = this.creatUUID();
-              localStorage.setItem("wtl_uuid",uuid);
+          InterfaceService.insertUuidFuc(
+            params,(data)=>{
+          },function(data){
             
-              //是否联网了
-              InterfaceService.insertUuidFuc(
-                params,(data)=>{
-                  this.$store.state.netWorkStatus='online';
-              },function(data){
-              });
-            }else{
-              InterfaceService.insertUuidFuc(
-                params,(data)=>{
-                  this.$store.state.netWorkStatus='online';
-              },function(data){
-                
-              });
-            }
-            this.$store.state.userUuid = uuid;
-            // console.log(this.getOsVersion())
-            // navigator.onLine //是否联网
+          });
         }
      }
     //禁止使用返回键

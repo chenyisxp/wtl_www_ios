@@ -851,11 +851,11 @@ export default {
      let wtl_without_login =localStorage.getItem("wtl_without_login");
      let times= localStorage.getItem("wtl_app_times") || 0;
      console.log(wtlEmail,wtl_without_login,times)
-     console.log( this.netWorkStatus =='online',!wtlEmail, wtl_without_login=='')
+     console.log( this.netWorkStatus =='online',!wtlEmail, wtl_without_login!=1)
      //没有邮箱且没有点过不登录按钮 弹
      //没有邮箱且点过不登录按钮且超过使用次数5 弹
      // this.netWorkStatus =='online' && ((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2))
-     if(this.netWorkStatus =='online' && !wtlEmail && wtl_without_login==''){
+     if(this.netWorkStatus =='online' && !wtlEmail && wtl_without_login!=1){
         // MessageBox.confirm('',{
         //   title:'提示',
         //   message:'是否登录',
@@ -881,10 +881,10 @@ export default {
      if(!that.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
       clearInterval(that.$store.state.globalGetConnectStatus);
       that.$store.state.globalGetConnectStatus = setInterval(() => {
-        if(that.GLOBAL_CONFIG.TESTFLAG){
-          clearInterval(that.$store.state.globalGetConnectStatus);
-          return;
-        }
+          if(that.GLOBAL_CONFIG.TESTFLAG){
+            clearInterval(that.$store.state.globalGetConnectStatus);
+            return;
+          }
           if(that.envType=='env_ios'){
             that.globalSendMsgToIos("handleGetBleStateByIndex","","");
           }else{
@@ -892,10 +892,11 @@ export default {
             that.nowConnectStatus =that.$store.state.getConnectStatus;
             if(that.nowConnectStatus=='connected' && that.modbusSendDataTimes<5){
                 //发出系统信息请求
-                // that.callSendModbusSystemData('0A0303e80001','0105','blueToothManage');//模拟响应：0A03020000851D
-                this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
+                // that.callSendModbusSystemData('0A0303e80001','0105','newIndex');//模拟响应：0A03020000851D
+                // this.callSendModbusSystemData('0A0303E8001E','C944','newIndex');//模拟响应：0A033C000000000851D
                 //20211102
-                // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
+                // this.callSendModbusSystemData('0A0303E80023','1885','newIndex');//增加五个焊接时长
+                this.callSendModbusSystemData('0A0303E80028','DFC4','newIndex');//增加10个焊接时长
             }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){

@@ -831,9 +831,10 @@ export default {
                     //发出系统信息请求
                     // this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
                     //20211024 读取全部
-                    this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A03020000851D
+                    // this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A03020000851D
                     //20211102
                     // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
+                    this.callSendModbusSystemData('0A0303E80028','DFC4','blueToothManage');//增加10个焊接时长 
                 }
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
             }
@@ -845,9 +846,12 @@ export default {
                 //发出验证请求
                 // this.callSendModbusSystemData('0A0303E80001','0105','blueToothManage');//模拟响应：0A03020000851D
                 //20211024 读取全部
-                this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
+                // this.callSendModbusSystemData('0A0303E8001E','C944','blueToothManage');//模拟响应：0A033C000000000851D
                 //20211102
                 // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长   
+                //20211103
+                this.callSendModbusSystemData('0A0303E80028','DFC4','blueToothManage');//增加10位焊接时长   
+                
             }else{
                 setTimeout(() => {
                     this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
