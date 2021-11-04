@@ -2204,15 +2204,36 @@ Array.prototype.in_array = function (element) {
                             //60长度
                             // window.modbusBroastFromApp("0A 03 3C 04 01 33 00 2C 34 34 31 42 2C 2C 35 41 42 34 2C 2C 31 37 39 4D 00 47 41 43 49 41 20 2F 43 43 44 50 2F 41 4C 4D 53 20 41 30 32 43 30 0A 0D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F8 78")
                             //发送机器信息
-                            if(receiveBleData.length>60){
+                            if(receiveBleData.length>80){
                                 let patch = receiveBleData.substring(4,6);//厂商33
                                 let btAddress=receiveBleData.substring(6,24);;//蓝牙地址
                                 let machineType=receiveBleData.substring(24,30);;//机器型号
+                                let migTm = receiveBleData.substring(30,32);;//不同模式细腻
+                                let tigAc = receiveBleData.substring(32,34);;//不同模式细腻
+                                let tigDc = receiveBleData.substring(34,36);;//不同模式细腻
+                                let mma = receiveBleData.substring(36,38);;//不同模式细腻
+                                let cut = receiveBleData.substring(38,40);;//不同模式细腻
+
                                 store.state.btAddress=btAddress;//放到store里
+                                //机器信息
                                 InterfaceService.addMachineInfo({patch:patch,btAddress:btAddress,machineType:machineType,content:receiveBleData,app_uuid:store.state.userUuid},(data)=>{
-                    
                                 },function(data){
-                                    
+                                });
+                                // `TIG_AC_WELD_TM` varchar(16)  DEFAULT NULL COMMENT 'TIGAC时长来自机器',
+                                // `TIG_DC_WELD_TM` varchar(16)  DEFAULT NULL COMMENT 'TIGDC焊时长来自机器',
+                                // `MMA_WELD_TM` varchar(16)  DEFAULT NULL COMMENT 'MMA焊时长来自机器',
+                                // `CUT_WELD_TM` varchar(16)  DEFAULT NULL COMMENT 'CUT焊时长来自机器',
+                                //机器上发的焊接信息
+                                let params=[{
+                                    BT_ADDRESS:btAddress,
+                                    MIG_WELD_TM:migTm,
+                                    TIG_AC_WELD_TM:tigAc,
+                                    TIG_DC_WELD_TM:tigDc,
+                                    MMA_WELD_TM:mma,
+                                    CUT_WELD_TM:cut
+                                }]
+                                InterfaceService.batchInsertMachineWeld(params,(data)=>{
+                                },function(data){
                                 });
                             }
                             break;

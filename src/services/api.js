@@ -199,6 +199,8 @@ const interMap = [
     
     { method: 'upLoadData', code: "ac020001" },//上传数据
     { method: 'addMachineInfo', code: "ac020002" },//机器信息记录
+    { method: 'batchInsertMachineWeld', code: "ac020003" },//机器的焊接记录
+    { method: 'batchInsertAppWeld', code: "ac020004" },//app的焊接记录
     
     
 
