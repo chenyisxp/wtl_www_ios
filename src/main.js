@@ -24,6 +24,7 @@ import {Icon,Switch} from 'iview';
 import { InterfaceService } from "@/services/api";
 import { listenerCount } from 'node-notifier'
 import { BASE_CONFIG } from './lib/config/config'
+import date from './filters/date'
 // import {
 //   InputNumber,
 //   Button,
@@ -266,9 +267,46 @@ new Vue({
       }
       return version
     },
+    send3DaysData(){
+      //初始化
+      let weldInfo3Days =localStorage.getItem("weldInfo3Days");
+      if(weldInfo3Days!=null && weldInfo3Days!=''){
+          try {
+            let list =JSON.parse(weldInfo3Days);
+            let times = new Date().getTime();
+            let allTM =3*24*60*60*1000;//3天
+            let temp = [];
+            list.forEach(eInfo => {
+              console.log((times-eInfo.RECORD_SECOND)<allTM,times,eInfo.RECORD_SECOND,allTM)
+              if((times-eInfo.RECORD_SECOND)<allTM){
+                //只留3天内的
+                temp.push(eInfo);
+              }
+            });
+            store.state.weldInfo3Days=temp;
+            localStorage.setItem("weldInfo3Days",JSON.stringify(temp));
+            console.log(temp)
+            
+            if(temp.length>0){
+              InterfaceService.batchInsertAppWeld(temp,(data)=>{
+                  store.state.weldInfo3Days=[];
+                  //清空localstorage
+                  localStorage.setItem("weldInfo3Days","")
+              },function(data){
+                  
+              });  
+            }
+          } catch (error) {
+            console.log(error)
+            store.state.weldInfo3Days=[];
+            localStorage.setItem('weldInfo3Days','')
+          }
+      }
+      
+    }
    },
    mounted () {
-     
+    
     //获得本地三天记录
     //let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
     //ios
@@ -323,8 +361,11 @@ new Vue({
       this.$store.state.userUuid = uuid;
      let haveSend =false;
      window['sendToHtmlNetState']= (netStatus) => {
+       alert(netStatus)
        if((netStatus+"").indexOf("Online")>-1){
         this.$store.state.netWorkStatus='online';
+        //本地三天记录上传
+        this.send3DaysData();
        }else{
         this.$store.state.netWorkStatus='offLine';
         return;
@@ -335,7 +376,6 @@ new Vue({
           InterfaceService.insertUuidFuc(
             params,(data)=>{
           },function(data){
-            
           });
         }
      }

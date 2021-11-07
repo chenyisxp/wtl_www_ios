@@ -2137,7 +2137,7 @@ export default {
   destroyed(){
         window.removeEventListener('popstate', this.goBack, false);
        clearTimeout(this.autoTimeoutFlag);
-       clearInterval(this.$store.state.modbusCircleTimer)
+      //  clearInterval(this.$store.state.modbusCircleTimer)//假如是焊接中跳走的就不能清除
       //  window.removeEventListener('popstate', this.go('/newIndex'), false);
       //记录最后一次修改的字段20200823 没用了吗
       if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走

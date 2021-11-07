@@ -1514,7 +1514,7 @@ export default {
       let self =this;
       self.firstInit=true;
       clearTimeout(self.autoTimeoutFlag);
-      clearInterval(self.$store.state.modbusCircleTimer)
+    //   clearInterval(self.$store.state.modbusCircleTimer)//假如是焊接中跳走的就不能清除
     //   window.removeEventListener(null, self.goBack, "#");
     window.removeEventListener('popstate', this.goBack, false);
 

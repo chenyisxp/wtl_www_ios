@@ -846,6 +846,11 @@ export default {
     }
   },
   mounted: function () {
+    //回到首页且不是焊接中清除请求
+    if(this.weldingStatus!=1){
+      clearInterval(this.$store.state.modbusCircleTimer)
+      clearInterval(this.$store.state.weldingInterval)
+    }
      let that = this;
      let wtlEmail = localStorage.getItem("wtl_login_email");;
      let wtl_without_login =localStorage.getItem("wtl_without_login");
@@ -1056,6 +1061,9 @@ export default {
       },
       isModbusModal(){
             return this.$store.state.isModbusModal;
+      },
+      weldingStatus(){
+        return this.$store.state.weldingStatus;
       }
   },watch: {
     isConnectStatus (newVal, oldVal) {

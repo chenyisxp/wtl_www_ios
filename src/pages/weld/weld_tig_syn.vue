@@ -1376,7 +1376,7 @@ export default {
   destroyed(){
       this.firstInit =true;
        clearTimeout(this.autoTimeoutFlag);
-       clearInterval(this.$store.state.modbusCircleTimer)
+    //    clearInterval(this.$store.state.modbusCircleTimer)//假如是焊接中跳走的就不能清除
         window.removeEventListener('popstate', this.goBack, false);
     //    window.removeEventListener('popstate', this.go('/newIndex'), false);
   }
