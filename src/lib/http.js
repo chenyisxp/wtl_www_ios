@@ -101,11 +101,11 @@ let Common = {
                     duration: 1500
                 });*/
                 if (STATE_CODE.ERROR_CODE.test(data.respCode)) {
-                    Toast({
-                        message: '系统异常'+JSON.stringify(data),
-                        position: 'middle',
-                        duration: 1500
-                    });
+                    // Toast({
+                    //     message: '系统异常'+JSON.stringify(data),
+                    //     position: 'middle',
+                    //     duration: 1500
+                    // });
                     typeof errorCallback === 'function' && errorCallback(data);
                 } else if (data.respCode == STATE_CODE.SESSION_TIMEOUT_CODE || data.respCode == STATE_CODE.HAS_LOGIN_CODE) {
                     // $router.push({
@@ -129,11 +129,11 @@ let Common = {
         }
 
         function failCallbacks(resp){
-            Toast({
-                  message: '系统异常'+JSON.stringify(resp),
-                  position: 'middle',
-                  duration: 1500
-            }); 
+            // Toast({
+            //       message: '系统异常'+JSON.stringify(resp),
+            //       position: 'middle',
+            //       duration: 1500
+            // }); 
             requestDone = true;
             if (typeof loadingEndCallback == 'function') {
                 loadingEndCallback();
@@ -351,7 +351,7 @@ let Common = {
             requestDone = true;
 
             if (!resp) {
-                Toast('文件下载链接失败');
+                // Toast('文件下载链接失败');
                 //Message.error('文件下载链接失败');
                 return false
             }
@@ -421,7 +421,7 @@ let Common = {
                 // link.click()
             }else{
                 //Message.error('文件下载失败');
-                Toast('文件下载链接失败');
+                // Toast('文件下载链接失败');
             }
             
         }
@@ -456,21 +456,21 @@ let Common = {
             if(response.status == '200'){
                 typeof callback === 'function' && callback(response);
             }else{
-                Toast({
-                    message: '系统异常'+JSON.stringify(response),
-                    position: 'middle',
-                    duration: 1500
-                });
+                // Toast({
+                //     message: '系统异常'+JSON.stringify(response),
+                //     position: 'middle',
+                //     duration: 1500
+                // });
             }
             
         })
         .catch(function (error) {
             console.log(error);
-            Toast({
-                message: '系统异常'+JSON.stringify(error),
-                position: 'middle',
-                duration: 1500
-            });
+            // Toast({
+            //     message: '系统异常'+JSON.stringify(error),
+            //     position: 'middle',
+            //     duration: 1500
+            // });
         });
     }
 }
