@@ -1219,7 +1219,17 @@ Array.prototype.in_array = function (element) {
             }
             function buidTm(){
                 let time =new Date();
-                return `${time.getFullYear()}-${time.getMonth()+1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:00`
+                let month = time.getMonth()+1;
+                month=month<10?"0"+month:month;
+                let day =time.getDate();
+                day=day<10?"0"+day:day;
+                let hour =time.getHours();
+                hour=hour<10?"0"+hour:hour;
+                let minutes =time.getMinutes();
+                minutes=minutes<10?"0"+minutes:minutes;
+                let seconds =time.getSeconds();
+                seconds=seconds<10?"0"+seconds:seconds;
+                return `${time.getFullYear()}-${month}-${day} ${hour}:${minutes}:${seconds}`
             }
             function tigmanSpecilBuildHeader(arr1,arr2,pageFrom){
                  var buildArr = ((Array(8).join(0) + parseInt(arr1,10).toString(2)).slice(-8)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
