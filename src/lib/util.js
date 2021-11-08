@@ -2245,11 +2245,11 @@ Array.prototype.in_array = function (element) {
                                 let btAddress=recontent.substring(12,48);;//蓝牙地址
                                 let machineType=recontent.substring(48,idx);;//机器型号
 
-                                let migTm = recontent.substring(clength-20,clength-16);;//不同模式细腻
-                                let tigAc = recontent.substring(clength-16,clength-12);;//不同模式细腻
-                                let tigDc = recontent.substring(clength-12,clength-8);;//不同模式细腻
-                                let mma = recontent.substring(clength-8,clength-4);;//不同模式细腻
-                                let cut = recontent.substring(clength-4,clength);;//不同模式细腻
+                                let migTm = recontent.substring(clength-24,clength-20);;//不同模式细腻
+                                let tigAc = recontent.substring(clength-20,clength-16);;//不同模式细腻
+                                let tigDc = recontent.substring(clength-16,clength-12);;//不同模式细腻
+                                let mma = recontent.substring(clength-12,clength-8);;//不同模式细腻
+                                let cut = recontent.substring(clength-8,clength-4);;//不同模式细腻
 
                                 store.state.btAddress=btAddress;//放到store里
                                 //机器信息
