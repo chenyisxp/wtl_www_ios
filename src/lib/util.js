@@ -45,7 +45,10 @@ Array.prototype.in_array = function (element) {
             var modbusWeldLongTime=0;//是否开始焊接了
             var modbusBeginWeldTm='';//焊接开始时间
             var modbusBeginWeldInfo='';//焊接开始的参数
-            
+            var modbusBeginWeldCurVol='';//焊接电压电流等
+            var weldingCur='';//电流
+            var weldingVoltage ='';//电压
+
             var checkDataModbus={};
             var checkPageModbus={};
             var checkStatusModbus={};
@@ -1022,6 +1025,9 @@ Array.prototype.in_array = function (element) {
                                     BEGIN_TM:modbusBeginWeldTm,
                                     END_TM :buidTm(),
                                     COST_TM : modbusWeldLongTime,
+                                    WELD_DATA:modbusBeginWeldCurVol,//电压\电流
+                                    WELD_CUR:weldingCur,
+                                    WELD_VOL:weldingVoltage,
                                     RECORD_SECOND:new Date().getTime()//ms 时间戳
                                 });
                                 // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
@@ -1219,7 +1225,17 @@ Array.prototype.in_array = function (element) {
             }
             function buidTm(){
                 let time =new Date();
-                return `${time.getFullYear()}-${time.getMonth()+1}-${time.getDate()} ${time.getHours()}:${time.getMinutes()}:00`
+                let month = time.getMonth()+1;
+                month=month<10?"0"+month:month;
+                let day =time.getDate();
+                day=day<10?"0"+day:day;
+                let hour =time.getHours();
+                hour=hour<10?"0"+hour:hour;
+                let minutes =time.getMinutes();
+                minutes=minutes<10?"0"+minutes:minutes;
+                let seconds =time.getSeconds();
+                seconds=seconds<10?"0"+seconds:seconds;
+                return `${time.getFullYear()}-${month}-${day} ${hour}:${minutes}:${seconds}`
             }
             function tigmanSpecilBuildHeader(arr1,arr2,pageFrom){
                  var buildArr = ((Array(8).join(0) + parseInt(arr1,10).toString(2)).slice(-8)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' ');
@@ -2245,11 +2261,11 @@ Array.prototype.in_array = function (element) {
                                 let btAddress=recontent.substring(12,48);;//蓝牙地址
                                 let machineType=recontent.substring(48,idx);;//机器型号
 
-                                let migTm = recontent.substring(clength-20,clength-16);;//不同模式细腻
-                                let tigAc = recontent.substring(clength-16,clength-12);;//不同模式细腻
-                                let tigDc = recontent.substring(clength-12,clength-8);;//不同模式细腻
-                                let mma = recontent.substring(clength-8,clength-4);;//不同模式细腻
-                                let cut = recontent.substring(clength-4,clength);;//不同模式细腻
+                                let migTm = recontent.substring(clength-24,clength-20);;//不同模式细腻
+                                let tigAc = recontent.substring(clength-20,clength-16);;//不同模式细腻
+                                let tigDc = recontent.substring(clength-16,clength-12);;//不同模式细腻
+                                let mma = recontent.substring(clength-12,clength-8);;//不同模式细腻
+                                let cut = recontent.substring(clength-8,clength-4);;//不同模式细腻
 
                                 store.state.btAddress=btAddress;//放到store里
                                 //机器信息
@@ -2336,7 +2352,14 @@ Array.prototype.in_array = function (element) {
                         //统一焊接中数据处理 注意都是两个字节
                         case '0A0304':
                             // DAB1 0100 0200 8658 双字节
-                            // 0A03 04 0032 0032 60E9 =receiveBleData cut模式                                                    
+                            // 0A03 04 0032 0032 60E9 =receiveBleData cut模式                                          
+                            modbusBeginWeldCurVol=receiveBleData;  
+                            try {
+                                weldingCur = parseInt(receiveBleData.substring(8,10),16);
+                                weldingVoltage =parseInt(receiveBleData.substring(12,14),16);
+                            } catch (error) {
+                                
+                            }       
                             let content =nowModalIdx+receiveBleData.substring(8,10)+receiveBleData.substring(6,8)+receiveBleData.substring(12,14)+receiveBleData.substring(10,12);
                             let crc =crcModelBusClacQuery(content,true);
                             changeNewData ='DA'+content+crc;
@@ -2919,6 +2942,9 @@ Array.prototype.in_array = function (element) {
                                 BEGIN_TM:modbusBeginWeldTm,
                                 END_TM :buidTm(),
                                 COST_TM : modbusWeldLongTime,
+                                WELD_DATA:modbusBeginWeldCurVol,//电压\电流
+                                WELD_CUR:weldingCur,
+                                WELD_VOL:weldingVoltage,
                                 RECORD_SECOND:new Date().getTime()//ms 时间戳
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
@@ -3033,6 +3059,9 @@ Array.prototype.in_array = function (element) {
                                 BEGIN_TM:modbusBeginWeldTm,
                                 END_TM :buidTm(),
                                 COST_TM : modbusWeldLongTime,
+                                WELD_DATA:modbusBeginWeldCurVol,//电压\电流
+                                WELD_CUR:weldingCur,
+                                WELD_VOL:weldingVoltage,
                                 RECORD_SECOND:new Date().getTime()//ms 时间戳
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
@@ -3113,6 +3142,9 @@ Array.prototype.in_array = function (element) {
                                 BEGIN_TM:modbusBeginWeldTm,
                                 END_TM :buidTm(),
                                 COST_TM : modbusWeldLongTime,
+                                WELD_DATA:modbusBeginWeldCurVol,//电压\电流
+                                WELD_CUR:weldingCur,
+                                WELD_VOL:weldingVoltage,
                                 RECORD_SECOND:new Date().getTime()//ms 时间戳
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
@@ -3226,6 +3258,9 @@ Array.prototype.in_array = function (element) {
                                 BEGIN_TM:modbusBeginWeldTm,
                                 END_TM :buidTm(),
                                 COST_TM : modbusWeldLongTime,
+                                WELD_DATA:modbusBeginWeldCurVol,//电压\电流
+                                WELD_CUR:weldingCur,
+                                WELD_VOL:weldingVoltage,
                                 RECORD_SECOND:new Date().getTime()//ms 时间戳
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
@@ -3365,6 +3400,9 @@ Array.prototype.in_array = function (element) {
                             BEGIN_TM:modbusBeginWeldTm,
                             END_TM :buidTm(),
                             COST_TM : modbusWeldLongTime,
+                            WELD_DATA:modbusBeginWeldCurVol,//电压\电流
+                            WELD_CUR:weldingCur,
+                            WELD_VOL:weldingVoltage,
                             RECORD_SECOND:new Date().getTime()//ms 时间戳
                         });
                         // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});

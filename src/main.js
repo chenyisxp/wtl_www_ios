@@ -311,28 +311,21 @@ new Vue({
     //let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
     //ios
     if(BASE_CONFIG.ENV_IOS_FLAG){
-      // Toast('weldInfo3DaysFuc')
-      this.globalSendMsgToIos("handSaveReadByFuction","weldInfo3DaysFuc","");//请求最后连接蓝牙名字
-      window['weldInfo3DaysFuc']= (weldInfo3DaysList) => {
-        try {
-          this.$store.state.weldInfo3Days=JSON.parse(weldInfo3DaysList || '[]');
-        } catch (error) {
-          
-          this.globalSendMsgToIos("handSaveWrite","weldInfo3DaysFuc","");//请求最后连接蓝牙名字
-          this.$store.state.weldInfo3Days=[];
-        }
-          
-      }
       //获取网络状态
       setInterval(()=>{
         this.globalSendMsgToIos("getNetWorkStatus","","");//请求最后连接蓝牙名字
       },5000)
-      
     }else{
       //安卓
-
+      //获取网络状态
+      let nStat ='';
+      setInterval(()=>{
+        nStat = window.android?window.android.getAndroidNetStatus():'';
+        if(nStat){
+          window.sendToHtmlNetState(nStat);
+        }
+      },5000)
     }
-    
     //uuid请求参数赋值
     //每次启动都重置 希望用户登录
     localStorage.setItem("wtl_without_login",''); 
@@ -361,7 +354,6 @@ new Vue({
       this.$store.state.userUuid = uuid;
      let haveSend =false;
      window['sendToHtmlNetState']= (netStatus) => {
-       alert(netStatus)
        if((netStatus+"").indexOf("Online")>-1){
         this.$store.state.netWorkStatus='online';
         //本地三天记录上传

@@ -29,6 +29,7 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import {InterfaceService} from '@/services/api'
+import { BASE_CONFIG } from '../../lib/config/config'
 export default {
   data() {
     return {
@@ -82,9 +83,9 @@ export default {
                         clearInterval(inter);//清空
                     }
                 }, 1000);
-                Toast("邮件验证码已重新发送，请注意查收！")
+                Toast(BASE_CONFIG.errorMsgMap['邮件验证码已重新发送，请注意查收'])
             }else{
-                Toast("邮件验证码发送失败")
+                Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }
         },function(data){
         
@@ -92,13 +93,13 @@ export default {
     },
     handleSubmit(){
         if(!this.email){
-            Toast("请填写邮箱")
+            Toast(BASE_CONFIG.errorMsgMap['邮箱不能为空'])
             return;
         }
         let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
         if(this.email && !re.test(this.email)){
-            Toast("邮箱格式不正确")
-             return;
+            Toast(BASE_CONFIG.errorMsgMap['邮箱格式不正确'])
+            return;
         }
 
         if(this.emailCode && this.emailCode.length>3){
@@ -107,7 +108,7 @@ export default {
                     if(data && data.respData && data.respData.respCode == '0000'){
                         this.go('/registerStep3')
                     }else{
-                        Toast(data.respData.respMsg || '请输入正确的验证码')
+                        Toast(data.respData.respMsg || BASE_CONFIG.errorMsgMap['请输入正确的验证码'])
                     }
                 },function(data){
                 
@@ -118,7 +119,7 @@ export default {
             // Toast("Sign in successful");
             // this.go('/registerStep3')
         }else{
-             Toast("请输入验证码");
+             Toast(BASE_CONFIG.errorMsgMap['请输入验证码'])
         }
     },
     go(url){

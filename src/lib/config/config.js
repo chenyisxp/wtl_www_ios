@@ -584,6 +584,28 @@ let BASE_CONFIG = {
             pfc0_max_cur:110,
             pfc1_max_cur:200
         }
+   },
+   errorMsgMap:{
+       "登录成功":"Login succeeded",
+       "邮箱不能为空":"Mailbox cannot be empty",
+       "邮箱格式不正确":"The mailbox format is incorrect",
+       "密码不能为空":"Password cannot be empty",
+       "请检查帐号或密码是否正确":"Please check whether the account or password is correct",
+       "当前邮箱已注册":"The current mailbox is already registered",
+       "请输入正确的验证码":"Please enter the correct verification code",
+       "邮件已发送请注意查收":"The mail has been sent. Please check it",
+       "邮件验证码发送失败":"Mail verification code sending failed",
+       "请输入验证码":"Please enter the verification code",
+       "邮件验证码已重新发送，请注意查收":"The email verification code has been sent again. Please check it!",
+       "请输入密码":"Please input a password",
+       "前后输入的密码不一致":"The passwords entered before and after are inconsistent",
+       "注册成功":"login was successful",
+       "当前邮箱还未注册":"The current mailbox has not been registered",
+       "密码重置成功":"Password reset succeeded",
+       "重置密码失败":"Failed to reset password"
+
+
+
    }
 
 };

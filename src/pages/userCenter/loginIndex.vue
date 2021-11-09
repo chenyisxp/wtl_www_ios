@@ -24,6 +24,7 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import {InterfaceService} from '@/services/api'
+import { BASE_CONFIG } from '../../lib/config/config'
 export default {
   data() {
     return {
@@ -53,22 +54,22 @@ export default {
     },
     handleSubmit(){
         if(!this.email){
-            Toast("请输入邮箱")
+            Toast(BASE_CONFIG.errorMsgMap['邮箱不能为空'])
             return;
         }
         let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
         if(this.email && !re.test(this.email)){
-            Toast("邮箱格式不正确");
+            Toast(BASE_CONFIG.errorMsgMap['邮箱格式不正确'])
             return;
         }else{
             localStorage.setItem("wtl_email",this.email);
         }
         if(!this.password){
-            Toast("请输入密码")
+            Toast(BASE_CONFIG.errorMsgMap['密码不能为空'])
             return;
         }
         if(this.GLOBAL_CONFIG.TESTFLAG){
-            Toast("登录成功");
+            Toast(BASE_CONFIG.errorMsgMap['登录成功'])
             localStorage.setItem("wtl_login_email",this.email);
             this.$router.push('/newIndex');
             return;
@@ -79,7 +80,7 @@ export default {
             this.$store.state.email=this.email;
             
             if(data && data.respData.respCode=='0000' && data.respData.msgList  && data.respData.msgList.length>0){
-                Toast("登录成功！");
+                Toast(BASE_CONFIG.errorMsgMap['登录成功'])
                 localStorage.setItem("wtl_login_email",this.email);
                 setTimeout(() => {
                     this.$router.push('/newIndex');
@@ -88,12 +89,12 @@ export default {
             }else if(data && data.respData.respCode=='1001'){
                 // respCode: "1001"
                 // respMsg: "当前邮箱还未注册"
-                Toast( data.respData.respMsg);
+                Toast(data.respData.respMsg);
                 setTimeout(() => {
                    this.handleGo(2);
                 }, 1000);
             }else{
-                Toast(data.respData.respMsg || "请检查帐号或密码是否正确");
+                Toast(data.respData.respMsg || BASE_CONFIG.errorMsgMap['请检查帐号或密码是否正确']);
             }
         },function(data){
         });

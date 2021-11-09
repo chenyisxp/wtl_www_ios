@@ -23,6 +23,7 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import {InterfaceService} from '@/services/api'
+import { BASE_CONFIG } from '../../lib/config/config'
 export default {
   data() {
     return {
@@ -38,16 +39,16 @@ export default {
     },
     handleSubmit(){
         if(!this.email){
-            Toast("请填写邮箱")
+            Toast(BASE_CONFIG.errorMsgMap['邮箱不能为空'])
             return;
         }
         let re = /^\w+(?:\.\w+){0,1}@[a-zA-Z0-9]{2,14}(?:\.[a-z]{2,4}){1,2}$/;
         if(this.email && !re.test(this.email)){
-            Toast("邮箱格式不正确");
+            Toast(BASE_CONFIG.errorMsgMap['邮箱格式不正确'])
             return;
         }
         if(!this.checkCode || this.checkCode.length<4){
-            Toast("请输入验证码")
+            Toast(BASE_CONFIG.errorMsgMap['请输入验证码'])
             return;
         }
         localStorage.setItem("wtl_email",this.email);
@@ -57,7 +58,7 @@ export default {
                     if(data && data.respData && data.respData.respCode == '0000' ){
                         if(data.respData.msgList && data.respData.msgList.length>0){
                             //邮箱已注册
-                            Toast("当前邮箱已注册")
+                            Toast(BASE_CONFIG.errorMsgMap['当前邮箱已注册'])
                         }else{
                             this.nextFuc();
                         }
@@ -70,20 +71,19 @@ export default {
                 this.go('/registerStep2')
             }
         }else{
-            Toast("请输入正确的验证码")
-        }
-       
+            Toast(BASE_CONFIG.errorMsgMap['请输入正确的验证码'])
+        } 
     },
     nextFuc(){
         //确认是否注册过
         InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
-                Toast("邮件已发送请注意查收！")
+                Toast(BASE_CONFIG.errorMsgMap['邮件已发送请注意查收'])
                 setTimeout(() => {
                     this.go('/registerStep2')
                 }, 1000);
             }else{
-                Toast("邮件验证码发送失败")
+                Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }
         },function(data){
         
