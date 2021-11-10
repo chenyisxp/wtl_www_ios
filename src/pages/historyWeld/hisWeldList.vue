@@ -5,7 +5,34 @@
         {{nowConnectMachine}}
     </div> -->
     <Head :wantTo="'/newIndex'" :headName="'Histoty List'"></Head>
-    <div class="hislist">
+    <div class="hislist" v-if="isModbusModal">
+        <span class="listName" v-if="weldMsgList.length!=0">List of recent welding history:</span>
+        <div class="modbusLi">
+            <div class="li modbus"  @click="goModubusHisWeld(item)" v-for="(item,idx) in weldMsgList" :key="idx">
+                <div class="modbusTypename">
+                    <Icon type="ios-arrow-forward" />
+                    <span class="rightBox">
+                        <div class="beginTime">
+                            Start Time：{{item.BEGIN_TM}}
+                        </div>
+                        <div class="timelength">
+                            Duration Time：{{item.FORMAT_COST_TM}}
+                        </div>
+                        <div class="modelClass">
+                            Pattern：{{item.MODEL_TYPE}}
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <div v-if="weldMsgList.length==0">
+                <div class="m_word" v-if="netWorkStatus.indexOf('online')>-1">No data</div>
+                <!-- 请在联网情况下使用APP焊接才能记录最近的焊接记录 -->
+                <div class="m_word" v-else>Please use app welding in the case of networking to record the latest welding records</div>
+            </div>
+        </div>
+    </div>
+    <!-- 保留旧的规则 -->
+    <div class="hislist" v-if="!isModbusModal">
         <div class="li"  @click="gohisWeld(0)">
             <div class="typename">
                 MIG SYN<Icon type="ios-arrow-forward" />
@@ -75,6 +102,7 @@
 import { Toast ,Indicator } from 'mint-ui'
 import Head from "@/components/base/header";
 import Loading from "@/components/base/Loading";
+import {InterfaceService} from '@/services/api'
 export default {
   name: '',
   components: {
@@ -88,12 +116,14 @@ export default {
         chooseType:'',
         chooseTypeCrc:'',
         chooseTypeName:'',
-        nowConnectMachine:''
+        nowConnectMachine:'',
+        weldMsgList:[]
      } 
   },
 
   methods: {
-       go(url){
+        
+        go(url){
           this.$store.state.routerOprete=3;
           this.$router.push(url);
         },
@@ -173,6 +203,66 @@ export default {
                 this.callSendDataToBleUtil('hisWeldList',sendData,crc);
             }
         },
+        goModubusHisWeld(item){
+            this.$store.state.routerOprete=3;
+            this.isLoading=true;
+            this.loadingTimer = setTimeout(() => {
+                if(this.isLoading){
+                     this.isLoading=false;
+                }
+            }, 11000);
+            
+            let content='';
+            switch (item.MODEL_TYPE) {
+                case 'MIGSYN':
+                    this.chooseType=0;
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.migsyn.crcCode;
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.migsyn.name;
+                    // WELD_CONTENT: "DAE60A0316000100000033000100000003000B000000320064000A24445573"
+                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.migsyn.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                case 'MIGMAN':
+                    this.chooseType=1;
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.migman.crcCode
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.migman.name
+                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.migman.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                case 'TIGSYN':
+                    this.chooseType=2;
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.crcCode
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.tigsyn.name
+                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigsyn.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                case 'TIGMAN':
+                    this.chooseType=3;
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.tigman.name
+                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigman.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                case 'MMA':
+                    this.chooseType=4;
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.mma.name
+                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.mma.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                case 'CUT':
+                    this.chooseType=5;
+                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.cut.crcCode
+                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.cut.name
+                     // WELD_CONTENT: "DAE60A0316000100000033000100000003000B000000320064000A24445573"
+                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.cut.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    break;
+                default:
+                    break;
+            }
+            
+        },
         testDataFuc(chooseType){
              switch (this.chooseType) {
                 case 0:
@@ -207,6 +297,60 @@ export default {
         },
         goBack(){
             this.$router.push({path:'/newIndex',query:{}}); 
+        },
+        formatSeconds(value) { 
+                var theTime = parseInt(value);// 需要转换的时间秒 
+                var theTime1 = 0;// 分 
+                var theTime2 = 0;// 小时 
+                var theTime3 = 0;// 天
+                if(theTime > 60) { 
+                theTime1 = parseInt(theTime/60); 
+                theTime = parseInt(theTime%60); 
+                if(theTime1 > 60) { 
+                theTime2 = parseInt(theTime1/60); 
+                theTime1 = parseInt(theTime1%60); 
+                if(theTime2 > 24){
+                    //大于24小时
+                    theTime3 = parseInt(theTime2/24);
+                    theTime2 = parseInt(theTime2%24);
+                }
+                } 
+                } 
+                var result = '';
+                if(theTime > 0){
+                result = ""+parseInt(theTime)+"s";
+                }
+                if(theTime1 > 0) { 
+                result = ""+parseInt(theTime1)+"m"+result; 
+                } 
+                if(theTime2 > 0) { 
+                result = ""+parseInt(theTime2)+"h"+result; 
+                } 
+                if(theTime3 > 0) { 
+                result = ""+parseInt(theTime3)+"d"+result; 
+                }
+                return result; 
+        },
+        queryAppWeldList(){
+            // Toast(this.btAddress+"||"+this.userUuid)
+            if(this.btAddress && this.userUuid){
+                let param = {
+                    BT_ADDRESS:this.btAddress,
+                    APP_UUID:this.userUuid
+                };
+                InterfaceService.queryAppWeldInfoList(param,(data)=>{
+                    if(data.respData && data.respData.respCode=='0000'){
+                        this.weldMsgList=data.respData.msgList;
+                        this.weldMsgList.forEach(element => {
+                            // element.FORMAT_COST_TM=this.formatSeconds(102000);
+                            element.FORMAT_COST_TM=element.COST_TM+'s';
+                        });
+                    }else{
+                        
+                    }
+                },function(data){
+                });
+            }
         }
   },
   mounted: function () {
@@ -225,6 +369,7 @@ export default {
         history.pushState(null, null, document.URL);
         window.addEventListener('popstate', this.goBack, false);
     }
+    this.queryAppWeldList();
   },
   created () {
    
@@ -235,6 +380,16 @@ export default {
     },
     isModbusModal(){
       return this.$store.state.isModbusModal;
+    },
+    userUuid(){
+        return this.$store.state.userUuid;
+    },
+    btAddress(){
+        return this.$store.state.btAddress;
+    },
+    netWorkStatus(){
+        // this.$store.state.netWorkStatus='online';
+        return this.$store.state.netWorkStatus;
     }
   },destroyed(){
     this.isLoading=false;
@@ -303,6 +458,21 @@ export default {
          border-image: linear-gradient(to right,#2f4e59 , #8ac5d6 , #2f4e59)1 10 1; /* 标准的必须写在最后 */
   }
   .hislist{
+      .listName{
+          color: #8ac5d6;
+          padding-left: 20px;
+          font-size: 14px;
+      }
+      .modbusLi{
+          margin-top: 10px;
+        //   height: calc(100vh - 150px);
+          overflow: auto;
+          .m_word{
+              padding: 0 20px;
+              text-align: center;
+              color: #8ac5d6
+          }
+      }
       .li{
           padding-left: 15px;
           background: #0f3a44;
@@ -337,14 +507,51 @@ export default {
                   top:50%;
                   transform: translate(50%,-50%)
               }
+             
           }
-          .beginTime{
-              color: #778c97;
+          .modbusTypename{
+              position: relative;
+              font-size: 20px;
+              height: 70px;
+               .modelName{
+                    font-size: 14px;
+                    display: inline-block;
+                    padding: 25px 0;
+                    position: absolute;
+                    right: 45px;
+                    top:50%;
+                    transform: translate(50%,-50%)
+              }
+               .ivu-icon{
+                  position: absolute;
+                  right: 10px;
+                  top:50%;
+                  transform: translate(50%,-50%)
+              }
           }
-          .timelength{
-              color: #778c97;
-              padding-top: 5px;
+          .rightBox{
+                display: inline-block;
+                font-size: 12px;
+                line-height: 12px;
+                position: absolute;
+                left: 107px;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                .beginTime{
+                    width: 210px;
+                    color: #8ac5d6;
+                }
+                .timelength{
+                    color: #8ac5d6;
+                    padding-top: 5px;
+                }
+                .modelClass{
+                    color: #8ac5d6;
+                    padding-top: 5px;
+                }
+                
           }
+          
       }
      
   }

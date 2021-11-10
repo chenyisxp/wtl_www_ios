@@ -603,9 +603,6 @@ let BASE_CONFIG = {
        "当前邮箱还未注册":"The current mailbox has not been registered",
        "密码重置成功":"Password reset succeeded",
        "重置密码失败":"Failed to reset password"
-
-
-
    }
 
 };

@@ -201,6 +201,7 @@ const interMap = [
     { method: 'addMachineInfo', code: "ac020002" },//机器信息记录
     { method: 'batchInsertMachineWeld', code: "ac020003" },//机器的焊接记录
     { method: 'batchInsertAppWeld', code: "ac020004" },//app的焊接记录
+    { method: 'queryAppWeldInfoList', code: "ac020005" },//查询历史焊接记录
     
     
 

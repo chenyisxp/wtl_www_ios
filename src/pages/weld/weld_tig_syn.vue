@@ -748,7 +748,7 @@ export default {
                         num =this.jinzhiChange2jinzhiFuc(`00000000${value}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
                         break;
                         default:
-                            reurn;
+                           num =this.jinzhiChangeFuc(value);
                         break;
                     }
                 }else{

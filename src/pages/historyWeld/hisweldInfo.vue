@@ -56,7 +56,7 @@
                  <div class="m-l3"></div>
         </div>     
     </div>
-    <div class="btnli">
+    <div class="btnli" v-if="!isModbusModal">
           <div class="appBtn" type="primary" ghost @click="applyWeld">Application</div>
           <!-- <Button type="info" ghost class="info" @click="go('/memoryManage')">保存焊接参数</Button> -->
     </div>
@@ -605,7 +605,10 @@ export default {
   computed:{
     envType(){
         return this.$store.state.envType;
-    }
+    },
+    isModbusModal(){
+      return this.$store.state.isModbusModal;
+    },
   },destroyed(){
      clearTimeout(this.loadingTimer);
      window.removeEventListener('popstate', this.goBack, false);

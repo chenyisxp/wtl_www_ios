@@ -819,8 +819,8 @@ Array.prototype.in_array = function (element) {
                         break;
                     case 'hisweldlist':
                         if(store.state.isModbusModal){
-                            //hisweldlist
-                            rstInfo =buidDataByPagefrom(pageFrom,dirctiveType,data,this);
+                            //hisweldlist modbus的历史模式比较特殊直接读取数据库的焊接记录，所以使用标准解析
+                            rstInfo =buidDataByPagefrom('newIndex',dirctiveType,data,this);
                         }else{
                             rstInfo =buidDataByPagefrom('newIndex',dirctiveType,data,this);
                         }
@@ -836,7 +836,6 @@ Array.prototype.in_array = function (element) {
             // }
             //抽取的公共部分
             function buidDataByPagefrom(pageFrom,dirctiveType,data,_this){
-                console.log(data)
                 var rstInfo ={};
                 //请求mig syn模式数据
                 if(compareString(dirctiveType,weldDirctive.migSyn)){
@@ -981,27 +980,29 @@ Array.prototype.in_array = function (element) {
                     }
                     console.log(rstInfo)
                 }else if(compareString(dirctiveType,weldDirctive.cut)){
-                    console.log(data)
+                    // console.log(data)
                     // var strArr =data.split(' ');
                     // DA E6 || 0A 03 12 00 00 00 00 00 00 00 00 00 3C 00 01 00 01 00 02 00 01 F8 04 ||55 73
                     // window.modbusBroastFromApp("0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5");
                     data=data.replace(/\s*/g,"");//.replaceAll(" ","");
                     let datas = "";
+                    //旧的modbus histroy 切割电流前都不要
+                    // DA C6 0A 03 68 00 0F 11 04 00 00 00 00 00 33 00 01 00 00 00 03 00 0B 00 00 00 32 00 64 00 0A 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 1D CC
                     if(pageFrom == 'memory' || pageFrom=='hisweldlist'){
                         datas = data.substring(18,data.length);
                     }else{
                         datas = data.substring(10,data.length);
                     }
                     
-                    console.log(data)
-                    console.log(datas)
+                    // console.log(data)
+                    // console.log(datas)
                     var strArr = [];
                     for(var i=0;i<datas.length;i+=4){
                         strArr.push(datas.slice(i,i+4));
                     }
                     let byte0 =((Array(16).join(0) + parseInt(strArr[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                     var byte1Bean ={};
-                    console.log(byte0)
+                    // console.log(byte0)
                         byte1Bean.isReadyFlag=`${byte0[5]}${byte0[6]}${byte0[7]}` == '011'?1:0,//7-9;
                         byte1Bean.weldStatus=byte0[15];//0:未焊接  1:在焊接
                         // alert(byte1Bean.weldStatus)
@@ -1020,7 +1021,8 @@ Array.prototype.in_array = function (element) {
                                 
                                 uploadAppWeldInfoList({
                                     BT_ADDRESS: store.state.btAddress, 
-                                    MODEL_TYPE : rstInfo.weldType,
+                                    APP_UUID:store.state.userUuid,
+                                    MODEL_TYPE : 'CUT',
                                     WELD_CONTENT : modbusBeginWeldInfo,
                                     BEGIN_TM:modbusBeginWeldTm,
                                     END_TM :buidTm(),
@@ -1057,6 +1059,7 @@ Array.prototype.in_array = function (element) {
                     rstInfo.nowTypeList=JSON.parse(JSON.stringify(weldParam.cutTypeList))
                     rstInfo.weldType='CUT';
                     rstInfo.weldTypeNum=_this.GLOBAL_CONFIG.callWeldTypeData.cut.newIndex;//这个和首页里的配对
+                    console.log(strArr)
                     rstInfo.nowTypeList.forEach(element => {
                         switch (element.typeName) {
                             case 'MODE':
