@@ -1,7 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-// import MintUI from 'mint-ui'
+import MintUI from 'mint-ui'
 // import wx from 'weixin-js-sdk'
 import $ from 'jquery'
 
@@ -15,7 +15,7 @@ import filters from './filters/index'
 // import filters from './lib/filters'
 import directive from './lib/directive'
 import store from './store/index.js'
-// import { MessageBox ,Popup } from 'mint-ui'
+import { MessageBox ,Popup } from 'mint-ui'
 import { Indicator,Toast } from 'mint-ui'
 
 import iView from 'iview';
@@ -117,7 +117,7 @@ Vue.use(utils_ios)
 
 Vue.use(filters)
 Vue.use(directive)
-// Vue.use(MintUI)
+Vue.use(MintUI)
 Vue.use(iView);
 /* eslint-disable no-new */
 new Vue({
