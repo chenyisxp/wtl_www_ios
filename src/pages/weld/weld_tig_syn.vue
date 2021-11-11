@@ -690,7 +690,9 @@ export default {
                     list  =this.$store.state.rstInfo;
                 }
                 let bitInfoList = list.initBean.bitInfoList;
-                let num =this.jinzhiChange2jinzhiFuc(`0000011${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+                // console.log(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`)
+                // let num =this.jinzhiChange2jinzhiFuc(`0000011${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+                let num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}011${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
                 data =  this.getDirective(this.typeName, 'Getready')+num;//011000000000 tigsyn
             }else{
                 data =  this.getDirective(this.typeName, 'Getready')+ '0000';
@@ -745,7 +747,8 @@ export default {
                     // 9~11	焊接电源工作模式
                     switch (type) {
                         case 'MODE':
-                        num =this.jinzhiChange2jinzhiFuc(`00000000${value}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+                        // console.log(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`)
+                        num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${value}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
                         break;
                         default:
                            num =this.jinzhiChangeFuc(value);

@@ -223,7 +223,7 @@ Array.prototype.in_array = function (element) {
                         typeName:'HF',
                         chooseKey:0,//默认选中
                         comList:[
-                            {id:0,key:'HF',value:'On'},{id:1,key:'LIFT',value:'Off'}
+                            {id:0,key:'HF',value:'Off'},{id:1,key:'LIFT',value:'On'}
                         ]
                     }
                 ],
@@ -1708,6 +1708,7 @@ Array.prototype.in_array = function (element) {
              } 
             //公共 ：10机制数转成 高低位按规则变动的 16进制数
             Vue.prototype.jinzhiChange2jinzhiFuc = function(num) {
+                console.log(num)
                 //规则1
                  // var tempNum = ((Array(8).join(0) + parseInt(num,10).toString(2)).slice(-8));
                  // parseInt(tempNum.substring(4,8),2).toString(16);//低位
@@ -3172,11 +3173,11 @@ Array.prototype.in_array = function (element) {
                     // 引弧成功,焊接中
                     // 单位
                     byte1Bean.bitInfoList = {
-                        tigmanWeldMode:`${t0List[14]}${t0List[15]}`,
-                        tigmanPinglv:t0List[13],
-                        tigmanMc:t0List[12],
-                        tigmanGas:t0List[11],
-                        tigmanCurrent:`${t0List[8]}${t0List[9]}${t0List[10]}`,//5-7
+                        tigmanWeldMode:`${t0List[14]}${t0List[15]}`,//0:短焊    1:长焊	2T4T
+                        tigmanPinglv:t0List[13],//0:无高频   1:有高频	HF
+                        tigmanMc:t0List[12],//0:非脉冲   1:脉冲	PULSE
+                        tigmanGas:t0List[11],//0:无高频   1:有高频	HF
+                        tigmanCurrent:`${t0List[8]}${t0List[9]}${t0List[10]}`,//5-7 0:交流       1:直流	ACDC
                         tigsynWeldMode:t0List[7],//5-7
                         tigMode:`${t0List[4]}${t0List[5]}${t0List[6]}`,//9-11
                         tigIsWeiding:t0List[3],

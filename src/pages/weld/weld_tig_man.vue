@@ -552,8 +552,9 @@ export default {
               list  =this.$store.state.rstInfo;
           }
           let bitInfoList = list.initBean.bitInfoList;
+          // console.log(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`)
           // 0000001000000000
-          let num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+          let num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
           console.log(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`,bitInfoList)
           data = this.getDirective(this.typeName, 'Getready')+ num;//001000000000 tigman
         }else{
@@ -591,29 +592,26 @@ export default {
           // 5~7	0:交流       1:直流
           // 8	0:短焊    1:长焊
           // 9~11	焊接电源工作模式
+          //最全的
+          console.log(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`)
           switch (type) {
             case 'MODE':
               //两个字节
-              console.log(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}0${value}`)
-              num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}0${value}`);
+              num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}0${value}`);
               break;
             case 'POLATRITY':
               //0:交流       1:直流 一个字节
               // 00000000000001000
-              console.log(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${value}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`)
-              num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${value}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+              num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}00${value}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
               break;
             case 'Pulse':
               //0:非脉冲   1:脉冲
-              num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}0${value}${bitInfoList.tigmanGas}0${value}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
+              num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${value}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
               break;
             case 'HF':
               //0:无高频   1:有高频
-              console.log(bitInfoList)
-              console.log(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${value}${bitInfoList.tigmanWeldMode}`)
               // 1 3 1 2
-              console.log(bitInfoList.tigsynWeldMode,bitInfoList.tigmanCurrent,bitInfoList.tigmanGas,bitInfoList.tigmanWeldMode)
-              num =this.jinzhiChange2jinzhiFuc(`0000001${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${value}${bitInfoList.tigmanWeldMode}`);
+              num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${value}${bitInfoList.tigmanWeldMode}`);
               break;
             default:
               break;
