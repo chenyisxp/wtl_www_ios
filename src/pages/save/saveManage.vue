@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import { CellSwipe ,Indicator,Toast} from "mint-ui";
+import { CellSwipe ,Indicator,Toast,MessageBox} from "mint-ui";
 import Loading from "@/components/base/Loading";
 import Head from "@/components/base/header";
 import index from '../../store';
@@ -71,11 +71,108 @@ export default {
             remarksText:'',
             querSendData:'',
             queryCrc:'',
-            typeName:''
+            typeName:'',
+            pupnum:''
     };
   },
 
   methods: {
+    // 给空数据的通道，直接覆盖 20211112
+    handleConfirmGo(){
+        MessageBox.confirm('',{
+            title:'Attention',
+            message:'Whether to cover？',
+            confirmButtonText:'YES',
+            cancelButtonText:'NO'
+        }).then(action => {
+            if (action == 'confirm') {
+                console.log('点击确认'+this.querSendData+'1111'); 
+                this.goEditPage();
+            }
+        }).catch(error =>{
+            if(error == 'cancel'){
+                console.log('点击取消');
+                this.goWeldPage(this.nowModalTypeId);
+            }
+        })
+    },
+    // 给空数据的通道，直接覆盖20211112
+    goEditPage(){
+        //1、发送覆盖的指令 不同模式有自己的 *F+通道数=
+        var dirctCode = this.getKeyMap(this.nowModalTypeId+'');
+         
+        //0-4焊接模式 1-9通道
+        // var num = (
+        // Array(4).join("0") + parseInt(this.pupnum, 10).toString(16)
+        // ).slice(-4);
+        //新规则
+        var num='';
+        if(this.isModbusModal){
+            num =this.jinzhiChange10jinzhiFuc(this.pupnum);
+        }else{
+            num =this.jinzhiChangeFuc(this.pupnum); 
+        }
+        var crc = this.crcModelBusClacQuery(dirctCode + num, true);
+        var sendData = "DA" + dirctCode + num + crc; 
+        this.callSendDataToBleUtil('save_Detail',sendData,crc);//覆盖第几通道数据
+        //2、前往 参数可以修改的页面
+        this.goWeldPage(this.nowModalTypeId+'');
+        
+    },
+    // 20211112
+    getKeyMap(id){
+        switch (id) {
+            case '0':
+                return this.GLOBAL_CONFIG.callEditDirect.migsyn.memory;
+                break;
+            case '1':
+                return this.GLOBAL_CONFIG.callEditDirect.migman.memory;
+                break;
+            case '2':
+                return this.GLOBAL_CONFIG.callEditDirect.tigsyn.memory;
+                break;
+            case '3':
+                return this.GLOBAL_CONFIG.callEditDirect.tigman.memory;
+                break;
+            case '4':
+                return this.GLOBAL_CONFIG.callEditDirect.mma.memory;
+                break;
+            case '5':
+                return this.GLOBAL_CONFIG.callEditDirect.cut.memory;
+                break;
+            default:
+                break;
+        }
+    },
+    //给空数据的通道，直接覆盖 20211112
+    goWeldPage(newIndexId){
+        console.log(newIndexId);
+        newIndexId =parseInt(newIndexId || 0);
+        let self =this;
+        // alert(newIndexId)
+        switch (newIndexId) {
+            case self.GLOBAL_CONFIG.callWeldTypeData.migsyn.newIndex://migsyn
+                self.$router.push({ path: '/weld_common', query:{type:'MIGSYN',pageBackTo:'/saveManage'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.migman.newIndex://migman
+                self.$router.push({ path: '/weld_common', query:{type:'MIGMAN',pageBackTo:'/saveManage'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.tigsyn.newIndex://tigsyn
+                self.$router.push({ path: '/weld_tig_syn', query:{type:'TIGMAN',pageBackTo:'/saveManage'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.tigman.newIndex://tigman
+                self.$router.push({ path: '/weld_tig_man', query:{type:'TIGMAN',pageBackTo:'/saveManage'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.mma.newIndex://mma
+                self.$router.push({ path: '/weld_mma', query:{type:'MMA',pageBackTo:'/saveManage'} });
+                break;
+            case self.GLOBAL_CONFIG.callWeldTypeData.cut.newIndex://mma
+                self.$router.push({ path: '/weld_cut', query:{type:'CUT',pageBackTo:'/saveManage'} });
+                break;
+            default:
+                break;
+        }
+    },
     goback(){
       this.$store.state.routerOprete=4;
       if(this.pageFrom){
@@ -133,6 +230,13 @@ export default {
           if(this.isModbusModal){
             // DAD60A0368000411010..........
             pupnum =parseInt(data.substring(12,14),16);
+            //判断是不是空数据
+            let ddd = data.substring(17,18)
+            if(ddd == 0){
+              this.pupnum =pupnum;
+              this.handleConfirmGo();
+              return
+            }
           }else{
             pupnum =data.substring(4,6);//通道号
             //左补零
@@ -265,7 +369,7 @@ export default {
     }
   },
   mounted: function() {
-   
+    this.nowModalTypeId=this.$store.state.nowModalTypeId;//主页中的id
     if (window.history && window.history.pushState) {
         history.pushState(null, null, document.URL);
         window.addEventListener('popstate', this.goBack, false);

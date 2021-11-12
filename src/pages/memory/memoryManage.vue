@@ -117,17 +117,28 @@ export default {
           data = data.replace(/\s+/g,"");
           var pupnum ="";
           if(this.isModbusModal){
+            // DAD00A0368000211000000000000000038005A00010001000700050001000000020000000D000400C80010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000E19A
             pupnum =parseInt(data.substring(12,14));//通道号
+            //判断是不是空数据
+            let ddd = data.substring(17,18)
+            if(ddd == 0){
+              Toast({
+                message: 'No data is stored on this channel',
+                position: 'middle',
+                iconClass: 'icon icon-success',
+                duration: 1500
+              });
+              return
+            }
           }else{
             pupnum =data.substring(4,6);//通道号
-            
             // let temp =parseInt(pupnum,16).toString(2);
             // pupnum =parseInt(parseInt(pupnum,16).toString(2).substring(1,8),2);
             //20190611 新通道规则 byte 876543210 其中 0:是单位 7-1:通道 8位 2t4t
             // 10000010  对应16进制 82
             //左补零
             pupnum=parseInt(pupnum,16).toString(2)
-            pupnum =(Array(8).join(0) + pupnum).slice(-8);;
+            pupnum =(Array(8).join(0) + pupnum).slice(-8);
             pupnum =parseInt(pupnum.substring(1,7),2);
           }
           

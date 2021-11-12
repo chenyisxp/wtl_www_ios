@@ -466,7 +466,6 @@ export default {
         }, BASE_CONFIG.scaningDuring);
     },
     beforeHandleScan(){
-        alert('beforeHandleScan')
         if(this.getConnectStatus=='connected'){
             this.searchInFlag=true;
             return;

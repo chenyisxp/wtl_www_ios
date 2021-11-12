@@ -223,7 +223,7 @@ Array.prototype.in_array = function (element) {
                         typeName:'HF',
                         chooseKey:0,//默认选中
                         comList:[
-                            {id:0,key:'HF',value:'Off'},{id:1,key:'LIFT',value:'On'}
+                            {id:0,key:'HF',value:'On'},{id:1,key:'LIFT',value:'Off'}
                         ]
                     }
                 ],
@@ -2472,6 +2472,8 @@ Array.prototype.in_array = function (element) {
                                     ddd='6'
                                     break;
                                 default:
+                                    //空数据 补0
+                                    ddd ='0'
                                     break;
                             }
                             changeNewData =`DA${beforeZui}${ddd}${receiveBleData}`;

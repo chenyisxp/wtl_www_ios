@@ -1,9 +1,9 @@
 
 
 
-// const ROOT_URL = 'http://127.0.0.1:3001';//本地
+const ROOT_URL = 'http://127.0.0.1:3001';//本地
 // const ROOT_URL = 'http://47.242.175.65:3001';//sit
-const ROOT_URL = 'http://api.shwtl.net';//sit
+// const ROOT_URL = 'http://api.shwtl.net';//sit
 
 
 
