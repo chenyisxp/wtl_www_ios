@@ -4,7 +4,7 @@
             <div class="cancelBtn" @click="handleBack">Cancel</div>
             <div class="attenWord">Reset password</div>
             <div class="inBox i-1">
-                <input placeholder="Please enter your Email" v-model="email"/>
+                <input placeholder="Please enter your Email" v-model="email" maxlength="50"/>
             </div>
             <div class="inBox i-2">
                 <input  placeholder="Input graghic code"  v-model="checkCode" maxlength="4"/>

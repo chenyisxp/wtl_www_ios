@@ -4,13 +4,13 @@
         <div class="cancelBtn" @click="handleBack">Cancel</div>
         <div class="attenWord">Sign up</div>
         <div class="inBox i-1">
-            <input placeholder="Please enter your Email" v-model="email" disabled/>
+            <input placeholder="Please enter your Email" v-model="email" disabled maxlength="50"/>
         </div>
         <div class="inBox i-2">
-            <input placeholder="Enter the password"  v-model="password"/>
+            <input placeholder="Enter the password"  v-model="password" maxlength="20"/>
         </div>
         <div class="inBox i-2">
-            <input placeholder="Repeat the password"  v-model="password2"/>
+            <input placeholder="Repeat the password"  v-model="password2" maxlength="20"/>
         </div>
         <!-- <div class="wordBox">Forgot your password?</div> -->
         <div class="btnBox b-1">
@@ -23,6 +23,7 @@
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import {InterfaceService} from '@/services/api'
 import { BASE_CONFIG } from '../../lib/config/config'
+import CryptoJS from "crypto-js"
 export default {
   data() {
     return {
@@ -55,7 +56,7 @@ export default {
         }
         
         // this.go('/newIndex')
-        InterfaceService.resetPassword({email:this.email,uuid:this.userUuid,password:this.password},(data)=>{
+        InterfaceService.resetPassword({email:this.email,uuid:this.userUuid,password:CryptoJS.MD5(this.password).toString()},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 localStorage.setItem("wtl_login_email",this.email);
                 Toast(BASE_CONFIG.errorMsgMap['密码重置成功'])

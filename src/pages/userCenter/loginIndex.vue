@@ -5,10 +5,10 @@
         </div>
         <div class="attenWord">Sign in with your Email</div>
         <div class="inBox i-1">
-            <input placeholder="Email" v-model="email"/>
+            <input placeholder="Email" v-model="email" maxlength="50"/>
         </div>
         <div class="inBox i-2">
-            <input placeholder="Password"  v-model="password"/>
+            <input placeholder="Password"  v-model="password" maxlength="20"/>
         </div>
         <div class="wordBox" @click.stop="handleGo(1)">Forgot your password?</div>
         <div class="btnBox b-1">
@@ -25,6 +25,7 @@
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import {InterfaceService} from '@/services/api'
 import { BASE_CONFIG } from '../../lib/config/config'
+import CryptoJS from "crypto-js";
 export default {
   data() {
     return {
@@ -75,7 +76,8 @@ export default {
             return;
         }
         // Toast("Sign in successful")
-        var param={'email':this.email,password:this.password,uuid:this.userUuid}
+        
+        var param={'email':this.email,password: CryptoJS.MD5(this.password).toString(),uuid:this.userUuid}
         InterfaceService.login(param,(data)=>{
             this.$store.state.email=this.email;
             
@@ -146,6 +148,7 @@ export default {
         font-style: italic;
         font-weight: bold;
         height: 1.6rem;
+        line-height: 1.6rem;
         margin-bottom: 1.5rem;
         background-image: linear-gradient(#04303d,#ffffff);//背景色渐变，默认从上到下
         -webkit-background-clip: text;//CSS3属性：设定背景的绘制范围为文字
