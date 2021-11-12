@@ -1803,6 +1803,7 @@ Array.prototype.in_array = function (element) {
                 }
             }
             //ios监听蓝牙返回数据 重要！！！modbus协议版本app用 
+            // self.theWebView!.evaluateJavaScript("iosModbusBleDataLayoutFuc('\([UInt8](data))')",
             window['iosModbusBleDataLayoutFuc']= (bleReponseData) => {
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',');
@@ -1822,24 +1823,28 @@ Array.prototype.in_array = function (element) {
                     //调用通用处理
                     //第一次是否是modbus版本
                     if(modbusIosReceiveTime==1){
-                        ++modbusIosReceiveTime;
-                        let firstHide = (bleReponseData+"").substring(0,2);
+                        modbusIosReceiveTime =modbusIosReceiveTime+1;
+                        let firstHide = (data+"").substring(0,2);
                         if(firstHide == 'DA'){
-                            window.iosBleDataLayoutFuc(data);
-                            return;
+                            store.state.isModbusModal=false;
+                            // window.modbusBroastFromApp(data);
+                            // return;
                         }else{
                             store.state.isModbusModal=true;
-                            window.modbusBroastFromApp(data);
+                            // window.modbusBroastFromApp(data);
                         }
                     //第二次后是否是
-                    }else if(store.state.isModbusModal){
-                        window.modbusBroastFromApp(data);
-                    }else{
-                        window.iosBleDataLayoutFuc(data);
                     }
+                    // else if(store.state.isModbusModal){
+                    //     window.modbusBroastFromApp(data);
+                    // }else{
+                    //     window.modbusBroastFromApp(data);
+                    // }
+                    //简化统一处理
+                    window.modbusBroastFromApp(data);
                 }
             }
-
+            // 
             function iosBleDataLayoutFuc(bleReponseData){
                 // Toast({
                 //     message: 'util'+'::'+bleReponseData,
@@ -1969,7 +1974,7 @@ Array.prototype.in_array = function (element) {
                                     //     iconClass: 'icon icon-success',
                                     //     duration: 6000
                                     // });
-                                    window.broastFromAndroid(data,checkPage[crc]);is
+                                    window.broastFromAndroid(data,checkPage[crc]);
                                     delete(checkStatus[crc]);
                                     delete(checkData[crc]);
                                     delete(checkPage[crc]);
@@ -2017,14 +2022,15 @@ Array.prototype.in_array = function (element) {
             }
             //数据太长造成的
             function doDataTooLongLast(data){
-                // Toast({
-                //     message: 'doDataTooLongLast'+data,
-                //     position: 'middle',
-                //     iconClass: 'icon icon-success',
-                //     duration: 5000
-                // });
+                Toast({
+                    message: 'doDataTooLongLast'+data,
+                    position: 'middle',
+                    iconClass: 'icon icon-success',
+                    duration: 5000
+                });
                 let templist = [];
                 let midData ="";
+                console.log(mayTooLongList)
                 for (let index = 0; index < mayTooLongList.length; index++) {
                     const bean = mayTooLongList[index];
                     let tempData = bean.value+data;//组合判断
@@ -2082,9 +2088,25 @@ Array.prototype.in_array = function (element) {
                 //重新赋值
                 mayTooLongList =templist;
             }
-            //负责接收来自app的 新modbus版本ble信息 注意modbus的返回crc是反的
+            //通用处理有对modbus进行区分了
+            //负责接收来自app的 新modbus版本ble信息 注意modbus的返回crc是反的 
+            //安卓里是mWebView.loadUrl("javascript:modbusBroastFromApp('" + bleRespInfo.replaceAll(" ", "").toUpperCase() +"')");
             window['modbusBroastFromApp'] = (bleReponseOrignData)=>{
                 bleReponseOrignData = (bleReponseOrignData +"").replace(/\s*/g,"");
+                bleReponseOrignData=bleReponseOrignData.toLocaleUpperCase();
+                //假如是四合一的安卓
+                if(modbusIosReceiveTime==1){
+                    ++modbusIosReceiveTime;
+                    let firstHide = (bleReponseOrignData+"").substring(0,2);
+                    if(firstHide != 'DA'){
+                        store.state.isModbusModal=true;
+                    }
+                }
+                // if(!store.state.isModbusModal){
+                //     window.broastFromAndroid(bleReponseOrignData);
+                //     return;
+                // }
+                
                 store.state.postDataList.push({type:'receive',data:bleReponseOrignData})
                 modbusGlobalReceiveList.push(bleReponseOrignData);//存储起来避免太快丢失
                 console.log('modbusSendTimes:'+store.state.modbusSendTimes)
@@ -2097,13 +2119,28 @@ Array.prototype.in_array = function (element) {
                         let bleReponseData="";
                         let before4 ='';
                        //遍历处理数据
+                       let tempMidData ='';
+                       let newCrc ='';
+                       let reverseCrc='';
                        for (let index = 0; index < modbusGlobalReceiveList.length; index++) {
                             const tempCenter = modbusGlobalReceiveList[index];
                             bleReponseData+=tempCenter;
                             let oldCrc = bleReponseData.substring(bleReponseData.length-4,bleReponseData.length);
-                            let tempMidData =bleReponseData.substring(0,bleReponseData.length-4);
-                            let newCrc = crcModelBusClacQuery(tempMidData, true);
-                            let reverseCrc = newCrc.substring(2,4)+newCrc.substring(0,2);
+                            console.log(store.state.isModbusModal)
+                            if(store.state.isModbusModal){
+                                tempMidData =bleReponseData.substring(0,bleReponseData.length-4);
+                                newCrc = crcModelBusClacQuery(tempMidData, true);
+                                reverseCrc = newCrc.substring(2,4)+newCrc.substring(0,2);
+                            }else{
+                                //老的报文
+                                // DAE2003D00C800003535只对 E2003D00C80000进行crc校验
+                                tempMidData =bleReponseData.substring(2,bleReponseData.length-4);
+                                console.log(tempMidData)
+                                newCrc = crcModelBusClacQuery(tempMidData, true);
+                                reverseCrc=newCrc;
+                            }
+                            
+                            console.log(oldCrc , reverseCrc)
                             if(oldCrc == reverseCrc){
                                 endIdx=index;
                                 before4=(bleReponseData+"").substring(0,4);//20211020补充去除
