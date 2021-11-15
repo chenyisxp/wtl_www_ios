@@ -147,8 +147,8 @@ export default {
         font-size: 24px;
         font-style: italic;
         font-weight: bold;
-        height: 1.6rem;
-        line-height: 1.6rem;
+        // height: 1.6rem;
+        // line-height: 1.6rem;
         margin-bottom: 1.5rem;
         background-image: linear-gradient(#04303d,#ffffff);//背景色渐变，默认从上到下
         -webkit-background-clip: text;//CSS3属性：设定背景的绘制范围为文字

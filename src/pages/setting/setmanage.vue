@@ -17,7 +17,7 @@
               <!-- <a @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a> -->
               <!-- <a @click="openWeb('http://www.parweld.co.uk/')">http://www.parweld.co.uk/</a> -->
             </div>
-          <div class="help">Help Message</div>
+          <!-- <div class="help">Help Message</div> -->
           <div class="helpDetail">
            <!-- Tel: +7 831-280-83-53 -->
            <!-- Check the website above. -->
@@ -48,6 +48,8 @@
           </div>
           <div class="resetBtn" @click="handleRestore">Restore  settings</div>
           <div class="resetBtn" @click="handleOpen">打开面板信息</div> -->
+          <div class="resetBtn" v-if="loginName" style="margin-top:2rem" @click="handleLoginOut">Log out</div>
+          <div class="resetBtn" v-if="!loginName" style="margin-top:2rem" @click="handleLoginin">Go log in</div>
       </div>
 
     </div>
@@ -69,6 +71,13 @@ export default {
   },
 
   methods: {
+    handleLoginOut(){
+      this.loginName="";
+      localStorage.setItem("wtl_login_email","");
+    },
+    handleLoginin(){
+      this.$router.push('/loginIndex');
+    },
     handleOpen(){
       this.$store.state.logFaceFlag=true;
     },

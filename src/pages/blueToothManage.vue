@@ -120,7 +120,7 @@
     
     <!-- 测试入口 -->
     <!-- <div v-if="testModalDoorFlag"> -->
-        <div class="testWay toLogin" @click="goToLogin">go to login<Icon type="ios-arrow-dropright-circle" /></div>
+        <!-- <div class="testWay toLogin" @click="goToLogin">go to login<Icon type="ios-arrow-dropright-circle" /></div> -->
         <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
         <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
         
@@ -302,6 +302,7 @@ export default {
            try {
                 
                 this.globalSendMsgToIos("handleConnect",address,"");
+                clearInterval(this.timerInterval);
                 this.timerInterval =setInterval(() => {
                     this.globalSendMsgToIos("handleGetBleStateThenToNewIndex",'',"");
                 }, 1000);
@@ -508,6 +509,7 @@ export default {
         } catch (error) {
             scanStatus =false;
         } 
+        clearInterval(self.timeInterval1);
         self.timeInterval1 = setInterval(() => {
             self.globalSendMsgToIos("handleGetBleState","","");
         },800);
@@ -852,6 +854,7 @@ export default {
                 this.callSendModbusSystemData('0A0303E80028','DFC4','blueToothManage');//增加10位焊接时长   
                 
             }else{
+                //和注册的冲突
                 setTimeout(() => {
                     this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
                 }, 100);

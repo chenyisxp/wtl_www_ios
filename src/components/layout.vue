@@ -442,7 +442,10 @@ export default {
           if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
             this.globalSendMsgToIos("handleStartScan","","");
           }
-          this.displayType=1;
+          let now1Router = this.$store.state.nowRouter || '';
+          if( now1Router.indexOf('login')==-1 && now1Router.indexOf('register')==-1){
+            this.displayType=1;
+          }
           // Toast({
           //   message: 'this.displayType:'+this.displayType+'||'+this.GLOBAL_CONFIG.ENV_IOS_FLAG,
           //   position: 'middle',

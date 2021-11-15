@@ -637,7 +637,7 @@ export default {
   }
   .modText{
       padding: 0 20px;
-      margin-top: 20px;
+      margin-top: 4rem;
       margin-bottom: 20px;
       .mup{
                 height: 25px;
