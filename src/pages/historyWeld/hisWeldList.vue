@@ -117,7 +117,8 @@ export default {
         chooseTypeCrc:'',
         chooseTypeName:'',
         nowConnectMachine:'',
-        weldMsgList:[]
+        weldMsgList:[],
+        loginName:''
      } 
   },
 
@@ -332,11 +333,12 @@ export default {
                 return result; 
         },
         queryAppWeldList(){
-            // Toast(this.btAddress+"||"+this.userUuid)
-            if(this.btAddress && this.userUuid){
+            this.loginName = localStorage.getItem("wtl_login_email") || '';
+            if(this.loginName){
                 let param = {
                     BT_ADDRESS:this.btAddress,
-                    APP_UUID:this.userUuid
+                    APP_UUID:this.userUuid,
+                    EMAIL:this.loginName
                 };
                 InterfaceService.queryAppWeldInfoList(param,(data)=>{
                     if(data.respData && data.respData.respCode=='0000'){
@@ -369,6 +371,7 @@ export default {
         history.pushState(null, null, document.URL);
         window.addEventListener('popstate', this.goBack, false);
     }
+   
     this.queryAppWeldList();
   },
   created () {

@@ -203,7 +203,6 @@ const interMap = [
     { method: 'batchInsertAppWeld', code: "ac020004" },//app的焊接记录
     { method: 'queryAppWeldInfoList', code: "ac020005" },//查询历史焊接记录
     
-    
 
 
     // { method: 'getJywDetail', code: "yq01001" },

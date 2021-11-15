@@ -77,7 +77,12 @@ export default {
         }
         // Toast("Sign in successful")
         
-        var param={'email':this.email,password: CryptoJS.MD5(this.password).toString(),uuid:this.userUuid}
+        var param={
+            email:this.email,
+            password: CryptoJS.MD5(this.password).toString(),
+            uuid:this.userUuid,
+            btAddress:this.$store.state.btAddress
+        }
         InterfaceService.login(param,(data)=>{
             this.$store.state.email=this.email;
             

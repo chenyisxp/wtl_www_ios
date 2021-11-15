@@ -131,7 +131,8 @@ export default {
   },
   mounted() {
         this.email = localStorage.getItem("wtl_email") || '';
-        this.secondNum=300;
+        let limitTime =this.$route.query.limitTime || 0;
+        this.secondNum=300-limitTime;
         let inter = setInterval(() => {
             --this.secondNum;
             if(this.secondNum==0){

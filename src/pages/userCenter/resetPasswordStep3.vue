@@ -56,7 +56,13 @@ export default {
         }
         
         // this.go('/newIndex')
-        InterfaceService.resetPassword({email:this.email,uuid:this.userUuid,password:CryptoJS.MD5(this.password).toString()},(data)=>{
+        let params ={
+            email:this.email,
+            uuid:this.userUuid,
+            password:CryptoJS.MD5(this.password).toString(),
+            btAddress:this.$store.state.btAddress
+        };
+        InterfaceService.resetPassword(params,(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 localStorage.setItem("wtl_login_email",this.email);
                 Toast(BASE_CONFIG.errorMsgMap['密码重置成功'])

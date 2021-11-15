@@ -56,7 +56,13 @@ export default {
         }
         
         // this.go('/newIndex')
-        InterfaceService.registerAcct({email:this.email,uuid:this.userUuid,password:CryptoJS.MD5(this.password).toString()},(data)=>{
+        let params ={
+            email:this.email,
+            uuid:this.userUuid,
+            password:CryptoJS.MD5(this.password).toString(),
+            btAddress:this.$store.state.btAddress
+        };
+        InterfaceService.registerAcct(params,(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 //成功
                 localStorage.setItem("wtl_login_email",this.email);

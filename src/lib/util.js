@@ -2310,7 +2310,16 @@ Array.prototype.in_array = function (element) {
 
                                 store.state.btAddress=btAddress;//放到store里
                                 //机器信息
-                                InterfaceService.addMachineInfo({patch:patch,btAddress:btAddress,machineType:machineType,content:receiveBleData,app_uuid:store.state.userUuid},(data)=>{
+                                let loginName = localStorage.getItem("wtl_login_email") || '';
+                                InterfaceService.addMachineInfo({
+                                    patch:patch,
+                                    email:loginName,
+                                    btAddress:btAddress,
+                                    machineType:machineType,
+                                    content:receiveBleData,
+                                    app_uuid:store.state.userUuid,
+                                    uuid:store.state.userUuid
+                                },(data)=>{
                                 },function(data){
                                 });
                                 // `TIG_AC_WELD_TM` varchar(16)  DEFAULT NULL COMMENT 'TIGAC时长来自机器',
@@ -3623,6 +3632,8 @@ Array.prototype.in_array = function (element) {
             }
             //
             function uploadAppWeldInfoList(info){
+                let loginName = localStorage.getItem("wtl_login_email") || '';
+                info['EMAIL'] = loginName;//登录账户
                 store.state.weldInfo3Days.push(info)
                 let params =store.state.weldInfo3Days;
                 

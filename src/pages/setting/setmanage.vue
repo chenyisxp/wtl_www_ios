@@ -24,8 +24,8 @@
            <!-- parweld的电话 -->
            <!-- Tel: 01299 266800 -->
           </div>
-          <div class="help" v-if="loginName">username:{{loginName || '未登录'}}</div>
-          <div class="help" v-else>未登录</div>
+          <div class="help" v-if="loginName">Login name:{{loginName || '未登录'}}</div>
+          <div class="help" v-else>Not logged in</div>
 
           <!-- <div class="connnect">Wiring diagram</div>
           <div class="tabs">
@@ -48,8 +48,8 @@
           </div>
           <div class="resetBtn" @click="handleRestore">Restore  settings</div>
           <div class="resetBtn" @click="handleOpen">打开面板信息</div> -->
-          <div class="resetBtn" v-if="loginName" style="margin-top:2rem" @click="handleLoginOut">Log out</div>
-          <div class="resetBtn" v-if="!loginName" style="margin-top:2rem" @click="handleLoginin">Go log in</div>
+          <div class="loginBtn" v-if="loginName" style="margin-top:2rem" @click="handleLoginOut">Log out</div>
+          <div class="loginBtn" v-if="!loginName" style="margin-top:2rem" @click="handleLoginin">Go log in</div>
       </div>
 
     </div>
@@ -282,6 +282,17 @@ export default {
       border-radius: 5px;
       height: 50px;
       line-height: 50px;
+      text-align: center;
+      font-size: 16px;
+      color: #fff;
+      background:#ffb300;
+    }
+    .loginBtn{
+      margin: 0 4rem;
+      margin-top: 20px;
+      border-radius: 5px;
+      height: 2rem;
+      line-height: 2rem;
       text-align: center;
       font-size: 16px;
       color: #fff;

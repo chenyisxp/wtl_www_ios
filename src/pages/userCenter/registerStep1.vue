@@ -80,8 +80,15 @@ export default {
             if(data && data.respData && data.respData.respCode == '0000'){
                 Toast(BASE_CONFIG.errorMsgMap['邮件已发送请注意查收'])
                 setTimeout(() => {
-                    this.go('/registerStep2')
+                    this.$router.push("/registerStep2'");
                 }, 1000);
+            }else if(data && data.respData && data.respData.respCode == '0013'){
+                this.$router.push({
+                    path:'/registerStep2',
+                    query:{
+                        limitTime:data.respData.limitTime
+                    }
+                });
             }else{
                 Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }

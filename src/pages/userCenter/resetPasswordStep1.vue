@@ -87,6 +87,13 @@ export default {
         InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 this.go('/resetPasswordStep2')
+            }else if(data && data.respData && data.respData.respCode == '0013'){
+                this.$router.push({
+                    path:'/resetPasswordStep2',
+                    query:{
+                        limitTime:data.respData.limitTime
+                    }
+                });
             }else{
                 Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }
