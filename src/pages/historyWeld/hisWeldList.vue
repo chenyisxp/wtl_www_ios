@@ -25,7 +25,9 @@
                 </div>
             </div>
             <div v-if="weldMsgList.length==0">
-                <div class="m_word" v-if="netWorkStatus.indexOf('online')>-1">No data</div>
+                
+                <div class="m_word login" v-if="!this.loginName" @click="handleLogin">Please log in first</div>
+                <div class="m_word" v-else-if="netWorkStatus.indexOf('online')>-1">No data</div>
                 <!-- 请在联网情况下使用APP焊接才能记录最近的焊接记录 -->
                 <div class="m_word" v-else>Please use app welding in the case of networking to record the latest welding records</div>
             </div>
@@ -123,7 +125,9 @@ export default {
   },
 
   methods: {
-        
+        handleLogin(){
+            this.$router.push('/loginIndex');
+        },
         go(url){
           this.$store.state.routerOprete=3;
           this.$router.push(url);
@@ -473,7 +477,10 @@ export default {
           .m_word{
               padding: 0 20px;
               text-align: center;
-              color: #8ac5d6
+              color: #8ac5d6;
+              &.login{
+                  text-decoration:underline
+              }
           }
       }
       .li{

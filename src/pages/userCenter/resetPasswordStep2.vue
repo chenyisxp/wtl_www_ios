@@ -17,7 +17,7 @@
         </div>
         <div class="wordBox clearfloat">
             <span class="w-1">Input verification code</span>
-            <span class="w-2">({{secondNum}}s) Resend</span>
+            <span class="w-2" @click="handleResend"><span v-if="secondNum>0">({{secondNum}}s)</span> Resend</span>
         </div>
         <div class="btnBox b-1">
             <div class="signBox" @click="handleSubmit">Confirm</div>
@@ -38,10 +38,34 @@ export default {
         codeList:[],
         otherListNum:4,
         nowFocus:false,
-        secondNum:300
+        secondNum:300,
+        timer:{}
     };
   },
   methods: {
+    // 重新发送邮件
+    handleResend(){
+        if(this.secondNum>0){
+            return;
+        }
+        //确认是否注册过
+        InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
+            if(data && data.respData && data.respData.respCode == '0000'){
+                this.secondNum=300;
+                let inter = setInterval(() => {
+                    --this.secondNum;
+                    if(this.secondNum==0){
+                        clearInterval(inter);//清空
+                    }
+                }, 1000);
+                Toast(BASE_CONFIG.errorMsgMap['邮件验证码已重新发送，请注意查收'])
+            }else{
+                Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
+            }
+        },function(data){
+        
+        });
+    },
     handleBack(){
         this.$router.back();
     },
@@ -110,7 +134,11 @@ export default {
         this.email = localStorage.getItem("wtl_email") || '';
         let limitTime =this.$route.query.limitTime || 0;
         this.secondNum=300-limitTime;
-        setInterval(() => {
+        this.timer = setInterval(() => {
+            if(this.secondNum==0){
+                clearInterval(this.timer)
+                return;
+            }
             --this.secondNum;
         }, 1000);
   },created () {
