@@ -48,6 +48,7 @@ Array.prototype.in_array = function (element) {
             var modbusBeginWeldCurVol='';//焊接电压电流等
             var weldingCur='';//电流
             var weldingVoltage ='';//电压
+            var oldGetData='';
 
             var checkDataModbus={};
             var checkPageModbus={};
