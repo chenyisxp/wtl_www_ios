@@ -553,6 +553,10 @@ export default {
       },
     openModal(typename,comList,chooseKey){
       let self =this;
+      //00、 判断是不是焊接中，焊接中不能编辑部分参数
+      if(self.$store.state.weldingStatus==1){
+          return;
+      }
       self.showBtnList=comList;
       self.nowChoose =chooseKey;
       self.nowtypename=typename;

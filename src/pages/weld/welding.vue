@@ -152,7 +152,8 @@ export default {
         weldingCur:'',
         weldingVoltage:'',
         experialTimer:{},
-        operateTimer:{}
+        operateTimer:{},
+        checkWeldStatus:{}
 
     }
       
@@ -706,6 +707,11 @@ export default {
   mounted: function() {
       this.initFuc();
       this.initExperialModel();
+      this.checkWeldStatus=setInterval(()=>{
+          if(this.getNowWeldStatus==0){
+              this.goback();
+          }
+      },1000)
   },
   created() {
    
@@ -798,6 +804,7 @@ export default {
         }
   },
   destroyed(){
+      clearInterval(this.checkWeldStatus)
       clearInterval(this.experialTimer);
       clearTimeout(this.operateTimer);
       console.log('welding destroyed')

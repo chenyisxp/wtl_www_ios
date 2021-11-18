@@ -289,7 +289,6 @@ export default {
       ctx: "",
       oldx: 0,
       oldy: 100,
-      nowChooseLineKey: "",
       listData: [],
       lineNormalColor: "#e0f5fc", //这折线图颜色
       lineChooseColor: "#227cff", //折线图选中的颜色
@@ -366,6 +365,8 @@ export default {
       max_ac_fre:'',
       min_ac_fre:'',
       nowChoosedKeyName:'',
+      isEditing:0,//使用过程中且不是焊接中就不触发线条变更
+
     };
   },
 
@@ -1995,6 +1996,7 @@ export default {
         if(this.$store.state.weldingStatus==1){
             this.nowChooseLineKey = this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
         }else if(this.isModbusModal){
+          
           if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
               var result ='';
               if(this.envType=='env_ios'){
@@ -2005,14 +2007,20 @@ export default {
                 // result =window.android?window.android.queryKeyStorage('tig_man_nowChooseLineKey'):'';
                 result='empty';
               }
-              
-              if(result && result!='empty'){
-                this.nowChooseLineKey=result;
-              }else{
-                this.nowChooseLineKey =this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
+              if(this.isEditing==0){
+                this.isEditing=1;//记录不是第一次来了
+                if(result && result!='empty'){
+                  this.nowChooseLineKey=result;
+                }else{
+                  this.nowChooseLineKey =this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
+                }
               }
           }else{
-            this.nowChooseLineKey = this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
+            //第一次来才需要选定一个参数，否则就不要动了，否则影响编辑体验
+            if(this.isEditing==0){
+              this.isEditing=1;//记录不是第一次来了
+              this.nowChooseLineKey = this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
+            }
           }
           this.oldKeysChangelistMap(list);
         }else{

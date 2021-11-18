@@ -962,7 +962,7 @@ Array.prototype.in_array = function (element) {
                 }else if(compareString(dirctiveType,weldDirctive.tigMan)){
                     if(store.state.isModbusModal){
                         //这里数据的处理像memory的处理方式，取全部进行分析
-                        rstInfo = changeToOldTigmanRealData(data);
+                        rstInfo = changeToOldTigmanRealData(data,pageFrom);
                     }else{
                         //新规则
                         var strArr =data.split(' ');
@@ -1157,12 +1157,12 @@ Array.prototype.in_array = function (element) {
                         case 'B3':
                             //TIG地址348 数量2                                                              
                             sendData='0A03015C0002';
-                            crc='049E';
+                            crc='9E04';
                             break;
                         case 'B4':
                             //TIG地址348 数量2                                                              
                             sendData='0A03015C0002';
-                            crc='049E';
+                            crc='9E04';
                             break;
                         case 'B5':
                             //MMA地址501 数量2                                                              
@@ -3095,6 +3095,7 @@ Array.prototype.in_array = function (element) {
                 var byte1Bean ={};
                     byte1Bean.isReadyFlag=`${t8List[11]}${t8List[12]}${t8List[13]}` == '001'?1:0,//2-4;
                     byte1Bean.weldStatus=t0List[15];//0:未焊接  1:在焊接
+                    
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
                             store.state.weldingStatus=1
@@ -3178,6 +3179,7 @@ Array.prototype.in_array = function (element) {
                 var byte1Bean ={};
                     byte1Bean.isReadyFlag=`${t0List[4]}${t0List[5]}${t0List[6]}` == '011'?1:0,//9-11;
                     byte1Bean.weldStatus=t0List[3];//0:未焊接  1:在焊接
+                    // Toast('tigsyn:'+byte1Bean.weldStatus)
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
                             store.state.weldingStatus=1
@@ -3294,6 +3296,7 @@ Array.prototype.in_array = function (element) {
                 var byte1Bean ={};
                     byte1Bean.isReadyFlag=`${t0List[8]}${t0List[9]}${t0List[10]}` == '011'?1:0,//5-7;
                     byte1Bean.weldStatus=t0List[7];//0:未焊接  1:在焊接
+                    // Toast('mma:'+byte1Bean.weldStatus)
                     if(byte1Bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
                             store.state.weldingStatus=1
@@ -3436,6 +3439,7 @@ Array.prototype.in_array = function (element) {
                         tigUnit:byte0[2]
                     }
                 }
+                // Toast(pageFrom+'tigman:'+rstInfo.initBean.weldStatus+'isModbusModal='+store.state.isModbusModal)
                 if(rstInfo.initBean.weldStatus==1){
                     if(pageFrom=='newIndex'){
                         store.state.weldingStatus=1
