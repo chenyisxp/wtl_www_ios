@@ -744,8 +744,11 @@ export default {
           }
       },
       getNowWeldStatus(val, oldVal){
-          if(val==0){//非焊接中 离开本页面 
-             this.$router.push('/newIndex');
+          if(val==0){//非焊接中 离开本页面  
+            //应该回到 之前模式
+            //  this.$router.push('/newIndex');
+            //20211118
+            this.goback();
           }
       },
         getAndriodNewMsg(val, oldVal){
