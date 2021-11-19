@@ -600,6 +600,9 @@ export default {
                 top:30px!important;
             }
         }
+        .modText{
+            margin-top:5rem !important;
+        }
     }
 .mmp{
     width: 100%;

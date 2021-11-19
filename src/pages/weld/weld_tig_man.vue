@@ -1453,8 +1453,8 @@ export default {
        self.paddingLeftNum =0 + "px";
       //key数值 注意实际图上的移动顺序20211007备份
       // self.keyArr = ["pre_gas","start_cur_end", "slop_up", "weld_cur", 'pulse_duty','base_cur','pulse_fre',"slop_down","crater_cur", "post_gas"];
-      //真机显示有误 调整20211007
-      self.keyArr = ["pre_gas","start_cur_end", "slop_up", 'pulse_duty','pulse_fre','base_cur',"slop_down","crater_cur", "post_gas"];
+      //真机显示有误 调整20211007 20211119 加回weld_cur
+      self.keyArr = ["pre_gas","start_cur_end", "slop_up", "weld_cur", 'pulse_duty','pulse_fre','base_cur',"slop_down","crater_cur", "post_gas"];
     },
     //AC模式
     build_AC_MapData(){
@@ -1607,7 +1607,7 @@ export default {
       // this.paramIncreaseDistance2 = 1;//按钮加减幅度
     },
     drawCharMainContrl(type) {
-      console.log(type)
+      // alert(type)
       this.nowMainChartType=type;
       if (type == "2T_NOPULSE_DC") {
         this.build_2T_NOPULSE_DCMapData();

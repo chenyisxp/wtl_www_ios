@@ -587,6 +587,7 @@ let BASE_CONFIG = {
    },
    errorMsgMap:{
        "登录成功":"Login succeeded",
+       "密码不正确":"Incorrect password",
        "邮箱不能为空":"Mailbox cannot be empty",
        "邮箱格式不正确":"The mailbox format is incorrect",
        "密码不能为空":"Password cannot be empty",

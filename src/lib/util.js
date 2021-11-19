@@ -1203,7 +1203,6 @@ Array.prototype.in_array = function (element) {
                         return MMA_DIRECTIVE_MAP.get(paramKey);
                         break;
                     case 'TIGMAN':
-                        alert(paramKey)
                         return TIGMAN_DIRECTIVE_MAP.get(paramKey);
                         break;
                     case 'CUT':

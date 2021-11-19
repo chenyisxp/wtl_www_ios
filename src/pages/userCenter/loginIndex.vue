@@ -83,6 +83,10 @@ export default {
             uuid:this.userUuid,
             btAddress:this.$store.state.btAddress
         }
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+          });
         InterfaceService.login(param,(data)=>{
             this.$store.state.email=this.email;
             
@@ -100,10 +104,15 @@ export default {
                 setTimeout(() => {
                    this.handleGo(2);
                 }, 1000);
-            }else{
+            }else if(data && data.respData.respCode=='0001'){
+                Toast(BASE_CONFIG.errorMsgMap['密码不正确'])
+            }
+            else{
                 Toast(data.respData.respMsg || BASE_CONFIG.errorMsgMap['请检查帐号或密码是否正确']);
             }
+            Indicator.close();
         },function(data){
+            Indicator.close();
         });
         
     },
