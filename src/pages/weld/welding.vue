@@ -653,8 +653,12 @@ export default {
        this.initData();
        
         //电压 电流
-       this.weldingCur=  this.$store.state.weldingCur+'.0';
-        this.weldingVoltage= this.$store.state.weldingVoltage+'.0';
+       this.weldingCur=  this.$store.state.weldingCur;
+      
+       let tVol =this.$store.state.weldingVoltage;
+       let t1 =Math.round(tVol/10);
+       let t2 =Math.round(tVol%10)
+        this.weldingVoltage= t1+''+ (t2>0?'.'+t2:'.0');
         this.typeName =this.$store.state.weldingInfo.modelKey;
         this.typeShowName =this.$store.state.weldingInfo.name;
         // console.log(' this.weldingCur'+ this.weldingCur);
@@ -781,10 +785,12 @@ export default {
             }
         },
       getWeldingCur(val, oldVal){
-           this.weldingCur=val+'.0';
+        //    this.weldingCur=val+'.0';
+           this.weldingCur=val;//20211119modbus时说电流时整数
       },
       getWeldingVol(val, oldVal){
-            this.weldingVoltage=val+'.0';
+            // this.weldingVoltage=val+'.0';
+            this.weldingVoltage=val/10;//20211119modbus时说电压都除以10
       },
       getmodelKey(val, oldVal){
             this.typeName=val;

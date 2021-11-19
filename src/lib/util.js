@@ -373,7 +373,7 @@ Array.prototype.in_array = function (element) {
             const MIGMAN_DIRECTIVE_MAP=new Map([['MODE','B0'],['SPEED','B1'],['V_WELDING','B2'],['Getready','BE'],['Memory','BF']]);
             const TIGSYN_DIRECTIVE_MAP=new Map([['DIAMETER','C0'],['MATERIAL','C1'],['THICKNESS','C2'],['POLATRITY','C3'],['WELDCUR','C4'],['slowDownTime','C5'],['MODE','C6'],['Getready','CE'],['Memory','CF']]);
             const MMA_DIRECTIVE_MAP = new Map([['POLATRITY','E0'],['ELECTRODE','E1'],['DIAMETER','E2'],['THICKNESS','E3'],['FORCE','E4'],['MMA_CURRENT','E5'],['Getready','EE'],['Memory','EF']]);
-            const TIGMAN_DIRECTIVE_MAP =new Map([['TDCHFPULSE','D0'],['pre_gas','D1'],['start_cur_end','D2'], ['slop_up','D3'],['weld_cur','D4'],['base_cur','D5'],['pulse_fre','D6'],['pulse_duty','D7'],['slop_down','D8'],['crater_cur','D9'],['post_gas','DA'],['ac_fre','DB'],['ac_balance','DB'],['Getready','DE'],['Memory','DF']]);
+            const TIGMAN_DIRECTIVE_MAP =new Map([['TDCHFPULSE','D0'],['pre_gas','D1'],['start_cur_end','D2'], ['slop_up','D3'],['weld_cur','D4'],['base_cur','D5'],['pulse_fre','D6'],['pulse_duty','D7'],['slop_down','D8'],['crater_cur','D9'],['post_gas','DA'],['ac_fre','DB'],['ac_balance','DC'],['Getready','DE'],['Memory','DF']]);
             const CUT_DIRECTIVE_MAP =new Map([['MODE','F0'],['MATERIAL','F1'],['THICKNESS','F2'], ['WELDCUR','F3'], ['Getready','FD']]);
            //特殊指令数组 存储、历史等
            const SPECIAL_DIRECTIVE_MAP =new Map([['CALL_MEMORY','20'],['APPY_MEMORY','21'],['CALL_LAST_WELD','30'],['APPY_LAST_WELD','31'],['EDIT_UNIT','40'],['OVERRIDE','22']]);
@@ -1203,6 +1203,7 @@ Array.prototype.in_array = function (element) {
                         return MMA_DIRECTIVE_MAP.get(paramKey);
                         break;
                     case 'TIGMAN':
+                        alert(paramKey)
                         return TIGMAN_DIRECTIVE_MAP.get(paramKey);
                         break;
                     case 'CUT':

@@ -48,20 +48,21 @@
         <!-- 新逻辑直接用图替换 -->
         <div class="canvas-main-contain">
           <img v-if="nowChooseLineKey=='pre_gas'"  src="../../assets/images/tigman/brokenLine_pre_gas.png">
-          <img v-if="nowChooseLineKey=='start_cur_end'" src="../../assets/images/tigman/brokenLine_start_cur_end.png">
-          <img v-if="nowChooseLineKey=='slop_up'" src="../../assets/images/tigman/brokenLine_slop_up.png">
+          <img v-else-if="nowChooseLineKey=='start_cur_end'" src="../../assets/images/tigman/brokenLine_start_cur_end.png">
+          <img v-else-if="nowChooseLineKey=='slop_up'" src="../../assets/images/tigman/brokenLine_slop_up.png">
           <!-- <img v-if="nowChooseLineKey=='weld_cur' && nowModelTypeName !='4T_PULSE_DC' && nowModelTypeName !='2T_PULSE_DC' " src="../../assets/images/tigman/brokenLine_weld_cur.png"> -->
           <!-- <img v-if="nowChooseLineKey=='weld_cur' && (nowModelTypeName =='4T_PULSE_DC' ||nowModelTypeName =='2T_PULSE_DC' )" src="../../assets/images/tigman/brokenLine_pluse_weld_cur.png"> -->
-          <img v-if="nowChooseLineKey=='weld_cur'" src="../../assets/images/tigman/brokenLine_weld_cur.png">
-           <img v-if="nowChooseLineKey=='base_cur'" src="../../assets/images/tigman/brokenLine_base_cur.png">
-          <img v-if="nowChooseLineKey=='slop_down'" src="../../assets/images/tigman/brokenLine_slop_down.png">
-          <img v-if="nowChooseLineKey=='crater_cur'" src="../../assets/images/tigman/brokenLine_crater_cur.png">
-          <img v-if="nowChooseLineKey=='post_gas'" src="../../assets/images/tigman/brokenLine_post_gas.png">
-          <img v-if="nowChooseLineKey=='ac_balance'" src="../../assets/images/tigman/brokenLine_ac_balance.png">
-          <img v-if="nowChooseLineKey=='ac_fre'" src="../../assets/images/tigman/brokenLine_ac_fre.png">
-           <img v-if="nowChooseLineKey=='pulse_duty'" src="../../assets/images/tigman/brokenLine_pulse_duty.png">
-           <img v-if="nowChooseLineKey=='pulse_fre'" src="../../assets/images/tigman/brokenLine_pulse_fre.png">
-           <img v-if="nowChooseLineKey=='peak_cur'" src="../../assets/images/tigman/brokenLine_pluse_weld_cur.png">
+          <img v-else-if="isModbusModal && ispulseOn==1 &&nowChooseLineKey=='weld_cur'" src="../../assets/images/tigman/brokenLine_pluse_weld_cur.png">
+          <img v-else-if="nowChooseLineKey=='weld_cur'" src="../../assets/images/tigman/brokenLine_weld_cur.png">
+           <img v-else-if="nowChooseLineKey=='base_cur'" src="../../assets/images/tigman/brokenLine_base_cur.png">
+          <img v-else-if="nowChooseLineKey=='slop_down'" src="../../assets/images/tigman/brokenLine_slop_down.png">
+          <img v-else-if="nowChooseLineKey=='crater_cur'" src="../../assets/images/tigman/brokenLine_crater_cur.png">
+          <img v-else-if="nowChooseLineKey=='post_gas'" src="../../assets/images/tigman/brokenLine_post_gas.png">
+          <img v-else-if="nowChooseLineKey=='ac_balance'" src="../../assets/images/tigman/brokenLine_ac_balance.png">
+          <img v-else-if="nowChooseLineKey=='ac_fre'" src="../../assets/images/tigman/brokenLine_ac_fre.png">
+           <img v-else-if="nowChooseLineKey=='pulse_duty'" src="../../assets/images/tigman/brokenLine_pulse_duty.png">
+           <img v-else-if="nowChooseLineKey=='pulse_fre'" src="../../assets/images/tigman/brokenLine_pulse_fre.png">
+           <img v-else-if="nowChooseLineKey=='peak_cur'" src="../../assets/images/tigman/brokenLine_pluse_weld_cur.png">
           
           <!-- <img src="../../assets/images/memory.png"> -->
           
@@ -366,6 +367,9 @@ export default {
       min_ac_fre:'',
       nowChoosedKeyName:'',
       isEditing:0,//使用过程中且不是焊接中就不触发线条变更
+      ispulseOn:0,
+      beforeMainChartType:'',
+      nowMainChartType:'',
 
     };
   },
@@ -1604,6 +1608,7 @@ export default {
     },
     drawCharMainContrl(type) {
       console.log(type)
+      this.nowMainChartType=type;
       if (type == "2T_NOPULSE_DC") {
         this.build_2T_NOPULSE_DCMapData();
       } else if (type == "4T_NOPULSE_DC") {
@@ -1978,6 +1983,7 @@ export default {
         this.ac_dc_num=list.initBean.polatrity==1?list.initBean.polatrity:0;
         this.hf_lift_num=list.initBean.ifhf==1?list.initBean.ifhf:0;
         this.isReadyFlag =list.initBean.isReadyFlag;//是否焊接准备完毕
+        this.ispulseOn =list.initBean.ifpulse;//1 pulse
         this.clacTigManCur();
         this.clacTigMax_AC_FRE(list.BASE_CUR_VAL,list.WELD_CUR_VAL);
         this.initKeysValueMap(list);
@@ -2007,7 +2013,10 @@ export default {
                 // result =window.android?window.android.queryKeyStorage('tig_man_nowChooseLineKey'):'';
                 result='empty';
               }
-              if(this.isEditing==0){
+              //第一次
+              //模式发生变化 才会重新触发
+              if(this.isEditing==0 || this.beforeMainChartType !=this.nowMainChartType){
+                this.beforeMainChartType =this.nowMainChartType;
                 this.isEditing=1;//记录不是第一次来了
                 if(result && result!='empty'){
                   this.nowChooseLineKey=result;
