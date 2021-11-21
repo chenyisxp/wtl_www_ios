@@ -70,7 +70,8 @@ const state = {
     momeryClickNum:'',
     momeryApplyModel:'',//应用了通道，里面之前是什么模式的数据 modbus要请求回来
     netWorkStatus:'online',
-    weldInfo3Days:[]//本地三天存储焊接中时长
+    weldInfo3Days:[],//本地三天存储焊接中时长
+    modbusIosReceiveTime:1
     
 
 }

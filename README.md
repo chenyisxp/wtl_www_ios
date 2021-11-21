@@ -160,3 +160,21 @@
 2021-11-16 21:52
 四合一如何记录焊接数据。
 五合一的在返回机器信息时，把机器信息进行采集。焊接结束后会采集。
+
+self.theWebView!.evaluateJavaScript("iosBleDataLayoutFuc('\([UInt8](data))')",
+//                                       completionHandler: nil)
+//            20211010 modbus协议改造支持
+self.theWebView!.evaluateJavaScript("iosModbusBleDataLayoutFuc('\([UInt8](data))')",
+completionHandler: nil)
+
+
+ //原来安卓里处理的逻辑（废弃）
+//     commonBleRespData(bleRespInfo.replaceAll(" ", "").toUpperCase());
+     //modbus
+     Log.i("=============", bleRespInfo);
+     mWebView.post(new Runnable() {
+         @Override
+         public void run() {
+          mWebView.loadUrl("javascript:modbusBroastFromApp('" + bleRespInfo.replaceAll(" ", "").toUpperCase() +"')");
+         
+     }});

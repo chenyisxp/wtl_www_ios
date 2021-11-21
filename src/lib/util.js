@@ -40,7 +40,7 @@ Array.prototype.in_array = function (element) {
             var ifLongFlag=false;
             var modbusGlobalReceiveList=[];
             var modbusGlobalReceiveInterval='';
-            var modbusIosReceiveTime=1;
+            // var store.state.modbusIosReceiveTime=1;
             var modbusIsBeginWeld=0;//是否开始焊接了
             var modbusWeldLongTime=0;//是否开始焊接了
             var modbusBeginWeldTm='';//焊接开始时间
@@ -1789,6 +1789,11 @@ Array.prototype.in_array = function (element) {
                     clearInterval(TimerTask);
                 }
             }
+            // self.theWebView!.evaluateJavaScript("iosBleDataLayoutFuc('\([UInt8](data))')",
+//                                       completionHandler: nil)
+//            20211010 modbus协议改造支持
+            // self.theWebView!.evaluateJavaScript("iosModbusBleDataLayoutFuc('\([UInt8](data))')",
+            // completionHandler: nil)
             //ios监听蓝牙返回数据 重要！！！ 非modbus协议版本用 
             window['iosBleDataLayoutFuc']= (bleReponseData) => {
                 if(lastTimesReceiveData==bleReponseData){
@@ -1806,6 +1811,7 @@ Array.prototype.in_array = function (element) {
             //ios监听蓝牙返回数据 重要！！！modbus协议版本app用 
             // self.theWebView!.evaluateJavaScript("iosModbusBleDataLayoutFuc('\([UInt8](data))')",
             window['iosModbusBleDataLayoutFuc']= (bleReponseData) => {
+                let oldData = bleReponseData;
                 bleReponseData =(bleReponseData +"").replace(/\[/g,'').replace(/\]/g,'');
                 bleReponseData=bleReponseData.split(',');
                 if(bleReponseData && bleReponseData.length>0){
@@ -1823,8 +1829,8 @@ Array.prototype.in_array = function (element) {
                     console.log(data)
                     //调用通用处理
                     //第一次是否是modbus版本
-                    if(modbusIosReceiveTime==1){
-                        modbusIosReceiveTime =modbusIosReceiveTime+1;
+                    if(store.state.modbusIosReceiveTime==1){
+                        store.state.modbusIosReceiveTime =store.state.modbusIosReceiveTime+1;
                         let firstHide = (data+"").substring(0,2);
                         if(firstHide == 'DA'){
                             store.state.isModbusModal=false;
@@ -1841,8 +1847,171 @@ Array.prototype.in_array = function (element) {
                     // }else{
                     //     window.modbusBroastFromApp(data);
                     // }
-                    //简化统一处理
-                    window.modbusBroastFromApp(data);
+                    if(store.state.isModbusModal){
+                        //简化统一处理
+                        window.modbusBroastFromApp(data);
+                    }else{
+                        //非modubs ios版本
+                        window.iosBleDataLayoutFuc(oldData);
+                    }
+                    
+                }
+            }
+            //安卓统一接收 兼容四合一 五合一modbus版本
+            window['andriodModbusBleDataLayoutFuc']= (bleReponseData) => {
+                try {
+                    bleReponseData = (bleReponseData +"").replace(/\s*/g,"");
+                    bleReponseData=bleReponseData.toLocaleUpperCase();
+                    //假如是四合一的安卓
+                    if(store.state.modbusIosReceiveTime==1){
+                        ++store.state.modbusIosReceiveTime;
+                        let firstHide = (bleReponseData+"").substring(0,2);
+                        if(firstHide != 'DA'){
+                            store.state.isModbusModal=true;
+                        }else{
+                            store.state.isModbusModal=false;
+                        }
+                    }
+                    if(store.state.isModbusModal){
+                        //简化统一处理
+                        window.modbusBroastFromApp(bleReponseData);
+                        return;
+                    }
+                    //继续旧四合一逻辑
+                    // Toast({
+                    //     message:Array.isArray(bleReponseData),
+                    //     position: 'middle',
+                    //     iconClass: 'icon icon-success',
+                    //     duration: 11000
+                    // });
+                    
+                        let data='';
+                        //2、crc校验(注意最长的)     console.log(this.crcModelBusClacQuery('100000', true))//0570
+                        let len =bleReponseData.length;
+                        data =bleReponseData.toUpperCase();//大写
+                        console.log(data)
+                        //帧头+指令+crc校验daffaaaa aaaa
+                        if(len>11 && data.indexOf('DA')==0){
+                            //da 10 00 00 0750
+                            // let value = data.substring(2,len-4);
+                            let crc = data.substring(len-4,len);
+                            if(data.indexOf("DAFF")==0){
+                                //规则变更:(ff+接收到数据)+crc
+                                if(data.length!=12){
+                                    return;
+                                }else{
+                                    let oldcrc = data.substring(4, 8)
+                //          data.substring(2, 8);//原来的crc
+                //          data.substring(8, 12);//现在的crc
+                                    let  tempMidData = "FF" +oldcrc.toString();//转字符串否则出错
+                                    
+                                    let newCrc = crcModelBusClacQuery(tempMidData, true);
+                                    console.log(crc,oldcrc,newCrc)
+                                    
+                                    if(crc == newCrc){
+                                        delete(checkData[oldcrc]);
+                                        delete(checkPage[oldcrc]);
+                                        delete(checkStatus[oldcrc]);
+                                        delete(checkTime[oldcrc]);
+                                        delete(checkSendTimes[oldcrc]);
+                                    }
+                                }
+                                return;
+                            //如果是返回焊接中的电流，电压
+                            }else if(data.indexOf("DAB")==0){
+                                window.tellVueWelding(data);
+                                // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
+                                return;
+                            //MEMORY
+                            }else if(data.indexOf("DAD")==0){
+                                window.broastMemoryFromAndroid(data);
+                                // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
+                                return;
+                            }
+                        //history
+                            else if(data.indexOf("DAC")==0){
+                                window.broastHistoryFromAndroid(data);
+                                // mWebView.loadUrl("javascript:broastHistoryFromAndroid('" + data +"')");
+                                return;
+                            }//失败 重发
+                            else if(data.indexOf("DA00")==0){
+                                //重发
+                                checkTime[crc] = new Date().getTime();
+                                checkSendTimes[crc]=checkSendTimes[crc]+1;
+                                let reSendData = checkData[crc];
+                                var message = {"method":"handleSendData","sendDt":reSendData}
+                                window.webkit.messageHandlers.interOp.postMessage(message);
+                                return;
+                            }
+                            
+                            //不是响应信息走正常路线
+                            //1、截取数据进行切割校验   最后四位 作为crc校验值    查看是否正确
+                            let midData ="";
+                            if(data.length==8){
+                                //结束 没有数据字段
+                                midData="";
+                            }else{
+                                midData =data.substring(2, data.length-4);
+                            }
+                            // Toast({
+                            //     message: 'midData'+midData,
+                            //     position: 'middle',
+                            //     iconClass: 'icon icon-success',
+                            //     duration: 5000
+                            // });
+                            //查不到走这里
+                            if(!checkData[crc] && midData){
+                                console.log(midData)
+                                let newCrc = crcModelBusClacQuery(midData, true);
+                                console.log(newCrc)
+                                //取crc校验如果不一致则失败 发送crc校验失败的响应值
+                                // Toast({
+                                //     message: crc+'||'+newCrc,
+                                //     position: 'middle',
+                                //     iconClass: 'icon icon-success',
+                                //     duration: 2000
+                                // });
+                                if(crc!=newCrc){
+                                    //可能数据太长造成的
+                                    doDataTooLongHeader(data);
+                                    return;
+                                }
+                                if(!checkData[newCrc]){
+                                    //应该是蓝牙传输过过来的数据 需要区分去哪
+                                    //1、正确关闭 定时器
+                                    if(mayTooLongList.length>0){
+                                        clearDate();
+                                    }
+                                    //2、发送
+                                    console.log(data,checkPage[crc])
+                                    // Toast({
+                                    //     message: 'broastFromAndroid||'+data+'||'+checkPage[crc],
+                                    //     position: 'middle',
+                                    //     iconClass: 'icon icon-success',
+                                    //     duration: 6000
+                                    // });
+                                    window.broastFromAndroid(data,checkPage[crc]);
+                                    delete(checkStatus[crc]);
+                                    delete(checkData[crc]);
+                                    delete(checkPage[crc]);
+                                    delete(checkTime[crc]);
+                                    delete(checkSendTimes[crc]);
+                                }
+                            }
+                        
+                        }else{
+                            //可能是数据太长的尾巴
+                            doDataTooLongLast(data);
+                        }
+            
+                    
+                } catch (error) {
+                    Toast({
+                        message: error,
+                        position: 'middle',
+                        iconClass: 'icon icon-success',
+                        duration: 2000
+                    });
                 }
             }
             // 
@@ -2023,12 +2192,12 @@ Array.prototype.in_array = function (element) {
             }
             //数据太长造成的
             function doDataTooLongLast(data){
-                Toast({
-                    message: 'doDataTooLongLast'+data,
-                    position: 'middle',
-                    iconClass: 'icon icon-success',
-                    duration: 5000
-                });
+                // Toast({
+                //     message: 'doDataTooLongLast'+data,
+                //     position: 'middle',
+                //     iconClass: 'icon icon-success',
+                //     duration: 5000
+                // });
                 let templist = [];
                 let midData ="";
                 console.log(mayTooLongList)
@@ -2096,8 +2265,8 @@ Array.prototype.in_array = function (element) {
                 bleReponseOrignData = (bleReponseOrignData +"").replace(/\s*/g,"");
                 bleReponseOrignData=bleReponseOrignData.toLocaleUpperCase();
                 //假如是四合一的安卓
-                if(modbusIosReceiveTime==1){
-                    ++modbusIosReceiveTime;
+                if(store.state.modbusIosReceiveTime==1){
+                    ++store.state.modbusIosReceiveTime;
                     let firstHide = (bleReponseOrignData+"").substring(0,2);
                     if(firstHide != 'DA'){
                         store.state.isModbusModal=true;
@@ -2506,6 +2675,10 @@ Array.prototype.in_array = function (element) {
             Vue.prototype.callSendModbusSystemData = (sendData,crc,pageFrom) =>{
                 console.log('callSendModbusSystemData');
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
+                if(store.state.modbusSendDataTimes>4){
+                    //达到验证上线不需要再重复发送
+                    return;
+                }
                 // var crc = crcModelBusClacQuery(sendData);
                 // crc ='0105'//计算好
                 onlySendFuc(sendData+crc,pageFrom,crc);

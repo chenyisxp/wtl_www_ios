@@ -1583,7 +1583,7 @@ export default {
       }
     },
     newChooseLineChangeData(snum) {
-      conosol.log('发送吗')
+      console.log('发送吗')
         let dirctCode = TIGMAN_DIRECTIVE_MAP.get('BTNS');
         let num =snum;
         let crc = this.crcModelBusClacQuery(dirctCode + num, true);
