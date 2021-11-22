@@ -903,6 +903,10 @@ export default {
                 // this.callSendModbusSystemData('0A0303E80023','1885','newIndex');//增加五个焊接时长
                 this.callSendModbusSystemData('0A0303E80028','DFC4','newIndex');//增加10个焊接时长
             }
+            if(that.nowConnectStatus!='connected'){
+              //断开就重置
+              that.$store.state.modbusIosReceiveTime =1;
+            }
           }
           if(that.GLOBAL_CONFIG.ONLY_CONNECT_STATUS_TOAST){
             Toast({
@@ -1020,9 +1024,12 @@ export default {
       } 
       window['sendToIndexBleState']=(data)=>{
         if(that.nowConnectStatus=='connected' && data!='connected'){
+          //断开就重置
+          that.$store.state.modbusIosReceiveTime =1;
           //突然断开处理
           let address =that.$store.state.nowConnectAddress
-          that.globalSendMsgToIos("handleDisConnect",address,"")
+          that.globalSendMsgToIos("handleDisConnect",address,"");
+          
         }
         that.nowConnectStatus=data;
         that.$store.state.getConnectStatus=data;
@@ -1067,7 +1074,11 @@ export default {
       }
   },watch: {
     isConnectStatus (newVal, oldVal) {
-      this.nowConnectStatus=newVal
+      this.nowConnectStatus=newVal;
+      if(newVal!='connected'){
+        //断开就重置
+        this.$store.state.modbusIosReceiveTime =1;
+      }
     }
   }
   ,destroyed(){

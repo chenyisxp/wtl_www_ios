@@ -1834,6 +1834,8 @@ Array.prototype.in_array = function (element) {
                         let firstHide = (data+"").substring(0,2);
                         if(firstHide == 'DA'){
                             store.state.isModbusModal=false;
+                            //记录四合一机器数据
+                            insertOldMachineInfo(bleReponseData);
                             // window.modbusBroastFromApp(data);
                             // return;
                         }else{
@@ -1857,6 +1859,21 @@ Array.prototype.in_array = function (element) {
                     
                 }
             }
+            function insertOldMachineInfo(receiveBleData){
+                 //记录四合一机器数据
+                 let loginName = localStorage.getItem("wtl_login_email") || '';
+                 InterfaceService.addMachineInfo({
+                     patch:'OLD4',
+                     email:loginName,
+                     btAddress:store.state.nowConnectAddress || '四合一地址',
+                     machineType:store.state.nowConnectMachine,
+                     content:receiveBleData,
+                     app_uuid:store.state.userUuid,
+                     uuid:store.state.userUuid
+                 },(data)=>{
+                 },function(data){
+                 });
+            }
             //安卓统一接收 兼容四合一 五合一modbus版本
             window['andriodModbusBleDataLayoutFuc']= (bleReponseData) => {
                 try {
@@ -1869,6 +1886,7 @@ Array.prototype.in_array = function (element) {
                         if(firstHide != 'DA'){
                             store.state.isModbusModal=true;
                         }else{
+                            insertOldMachineInfo(bleReponseData);
                             store.state.isModbusModal=false;
                         }
                     }
@@ -1919,17 +1937,20 @@ Array.prototype.in_array = function (element) {
                                 return;
                             //如果是返回焊接中的电流，电压
                             }else if(data.indexOf("DAB")==0){
+                                upLoadDataFuc(data,'APP','welding');
                                 window.tellVueWelding(data);
                                 // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
                                 return;
                             //MEMORY
                             }else if(data.indexOf("DAD")==0){
+                                upLoadDataFuc(data,'APP','MEMORY');
                                 window.broastMemoryFromAndroid(data);
                                 // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
                                 return;
                             }
                         //history
                             else if(data.indexOf("DAC")==0){
+                                upLoadDataFuc(data,'APP','HISTORY');
                                 window.broastHistoryFromAndroid(data);
                                 // mWebView.loadUrl("javascript:broastHistoryFromAndroid('" + data +"')");
                                 return;
@@ -1990,6 +2011,7 @@ Array.prototype.in_array = function (element) {
                                     //     iconClass: 'icon icon-success',
                                     //     duration: 6000
                                     // });
+                                    upLoadDataFuc(data,'APP','MODEDATA');
                                     window.broastFromAndroid(data,checkPage[crc]);
                                     delete(checkStatus[crc]);
                                     delete(checkData[crc]);
@@ -2234,6 +2256,7 @@ Array.prototype.in_array = function (element) {
                                 // timer.cancel();
                                 // timer = null;
                                 // 2、发送
+                                upLoadDataFuc(tempData,'APP','MODEDATA_LONG');
                                 window.broastFromAndroid(tempData,checkPage[crc]);
                                 delete(checkStatus[crc]);
                                 delete(checkData[crc]);
@@ -3790,7 +3813,7 @@ Array.prototype.in_array = function (element) {
                         
                         var message = {"method":"handleSendData","sendDt":sendDt};
                         if(window.webkit){
-                            upLoadDataFuc(sendDt,pageFrom);
+                            upLoadDataFuc(sendDt);
                             window.webkit.messageHandlers.interOp.postMessage(message);
                         }else{
                             console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom,crc)
@@ -3799,7 +3822,7 @@ Array.prototype.in_array = function (element) {
                         store.state.nowPageFrom=pageFrom?pageFrom:'';
                         if(window.android){
                             //注意这个modbuscrc是倒过来的
-                            upLoadDataFuc(sendDt,pageFrom);
+                            upLoadDataFuc(sendDt);
                             window.android.callSendDataToBle(pageFrom,sendDt,crc);
                         }else{
                             console.log('onlySendFuc数据发送至APP失败：',sendDt,pageFrom,crc)
@@ -3830,7 +3853,7 @@ Array.prototype.in_array = function (element) {
                 }
             }
             //核心上发函数 发送数据 、当前画面使用路由、类型 、weldTime:modbusWeldLongTime}
-            function upLoadDataFuc(sendData,pageFrom,type,params){
+            function upLoadDataFuc(sendData,type,params){
                 params = params?params:{};
                 if(!upLoadLastData){
                     upLoadLastData = sendData
@@ -3840,8 +3863,9 @@ Array.prototype.in_array = function (element) {
                 }else{
                     upLoadLastData=sendData;
                 }
-                let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
+                let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress || store.state.nowConnectAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
                 //网络状态 判断
+                
                 if(store.state.netWorkStatus=='online'){
                     InterfaceService.upLoadData(pInfo,(data)=>{
                         
