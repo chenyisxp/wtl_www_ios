@@ -107,8 +107,10 @@ export default {
                 InterfaceService.checkEmailCode({email:this.email,uuid:this.userUuid,emailCode:this.emailCode},(data)=>{
                     if(data && data.respData && data.respData.respCode == '0000'){
                         this.go('/registerStep3')
+                    }else if(data && data.respData && data.respData.respCode == '0100'){
+                        Toast(BASE_CONFIG.errorMsgMap['验证码已过期，请点击重新发送'])
                     }else{
-                        Toast(data.respData.respMsg || BASE_CONFIG.errorMsgMap['请输入正确的验证码'])
+                        Toast(BASE_CONFIG.errorMsgMap['请输入正确的验证码'])
                     }
                 },function(data){
                 

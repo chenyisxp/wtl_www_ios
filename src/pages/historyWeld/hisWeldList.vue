@@ -5,7 +5,7 @@
         {{nowConnectMachine}}
     </div> -->
     <Head :wantTo="'/newIndex'" :headName="'Histoty List'"></Head>
-    <div class="hislist" v-if="isModbusModal">
+    <div class="hislist" v-if="true">
         <span class="listName" v-if="weldMsgList.length!=0">List of recent welding history:</span>
         <div class="modbusLi">
             <div class="li modbus"  @click="goModubusHisWeld(item)" v-for="(item,idx) in weldMsgList" :key="idx">
@@ -34,7 +34,7 @@
         </div>
     </div>
     <!-- 保留旧的规则 -->
-    <div class="hislist" v-if="!isModbusModal">
+    <div class="hislist" v-if="false">
         <div class="li"  @click="gohisWeld(0)">
             <div class="typename">
                 MIG SYN<Icon type="ios-arrow-forward" />
@@ -340,7 +340,7 @@ export default {
             this.loginName = localStorage.getItem("wtl_login_email") || '';
             if(this.loginName){
                 let param = {
-                    BT_ADDRESS:this.btAddress,
+                    BT_ADDRESS:this.btAddress || '四合一地址',
                     APP_UUID:this.userUuid,
                     EMAIL:this.loginName
                 };
