@@ -604,7 +604,9 @@ let BASE_CONFIG = {
        "注册成功":"login was successful",
        "当前邮箱还未注册":"The current mailbox has not been registered",
        "密码重置成功":"Password reset succeeded",
-       "重置密码失败":"Failed to reset password"
+       "重置密码失败":"Failed to reset password",
+       "验证码已过期，请点击重新发送":"The verification code has expired, please click resend"
+
    }
 
 };

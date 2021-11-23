@@ -1048,7 +1048,8 @@ Array.prototype.in_array = function (element) {
                                     WELD_DATA:modbusBeginWeldCurVol,//电压\电流
                                     WELD_CUR:weldingCur,
                                     WELD_VOL:weldingVoltage,
-                                    RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                    RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                    tenantID:BASE_CONFIG.tenantID
                                 });
                                 // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
                             }
@@ -1992,7 +1993,8 @@ Array.prototype.in_array = function (element) {
                                             WELD_DATA:oldBeginWeldCurVol,//电压\电流
                                             WELD_CUR:weldingCur,
                                             WELD_VOL:weldingVoltage,
-                                            RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                            RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                            tenantID:BASE_CONFIG.tenantID
                                         });
                                         oldBeginWeldTm="";
                                         oldIsBeginWeld=0;
@@ -2187,7 +2189,8 @@ Array.prototype.in_array = function (element) {
                                             WELD_DATA:oldBeginWeldCurVol,//电压\电流
                                             WELD_CUR:weldingCur,
                                             WELD_VOL:weldingVoltage,
-                                            RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                            RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                            tenantID:BASE_CONFIG.tenantID
                                         });
                                         oldBeginWeldTm="";
                                         oldIsBeginWeld=0;
@@ -3301,7 +3304,8 @@ Array.prototype.in_array = function (element) {
                                 WELD_DATA:modbusBeginWeldCurVol,//电压\电流
                                 WELD_CUR:weldingCur,
                                 WELD_VOL:weldingVoltage,
-                                RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                tenantID:BASE_CONFIG.tenantID
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
                         }
@@ -3419,7 +3423,8 @@ Array.prototype.in_array = function (element) {
                                 WELD_DATA:modbusBeginWeldCurVol,//电压\电流
                                 WELD_CUR:weldingCur,
                                 WELD_VOL:weldingVoltage,
-                                RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                tenantID:BASE_CONFIG.tenantID
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
                         }
@@ -3503,7 +3508,8 @@ Array.prototype.in_array = function (element) {
                                 WELD_DATA:modbusBeginWeldCurVol,//电压\电流
                                 WELD_CUR:weldingCur,
                                 WELD_VOL:weldingVoltage,
-                                RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                tenantID:BASE_CONFIG.tenantID
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
                         }
@@ -3620,7 +3626,8 @@ Array.prototype.in_array = function (element) {
                                 WELD_DATA:modbusBeginWeldCurVol,//电压\电流
                                 WELD_CUR:weldingCur,
                                 WELD_VOL:weldingVoltage,
-                                RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                                tenantID:BASE_CONFIG.tenantID
                             });
                             // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
                         }
@@ -3763,7 +3770,8 @@ Array.prototype.in_array = function (element) {
                             WELD_DATA:modbusBeginWeldCurVol,//电压\电流
                             WELD_CUR:weldingCur,
                             WELD_VOL:weldingVoltage,
-                            RECORD_SECOND:new Date().getTime()//ms 时间戳
+                            RECORD_SECOND:new Date().getTime(),//ms 时间戳
+                            tenantID:BASE_CONFIG.tenantID
                         });
                         // upLoadDataFuc(receiveBleData,'util','weld_end',{weldTime:modbusWeldLongTime});
                     }
