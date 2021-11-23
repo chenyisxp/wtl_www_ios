@@ -279,6 +279,14 @@ export default {
         // });
     },
     setBleConnect(address,bleName){
+        //  Toast({
+        //         message: address,
+        //         position: 'middle',
+        //         iconClass: 'icon icon-success',
+        //         duration: 2000
+        // });
+        BASE_CONFIG.btAddress=address;
+        this.$store.state.clickBtAdress=address;
         if(this.envType=='env_ios'){
             this.setBleConnect_ios(address,bleName);
         }else{
@@ -772,6 +780,12 @@ export default {
         }
   },
   created () {
+        window['buildParams']=()=>{
+            console.log(this.$store.state)
+            this.$store.state.clickBtAdress='11111222233';
+            BASE_CONFIG.btAddress='11111222233';
+            console.log(this.$store.state)
+        }
         //ios
         window['sendToHtmlConnectedFail'] = () =>{
             let address =this.$store.state.nowConnectAddress

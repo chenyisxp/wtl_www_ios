@@ -1857,7 +1857,7 @@ Array.prototype.in_array = function (element) {
                             store.state.isModbusModal=false;
                             store.state.machineModel='OLD'
                             //记录四合一机器数据
-                            insertOldMachineInfo(bleReponseData);
+                            insertOldMachineInfo(data);
                             // window.modbusBroastFromApp(data);
                             // return;
                         }else{
@@ -1887,7 +1887,7 @@ Array.prototype.in_array = function (element) {
                  InterfaceService.addMachineInfo({
                      patch:'OLD4',
                      email:loginName,
-                     btAddress:store.state.nowConnectAddress || '四合一地址',
+                     btAddress:BASE_CONFIG.btAddress || '四合一地址',
                      machineType:store.state.nowConnectMachine,
                      content:receiveBleData,
                      app_uuid:store.state.userUuid,
@@ -1983,7 +1983,7 @@ Array.prototype.in_array = function (element) {
                                     oldWeldTimer= setTimeout(() => {
                                         clearInterval(oldWeldIntervaler);
                                         uploadAppWeldInfoList({
-                                            BT_ADDRESS:  store.state.btAddress || store.state.nowConnectAddress || '四合一地址', 
+                                            BT_ADDRESS:  store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址', 
                                             APP_UUID:store.state.userUuid,
                                             MODEL_TYPE : oldWeldModel,
                                             WELD_CONTENT : (oldBeginWeldInfo+"").replace(/\s*/g,""),
@@ -2180,7 +2180,7 @@ Array.prototype.in_array = function (element) {
                                     oldWeldTimer= setTimeout(() => {
                                         clearInterval(oldWeldIntervaler);
                                         uploadAppWeldInfoList({
-                                            BT_ADDRESS: store.state.btAddress || store.state.nowConnectAddress || '四合一地址',
+                                            BT_ADDRESS: store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址',
                                             MODEL_TYPE : oldWeldModel,
                                             WELD_CONTENT :(oldBeginWeldInfo+"").replace(/\s*/g,""),
                                             BEGIN_TM:oldBeginWeldTm,
@@ -2268,6 +2268,7 @@ Array.prototype.in_array = function (element) {
                                     //     iconClass: 'icon icon-success',
                                     //     duration: 6000
                                     // });
+                                    upLoadDataFuc(data,'APP','MODEDATA');
                                     window.broastFromAndroid(data,checkPage[crc]);
                                     delete(checkStatus[crc]);
                                     delete(checkData[crc]);
@@ -2804,6 +2805,10 @@ Array.prototype.in_array = function (element) {
             //init 初始化请求
             //请求一个模式确认是不是modbus协议版本机器
             Vue.prototype.callSendModbusSystemData = (sendData,crc,pageFrom) =>{
+                // Toast('modbusSendDataTimes='+store.state.modbusSendDataTimes+":"+store.state.getConnectStatus)
+                if(store.state.getConnectStatus!='connected'){
+                    return;
+                }
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
                 if(store.state.modbusSendDataTimes>4){
                     //达到验证上线不需要再重复发送
@@ -3970,6 +3975,12 @@ Array.prototype.in_array = function (element) {
             //核心上发函数 发送数据 、当前画面使用路由、类型 、weldTime:modbusWeldLongTime}
             function upLoadDataFuc(sendData,type,params){
                 params = params?params:{};
+                // Toast({
+                //     message: upLoadLastData +"||"+sendData,
+                //     position: 'middle',
+                //     iconClass: 'icon icon-success',
+                //     duration: 1000
+                // });
                 if(!upLoadLastData){
                     upLoadLastData = sendData
                 }else if(upLoadLastData == sendData){
@@ -3978,7 +3989,21 @@ Array.prototype.in_array = function (element) {
                 }else{
                     upLoadLastData=sendData;
                 }
-                let pInfo ={uuid:store.state.userUuid,allData:sendData,btAddress:store.state.btAddress || store.state.nowConnectAddress,pageName:store.state.nowRouter,type:type?type:'默认Type',commonContent:params.weldTime};
+                
+                // Toast({
+                //     message: 'util:'+store.state.nowConnectAddress,
+                //     position: 'middle',
+                //     iconClass: 'icon icon-success',
+                //     duration: 1500
+                // });
+                let pInfo ={
+                    uuid:store.state.userUuid,
+                    allData:sendData,
+                    btAddress:store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址',
+                    pageName:store.state.nowRouter,
+                    type:type?type:'默认Type',
+                    commonContent:params.weldTime
+                };
                 //网络状态 判断
                 
                 if(store.state.netWorkStatus=='online'){

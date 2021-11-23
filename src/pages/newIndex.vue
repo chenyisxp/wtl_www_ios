@@ -1078,6 +1078,10 @@ export default {
           that.globalSendMsgToIos("handleDisConnect",address,"");
           
         }
+        //需要重置modbus请求器
+        if(that.nowConnectStatus!='connected' && data=='connected'){
+          that.$store.state.modbusSendDataTimes =1;
+        }
         that.nowConnectStatus=data;
         that.$store.state.getConnectStatus=data;
         
