@@ -55,7 +55,7 @@ let BASE_CONFIG = {
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 00 01 09 6400 6400 01 09 6F6F'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 02 10 09 09 aa00 aa00 07 09 6f8e'},
-        mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 4A 00 07 05 5A00 3800 04 07 6134'},//20201028真实焊机上发
+        mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 4A 00 07 05 5A00 3800 04 07 6134'},//20201028真实焊机上发  // window.andriodModbusBleDataLayoutFuc("dae54a08070482008200070995f5")
         //2、焊接准备中的状态 参数模拟       
         // migsyn:{heade:'dae',headm:'dad',headc:'dac',data:'1 40 00 00 00 02 00 3C00 3D00 b400 c800 02 09 DE46'},
         // migman:{heade:'dae',headm:'dad',headc:'dac',data:'2 40 3D00 c800 00 F53B'},
@@ -67,6 +67,7 @@ let BASE_CONFIG = {
         
         // tigman:{heade:'dae',headm:'dad',headc:'dac',data:'4 40 c0 32 3200 32 3200 3200 e800 32 32 3200 32 50 23 FF97'},
         // mma:{heade:'dae',headm:'dad',headc:'dac',data:'5 c2 00 01 09 6400 6400 CD99'},
+        
         cut:{heade:'dae',headm:'dad',headc:'dac',data:'6 0A 03 16 0000 0000 0033 0001 0000 0003 000B 0000 0032 0064 000A 54F5'}
    },
    //焊接中模拟数据

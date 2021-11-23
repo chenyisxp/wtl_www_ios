@@ -48,6 +48,15 @@ Array.prototype.in_array = function (element) {
             var modbusBeginWeldCurVol='';//焊接电压电流等
             var weldingCur='';//电流
             var weldingVoltage ='';//电压
+            var oldIsBeginWeld=0;//是否开始焊接了 老的四合一模式
+            var oldWeldLongTime=0;//是否开始焊接了 老的四合一模式
+            var oldBeginWeldTm='';//焊接开始时间 老的四合一模式
+            var oldBeginWeldInfo='';//焊接开始的参数 老的四合一模式
+            var oldBeginWeldCurVol='';//焊接电压电流等 老的四合一模式
+            var oldWeldModel ='';//模式
+            var oldWeldTimer={};
+            var oldWeldIntervaler={};
+
             var oldGetData='';
 
             var checkDataModbus={};
@@ -838,12 +847,15 @@ Array.prototype.in_array = function (element) {
             //抽取的公共部分
             function buidDataByPagefrom(pageFrom,dirctiveType,data,_this){
                 var rstInfo ={};
+                oldBeginWeldInfo=data;
                 //请求mig syn模式数据
                 if(compareString(dirctiveType,weldDirctive.migSyn)){
                     if(store.state.isModbusModal){
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldMigsynRealData(data,pageFrom);
                     }else{
+                        oldWeldModel='MIGSYN';
+                        oldBeginWeldInfo=data;
                         var strArr =data.split(' ');
                         console.log(1111112222333);
                         console.log(strArr);
@@ -875,6 +887,8 @@ Array.prototype.in_array = function (element) {
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldMigmanRealData(data,pageFrom);
                     }else{
+                        oldWeldModel='MIGMAN';
+                        
                         var strArr =data.split(' ');
                         console.log(strArr);
                         var temp10 =[];
@@ -893,6 +907,7 @@ Array.prototype.in_array = function (element) {
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldTigsynRealData(data,pageFrom);
                     }else{
+                        oldWeldModel='TIGSYN';
                         var strArr =data.split(' ');
                         var temp10 =[];
                         temp10.push(parseInt(("0x"+strArr[0]),16).toString(10));//头DA
@@ -915,6 +930,7 @@ Array.prototype.in_array = function (element) {
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldMmaRealData(data,pageFrom);
                     }else{
+                        oldWeldModel='MMA';
                         var strArr =data.split(' ');
                         var temp10 =[];
                         temp10.push(parseInt(("0x"+strArr[0]),16).toString(10));//头DA
@@ -964,6 +980,7 @@ Array.prototype.in_array = function (element) {
                         //这里数据的处理像memory的处理方式，取全部进行分析
                         rstInfo = changeToOldTigmanRealData(data,pageFrom);
                     }else{
+                        oldWeldModel='TIGMAN';
                         //新规则
                         var strArr =data.split(' ');
                         var temp10 =[];
@@ -1333,7 +1350,7 @@ Array.prototype.in_array = function (element) {
                 }
                 return bean;
             }
-            //转成16进制转2进制 之后不足的位数补零
+            //转成16进制转2进制 之后不足的位数补零 74 ["0", "1", "0", "0", "1", "0", "1", "0"]
             function num16To2Arr(num,type,pageFrom){
                 console.log(num)
                 // return (Array(len).join('0') + parseInt(num,16).toString(2)).slice(-len);
@@ -1354,9 +1371,12 @@ Array.prototype.in_array = function (element) {
                     // alert('焊接状态'+bean.weldStatus+'pageFrom:'+pageFrom);
                     if(bean.weldStatus==1){
                         if(pageFrom=='newIndex'){
-                            store.state.weldingStatus=1
+                            store.state.weldingStatus=1;
                         }
                     }else{
+                        if(pageFrom=='newIndex'){
+                            oldIsBeginWeld=0;//重置
+                        }
                         store.state.weldingStatus=0;
                         store.state.getWeldingInfoTimes=0;//重置
                      }
@@ -1834,6 +1854,7 @@ Array.prototype.in_array = function (element) {
                         let firstHide = (data+"").substring(0,2);
                         if(firstHide == 'DA'){
                             store.state.isModbusModal=false;
+                            store.state.machineModel='OLD'
                             //记录四合一机器数据
                             insertOldMachineInfo(bleReponseData);
                             // window.modbusBroastFromApp(data);
@@ -1882,10 +1903,12 @@ Array.prototype.in_array = function (element) {
                     //假如是四合一的安卓
                     if(store.state.modbusIosReceiveTime==1){
                         ++store.state.modbusIosReceiveTime;
+                        modbusGlobalReceiveList=[];//清空 重置
                         let firstHide = (bleReponseData+"").substring(0,2);
                         if(firstHide != 'DA'){
                             store.state.isModbusModal=true;
                         }else{
+                            store.state.machineModel='OLD'
                             insertOldMachineInfo(bleReponseData);
                             store.state.isModbusModal=false;
                         }
@@ -1937,7 +1960,45 @@ Array.prototype.in_array = function (element) {
                                 return;
                             //如果是返回焊接中的电流，电压
                             }else if(data.indexOf("DAB")==0){
-                                upLoadDataFuc(data,'APP','welding');
+                                if(oldIsBeginWeld===0){
+                                    oldIsBeginWeld=1;
+                                    clearInterval(oldWeldIntervaler);
+                                    oldWeldIntervaler =setInterval(() => {
+                                        ++oldWeldLongTime;
+                                    }, 1000);
+                                    upLoadDataFuc(oldBeginWeldInfo+"||"+data,'APP','weld_begin');
+                                }
+                                // DAB1 0100 0200 8658 双字节
+                                if(!store.state.isModbusModal){
+                                    if(data.length>10){
+                                        oldBeginWeldCurVol=data;
+                                        weldingCur=data.substring(6,8)+data.substring(4,6);
+                                        weldingVoltage=data.substring(10,12)+data.substring(8,10);
+                                    }
+                                    if(!oldBeginWeldTm){
+                                        oldBeginWeldTm=buidTm();
+                                    }
+                                    clearTimeout(oldWeldTimer);
+                                    oldWeldTimer= setTimeout(() => {
+                                        clearInterval(oldWeldIntervaler);
+                                        uploadAppWeldInfoList({
+                                            BT_ADDRESS:  store.state.btAddress || store.state.nowConnectAddress || '四合一地址', 
+                                            APP_UUID:store.state.userUuid,
+                                            MODEL_TYPE : oldWeldModel,
+                                            WELD_CONTENT : (oldBeginWeldInfo+"").replace(/\s*/g,""),
+                                            BEGIN_TM:oldBeginWeldTm,
+                                            END_TM :buidTm(),
+                                            COST_TM : oldWeldLongTime,
+                                            WELD_DATA:oldBeginWeldCurVol,//电压\电流
+                                            WELD_CUR:weldingCur,
+                                            WELD_VOL:weldingVoltage,
+                                            RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                        });
+                                        oldBeginWeldTm="";
+                                        oldIsBeginWeld=0;
+                                        oldWeldLongTime=0;
+                                    }, 2500);
+                                }
                                 window.tellVueWelding(data);
                                 // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
                                 return;
@@ -2095,6 +2156,44 @@ Array.prototype.in_array = function (element) {
                                 return;
                             //如果是返回焊接中的电流，电压
                             }else if(data.indexOf("DAB")==0){
+                                // DAB1 0100 0200 8658 双字节
+                                if(oldIsBeginWeld===0){
+                                    oldIsBeginWeld=1;
+                                    clearInterval(oldWeldIntervaler);
+                                    oldWeldIntervaler =setInterval(() => {
+                                        ++oldWeldLongTime;
+                                    }, 1000);
+                                    upLoadDataFuc(oldBeginWeldInfo+"||"+data,'APP','weld_begin');
+                                }
+                                if(!store.state.isModbusModal){
+                                    if(data.length>10){
+                                        oldBeginWeldCurVol=data;
+                                        weldingCur=data.substring(6,8)+data.substring(4,6);
+                                        weldingVoltage=data.substring(10,12)+data.substring(8,10);
+                                    }
+                                    if(!oldBeginWeldTm){
+                                        oldBeginWeldTm=buidTm();
+                                    }
+                                    clearTimeout(oldWeldTimer);
+                                    oldWeldTimer= setTimeout(() => {
+                                        clearInterval(oldWeldIntervaler);
+                                        uploadAppWeldInfoList({
+                                            BT_ADDRESS: store.state.btAddress || store.state.nowConnectAddress || '四合一地址',
+                                            MODEL_TYPE : oldWeldModel,
+                                            WELD_CONTENT :(oldBeginWeldInfo+"").replace(/\s*/g,""),
+                                            BEGIN_TM:oldBeginWeldTm,
+                                            END_TM :buidTm(),
+                                            COST_TM : oldWeldLongTime,//减去延迟时间
+                                            WELD_DATA:oldBeginWeldCurVol,//电压\电流
+                                            WELD_CUR:weldingCur,
+                                            WELD_VOL:weldingVoltage,
+                                            RECORD_SECOND:new Date().getTime()//ms 时间戳
+                                        });
+                                        oldBeginWeldTm="";
+                                        oldIsBeginWeld=0;
+                                        oldWeldLongTime=0;
+                                    }, 2500);
+                                }
                                 window.tellVueWelding(data);
                                 // mWebView.loadUrl("javascript:tellVueWelding('" + data +"')");
                                 return;
@@ -2475,6 +2574,7 @@ Array.prototype.in_array = function (element) {
                     let changeNewData ="";
                     switch (headKey) {
                         case '0A0350':
+                            store.state.modbusSendDataTimes=5;//无需再发送了，手动停止
                         // case '0A033C':
                             //60长度
                             // window.modbusBroastFromApp("0A 03 3C 04 01 33 00 2C 34 34 31 42 2C 2C 35 41 42 34 2C 2C 31 37 39 4D 00 47 41 43 49 41 20 2F 43 43 44 50 2F 41 4C 4D 53 20 41 30 32 43 30 0A 0D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 F8 78")
@@ -2493,8 +2593,13 @@ Array.prototype.in_array = function (element) {
                             if(receiveBleData.length>80){
                                 let patch = recontent.substring(8,12);//厂商33
                                 let btAddress=recontent.substring(12,48);;//蓝牙地址
-                                let machineType=recontent.substring(48,idx);;//机器型号
-
+                                // \u0050\u004c\u0041\u0053\u004d\u0041 504C41534D41 PLASMA
+                                let machineType=recontent.substring(48,idx);;//机器型号 \u0050\u004c\u0041\u0053\u004d\u0041
+                                if(machineType.indexOf('504C41534D41')>-1){
+                                    store.state.machineModel = 'PLASMA';
+                                }else{
+                                    store.state.machineModel = 'OLD';
+                                }
                                 let migTm = recontent.substring(clength-24,clength-20);;//不同模式细腻
                                 let tigAc = recontent.substring(clength-20,clength-16);;//不同模式细腻
                                 let tigDc = recontent.substring(clength-16,clength-12);;//不同模式细腻
@@ -2696,15 +2801,17 @@ Array.prototype.in_array = function (element) {
             //init 初始化请求
             //请求一个模式确认是不是modbus协议版本机器
             Vue.prototype.callSendModbusSystemData = (sendData,crc,pageFrom) =>{
-                console.log('callSendModbusSystemData');
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
                 if(store.state.modbusSendDataTimes>4){
                     //达到验证上线不需要再重复发送
                     return;
+                }else{
+                    console.log('callSendModbusSystemData'+store.state.modbusSendDataTimes,store.state.modbusSendDataTimes>4);
+                    onlySendFuc(sendData+crc,pageFrom,crc);
                 }
                 // var crc = crcModelBusClacQuery(sendData);
                 // crc ='0105'//计算好
-                onlySendFuc(sendData+crc,pageFrom,crc);
+                
             }
             // callSendDataToBleUtil
             // modbus data build center  || iosBleDataLayoutFuc 

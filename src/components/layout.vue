@@ -84,6 +84,7 @@ export default {
       transitionName:'',
       autoTimeoutFlag:{},
       weldingTimer:{},
+      layoutIntervalOne:{}
       // globalGetConnectStatus:{}
       
     }
@@ -122,25 +123,23 @@ export default {
             let allPage = self.$refs.allPage;
           
             self.autoTimeoutFlag =setTimeout(() => {
+              console.log("autoTimeoutFlag:"+self.$store.state.weldingStatus)
                      //是不是焊接中....
               if(self.$store.state.weldingStatus==1){
-             
                     //没有做任何操作就跳转
                     if(self.$store.state.nowRouter!='/blueToothManage'){
                       self.$router.push('/welding');
                     }
-                    
               }
               }, self.GLOBAL_CONFIG.autoRouterTime);
             allPage.addEventListener('touchmove',(e)=>{//屏幕触摸事件
                 clearTimeout(self.autoTimeoutFlag);
+                clearInterval(self.layoutIntervalOne)
             });
             allPage.addEventListener('touchend',(e)=>{//屏幕触摸事件
                 clearTimeout(self.autoTimeoutFlag);
                 self.autoTimeoutFlag =setTimeout(() => {
-                    //  alert(self.$store.state.weldingStatus)
                   if(self.$store.state.weldingStatus==1){
-                    
                     // alert(self.$store.state.nowRouter)
                     //没有做任何操作就跳转
                     if(self.$store.state.nowRouter!='/blueToothManage'){
@@ -148,6 +147,17 @@ export default {
                     }
                   }
                 },self.GLOBAL_CONFIG.autoRouterTime);
+                //增加循环器 避免 在长期不动时，出现了焊接中而未动
+                clearInterval(self.layoutIntervalOne)
+                self.layoutIntervalOne = setInterval(() => {
+                  console.log('layoutIntervalOne='+self.$store.state.weldingStatus)
+                  if(self.$store.state.weldingStatus==1){
+                    if(self.$store.state.nowRouter!='/blueToothManage'){
+                      clearInterval(self.layoutIntervalOne);
+                      self.$router.push('/welding');
+                    }
+                  }
+                }, self.GLOBAL_CONFIG.autoRouterTime);
             });
       },
     showDialog (param) {
@@ -418,13 +428,21 @@ export default {
     },
   watch: {
     isConnectStatus (newVal, oldVal) {
-      console.log('111::'+this.$store.state.nowRouter)
+      console.log('layout里蓝牙连接状态监听::'+this.$store.state.nowRouter)
       // Toast({
       //       message: 'nowRoute:'+this.$store.state.nowRouter,
       //       position: 'middle',
       //       iconClass: 'icon icon-success',
       //       duration: 2500
       //     });
+      if(newVal!='connected'){
+        //断开连接需要重置一些参数 可能是四合一 五合一切换使用
+        this.$store.state.modbusIosReceiveTime=1;
+        this.$store.state.isModbusModal=false;
+        clearInterval(this.$store.state.modbusCircleTimer);
+        clearInterval(this.$store.state.weldingInterval)//否则每次进来会从累机
+
+      }
       //do something
       if(this.$store.state.nowRouter!='/blueToothManage' 
           && this.$store.state.nowRouter!='/newIndex'
@@ -531,6 +549,9 @@ export default {
         if(this.isModbusModal){
           console.log('执行modbus清楚焊接中')
            this.$store.state.weldingStatus=0;
+        }else{
+          //非modbus 发送焊接结束数据
+          
         }
       }, 8000);
       // this.$store.state.AdroidOldMsg=data;

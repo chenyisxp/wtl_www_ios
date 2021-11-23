@@ -35,7 +35,7 @@
             <div class="c-img i-0" v-bind:class="classAtr[2].name"  @click.stop="newChangeFuc(4,1)">
                 <img src="../assets/images/weld_mma.png" :style="{height:this.imgHeight,width:this.imgWidth}">
             </div>
-            <div class="c-img i-0" v-bind:class="classAtr[3].name"  @click.stop="newChangeFuc(5,1)">
+            <div class="c-img i-0" v-bind:class="classAtr[3].name" v-if="nowConnectStatus!='connected' || (nowConnectStatus=='connected' && machineModel=='PLASMA')"  @click.stop="newChangeFuc(5,1)">
                 <img src="../assets/images/cut.png" :style="{height:this.imgHeight,width:this.imgWidth}">
             </div>
         </div>
@@ -97,7 +97,7 @@ export default {
   data () {
     return {
       showRespData:'',
-      arrChooseBtn:[0,2,4,5],
+      arrChooseBtn:[0,2,4,5],//0,2,4 四合一 this.arrChooseBtn=[0,2,4,5];五合一
       hideFlag: false,
       closeClass: false,
       upshowFlag:false,
@@ -516,17 +516,29 @@ export default {
           that.choose(2);
         }else if(that.reClacClass()==2){
           that.choose(4);
-        }else if(that.reClacClass()==4){
+        }else if(that.reClacClass()==4 && that.nowConnectStatus!='connected'){
           // that.choose(0);
           that.choose(5);
+        }
+        else if(that.reClacClass()==4 && that.machineModel=='PLASMA'){
+          // that.choose(0);
+          that.choose(5);
+        }else if(that.reClacClass()==4 && that.machineModel!='PLASMA'){
+          that.choose(0);
+          // that.choose(5);
         }else if(that.reClacClass()==5){
           that.choose(0);
         }
       }else if(  that.touchStartNum-e.changedTouches[0].pageX<-30){
         console.log('右滑'+nowChooseIndex,that.reClacClass())
         //右滑
-        if(that.reClacClass()==0){
+        if(that.reClacClass()==0 && that.nowConnectStatus!='connected'){
+          // that.choose(0);
           that.choose(5);
+        }else if(that.reClacClass()==0 && that.machineModel=='PLASMA'){
+          that.choose(5);
+        }else if(that.reClacClass()==0 && that.machineModel!='PLASMA'){
+          that.choose(4);
         }else if(that.reClacClass()==2){
           that.choose(0);
         }else if(that.reClacClass()==4){
@@ -544,20 +556,37 @@ export default {
                 this.nowMainIndex =index;
                 //classAtr 数组每个index代表不同主页的id id=0在主位置
                 // this.classAtr=[{name:'cla_2',value:2},{name:'cla_0',value:1},{name:'cla_1',value:3}]
-                 this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3},{name:'cla_3',value:4}]
-                
+                if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                  this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3},{name:'cla_3',value:4}] 
+                }else{
+                  this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3}] 
+                }
             }
             if(index==2 || index==3){
                this.nowMainIndex =index;
-               this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0},{name:'cla_3',value:4}]
+                if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                  this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0},{name:'cla_3',value:4}]
+                }else{
+                  this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0}]
+                }
+               
             }
              if(index==4){
               this.nowMainIndex =4;
-              this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2},{name:'cla_3',value:4}]
+                if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                  this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2},{name:'cla_3',value:4}]
+                }else{
+                  this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2}]
+                }
             }
             if(index==5){
               this.nowMainIndex =5;
-              this.classAtr=[{name:'cla_2',value:1},{name:'cla_3',value:2},{name:'cla_0',value:0},{name:'cla_1',value:3}]
+              if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                this.classAtr=[{name:'cla_2',value:1},{name:'cla_3',value:2},{name:'cla_0',value:0},{name:'cla_1',value:3}]
+              }else{
+                this.classAtr=[{name:'cla_2',value:1},{name:'cla_3',value:2},{name:'cla_0',value:0}]
+              }
+              
             }
         },
         reClacClass(){
@@ -846,6 +875,23 @@ export default {
     }
   },
   mounted: function () {
+    //等离子五合一
+    setTimeout(() => {
+      console.log(this.machineModel,this.nowConnectStatus)
+      if(this.nowConnectStatus == 'connected' ){
+          if(this.machineModel == 'PLASMA'){
+            this.arrChooseBtn=[0,2,4,5];
+            this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
+          }else{
+            this.arrChooseBtn=[0,2,4];
+            this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}]
+          }
+      }else{
+          this.arrChooseBtn=[0,2,4,5];
+          this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
+      }
+    }, 200);
+
     //回到首页且不是焊接中清除请求
     if(this.weldingStatus!=1){
       clearInterval(this.$store.state.modbusCircleTimer)
@@ -895,6 +941,7 @@ export default {
           }else{
             that.$store.state.getConnectStatus = window.android?window.android.getConStatus():BASE_CONFIG.liulanqiConnect?'connected':''// window.android.getConStatus();
             that.nowConnectStatus =that.$store.state.getConnectStatus;
+            console.log(that.nowConnectStatus)
             if(that.nowConnectStatus=='connected' && that.modbusSendDataTimes<5){
                 //发出系统信息请求
                 // that.callSendModbusSystemData('0A0303e80001','0105','newIndex');//模拟响应：0A03020000851D
@@ -1071,6 +1118,9 @@ export default {
       },
       weldingStatus(){
         return this.$store.state.weldingStatus;
+      },
+      machineModel(){
+        return this.$store.state.machineModel;
       }
   },watch: {
     isConnectStatus (newVal, oldVal) {
@@ -1079,6 +1129,17 @@ export default {
         //断开就重置
         this.$store.state.modbusIosReceiveTime =1;
       }
+    },
+    machineModel(newVal, oldVal){
+        console.log(newVal)
+        //等离子五合一
+        if(newVal == 'PLASMA'){
+          this.arrChooseBtn=[0,2,4,5];
+          this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
+        }else{
+          this.arrChooseBtn=[0,2,4];
+          this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}]
+        }
     }
   }
   ,destroyed(){

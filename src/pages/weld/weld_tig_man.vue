@@ -459,8 +459,14 @@ export default {
       console.log("================",this.keysRangeMap,type)
       // var aa = (Array(2).join('0') + parseInt(positionNum*10,10).toString(16)).slice(-2);
       //计算 查找 发送请求给ble告知 修改了
-      // var dirctCode = TIGMAN_DIRECTIVE_MAP.get('PARAMVALUE');
-       var dirctCode = this.getDirective(this.typeName, type);
+      var dirctCode='';
+      if(!this.isModbusModal){
+        //旧的四合一通讯指令是就一个指令
+        dirctCode = TIGMAN_DIRECTIVE_MAP.get('PARAMVALUE');
+      }else{
+        dirctCode = this.getDirective(this.typeName, type);
+      }
+       
       var num='';
           num =this.jinzhiChangeFuc(parseInt(value * this.keysRangeMap.get(type).multi, 10));
       var crc = this.crcModelBusClacQuery(dirctCode + num, true);
