@@ -242,11 +242,19 @@ export default {
                     this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigsyn.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
                     break;
                 case 'TIGMAN':
-                    this.chooseType=3;
-                    this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode
-                    this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.tigman.name
-                    content = (item.WELD_CONTENT+"").substring(3,500)//留着6
-                    this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigman.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    // if(this.isModbusModal){
+                        this.chooseType=3;
+                        this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode
+                        this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.tigman.name
+                        content = (item.WELD_CONTENT+"").substring(3,500)//留着6
+                        this.broastFromAndroid(this.GLOBAL_CONFIG.testData.tigman.headc+content,'hisweldlist',this.GLOBAL_CONFIG.TESTFLAG);
+                    // }else{
+                    //     this.chooseType=3;
+                    //     this.chooseTypeCrc=this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode
+                    //     this.chooseTypeName=this.GLOBAL_CONFIG.callWeldTypeData.tigman.name
+                    //     //注意tigman由于四合一改造过只返回一个参数所以用旧的history模式
+                    //     this.gohisWeld(3);
+                    // }
                     break;
                 case 'MMA':
                     this.chooseType=4;

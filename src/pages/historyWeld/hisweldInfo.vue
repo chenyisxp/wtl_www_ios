@@ -213,6 +213,69 @@ export default {
         goBack(){
             this.$router.push({path:'/hisWeldList',query:{}}); 
         },
+        buildTigManData20211124(list){
+            // pre_gas:'Pre Gas',
+            // start_cur_end:'Start Current',
+            // pulse_duty:'Pulse Duty',
+            // pulse_fre:'Pulse Fre',
+            // base_cur:'Base Current',
+            // slop_down:'Slop Down',
+            // slop_up:'Slop Up',
+            // crater_cur:'Crater Current',
+            // post_gas:'Post Gas',
+            // ac_balance:'Ac Balance',
+            // ac_fre:'Ac Fre',
+            // peak_cur:'Peak Current',
+            // weld_cur:'Welding Current'
+            let values = '';
+            switch (list.nowChoosedKeyName) {
+                case 'pre_gas':
+                    values = list.paramValue/10+'s'
+                    break;
+                case 'start_cur_end':
+                    values = list.paramValue+'A'
+                    break;
+                case 'pulse_duty':
+                    values = list.paramValue/10+'%'
+                    break;
+                case 'pulse_fre':
+                    values = list.paramValue/10+'HZ'
+                    break;
+                case 'base_cur':
+                    values = list.paramValue+'A'
+                    break;
+                case 'slop_down':
+                    values = list.paramValue/10+'s'
+                    break;
+                case 'slop_up':
+                    values = list.paramValue/10+'s'
+                    break;
+                case 'crater_cur':
+                    values = list.paramValue+'A'
+                    break;
+                case 'post_gas':
+                    values = list.paramValue/10+'s'
+                    break;
+                case 'ac_balance':
+                    values = list.paramValue+'%'
+                    break;
+                case 'ac_fre':
+                    values = list.paramValue+'Hz'
+                    break;
+                case 'peak_cur':
+                    values = list.paramValue+'A'
+                    break;
+                case 'weld_cur':
+                    values = list.paramValue+'A'
+                    break;
+                default:
+                    values = list.paramValue
+                    break;
+            }
+            var t0 ={typeName:list.nowChoosedKeyName,value:values};   
+            this.suppllytments.push(t0);
+           
+        },
         //注意和memorydetail里一致
         buildTigManData(list){
             console.log( this.nowModelTypeName )
@@ -511,6 +574,16 @@ export default {
       this.modelCrc =this.$route.query.modelCrc;
     //   alert(this.modelCrc)
       var list  =this.$store.state.rstInfo;
+    // data: "DA C4 4A 0F 09 16 00 01 0A 00 0A 00 C6 07 2E 00 1E 00 34 6E"
+    // dirctiveType: "F570"
+    // initBean: (...)
+    // nowChooseIndex: (...)
+    // nowChoosedKeyName: (...)
+    // nowTypeList: (...)
+    // pageFrom: "newIndex"
+    // paramValue: (...)
+    // weldType: (...)
+    // weldTypeNum: (...)
       console.log(list)
       //赋值拆解
       this.nowTypeList =list.nowTypeList;
@@ -541,7 +614,9 @@ export default {
       case 3://tig MAN
                this.nowModelTypeName =list.initBean.nowChooseModel;
                 this.nowDCORACFLAG =list.initBean.polatrity;
-                this.buildTigManData(list);
+                // this.buildTigManData(list);
+                // 2021-11-24 因为tigman只返回一个参数 所以只显示一个
+                this.buildTigManData20211124(list);
           break;
       case 4:
              //推力 电流是整数
