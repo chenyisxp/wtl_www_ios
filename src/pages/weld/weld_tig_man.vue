@@ -1674,6 +1674,16 @@ export default {
         increseRang:1,
         block:130 //区间应该独立否则会影响到其他的max-min
       });
+      // 四合一里怎么叫 五合一传输用的是电流的
+      this.keysRangeMap.set("peak_cur", {
+        min: 30,
+        max: 200,
+        nowValue: 120,
+        unit: "A",
+        multi:1,
+        increseRang:1,
+        block:170 //区间应该独立否则会影响到其他的max-min
+      });
       this.keysRangeMap.set("slop_down", {
         min: 0,
         max: 10,
@@ -1754,8 +1764,8 @@ export default {
     initKeysRangeMap(){
       this.keysRangeMap.get('start_cur_end').min=this.tigman_min_cur;
       this.keysRangeMap.get('start_cur_end').max=this.tigman_max_cur;
-      // this.keysRangeMap.get('peak_cur').min=this.tigman_min_cur;
-      // this.keysRangeMap.get('peak_cur').max=this.tigman_max_cur;
+      this.keysRangeMap.get('peak_cur').min=this.tigman_min_cur;
+      this.keysRangeMap.get('peak_cur').max=this.tigman_max_cur;
 
       this.keysRangeMap.get('weld_cur').min=this.tigman_min_cur;
       this.keysRangeMap.get('weld_cur').max=this.tigman_max_cur;
@@ -1845,10 +1855,10 @@ export default {
           this.keysRangeMap.get('weld_cur').nowValue=
           this.calcRang(paramValue,this.keysRangeMap.get('weld_cur').min,this.keysRangeMap.get('weld_cur').max);
           break;
-        // case 'peak_cur':
-        //   this.keysRangeMap.get('peak_cur').nowValue=
-        //   this.calcRang(paramValue,this.keysRangeMap.get('peak_cur').min,this.keysRangeMap.get('peak_cur').max);
-        //   break;
+        case 'peak_cur':
+          this.keysRangeMap.get('peak_cur').nowValue=
+          this.calcRang(paramValue,this.keysRangeMap.get('peak_cur').min,this.keysRangeMap.get('peak_cur').max);
+          break;
         case 'pulse_duty':
           this.keysRangeMap.get('pulse_duty').nowValue=paramValue;
           break;

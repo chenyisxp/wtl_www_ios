@@ -339,8 +339,9 @@ export default {
         queryAppWeldList(){
             this.loginName = localStorage.getItem("wtl_login_email") || '';
             if(this.loginName){
+                // 五合一和四合一地址取值方式略有不同
                 let param = {
-                    BT_ADDRESS:this.btAddress || '四合一地址',
+                    BT_ADDRESS:this.btAddress || this.nowConnectAddress || '四合一地址',
                     APP_UUID:this.userUuid,
                     EMAIL:this.loginName
                 };
@@ -393,6 +394,9 @@ export default {
     },
     btAddress(){
         return this.$store.state.btAddress;
+    },
+    nowConnectAddress(){
+        return this.$store.state.nowConnectAddress;
     },
     netWorkStatus(){
         // this.$store.state.netWorkStatus='online';

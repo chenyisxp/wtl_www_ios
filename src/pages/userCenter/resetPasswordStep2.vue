@@ -48,8 +48,13 @@ export default {
         if(this.secondNum>0){
             return;
         }
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
         //确认是否注册过
         InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
+            Indicator.close();
             if(data && data.respData && data.respData.respCode == '0000'){
                 this.secondNum=300;
                 let inter = setInterval(() => {
@@ -63,7 +68,7 @@ export default {
                 Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }
         },function(data){
-        
+            Indicator.close();
         });
     },
     handleBack(){
