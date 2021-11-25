@@ -446,7 +446,6 @@ Array.prototype.in_array = function (element) {
              function  setWeldDataByType(arrayList,type,pageFrom,_this){ 
                  console.log(pageFrom+'|||||'+type);
                  console.log(arrayList)
-                 
                var rstInfo={};
                switch (type) {
                    case weldDirctive.migSyn:
