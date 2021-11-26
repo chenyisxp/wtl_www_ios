@@ -1129,7 +1129,9 @@ export default {
   },watch: {
     isConnectStatus (newVal, oldVal) {
       this.nowConnectStatus=newVal;
+      console.log('isConnectStatus',newVal)
       if(newVal!='connected'){
+        this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}];
         //断开就重置
         this.$store.state.modbusIosReceiveTime =1;
       }

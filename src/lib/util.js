@@ -2005,8 +2005,18 @@ Array.prototype.in_array = function (element) {
                                 return;
                             //MEMORY
                             }else if(data.indexOf("DAD")==0){
-                                upLoadDataFuc(data,'APP','MEMORY');
-                                window.broastMemoryFromAndroid(data);
+                                let midData =data.substring(2, data.length-4);
+                                let newCrc = crcModelBusClacQuery(midData, true);
+                                let newnewCrc=newCrc.substring(2,4)+newCrc.substring(0,2);
+                                console.log(crc,newCrc)
+                                if(crc!=newCrc && crc !=newnewCrc){
+                                    //可能数据太长造成的
+                                    doDataTooLongHeader(data);
+                                    return;
+                                }else{
+                                    upLoadDataFuc(data,'APP','MEMORY');
+                                    window.broastMemoryFromAndroid(data);
+                                }
                                 // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
                                 return;
                             }
@@ -2201,7 +2211,18 @@ Array.prototype.in_array = function (element) {
                                 return;
                             //MEMORY
                             }else if(data.indexOf("DAD")==0){
-                                window.broastMemoryFromAndroid(data);
+                                let midData =data.substring(2, data.length-4);
+                                let newCrc = crcModelBusClacQuery(midData, true);
+                                let newnewCrc=newCrc.substring(2,4)+newCrc.substring(0,2);
+                                console.log(crc,newCrc)
+                                if(crc!=newCrc && crc!=newnewCrc){
+                                    //可能数据太长造成的
+                                    doDataTooLongHeader(data);
+                                    return;
+                                }else{
+                                    upLoadDataFuc(data,'APP','MEMORY');
+                                    window.broastMemoryFromAndroid(data);
+                                }
                                 // mWebView.loadUrl("javascript:broastMemoryFromAndroid('" + data +"')");
                                 return;
                             }
@@ -2336,6 +2357,8 @@ Array.prototype.in_array = function (element) {
                     }else{
                         midData =tempData.substring(2, tempData.length-4);
                     }
+                    console.log(checkData[crc],crc)
+                    //之前太长的之前只有一半所以查不到的继续
                     if (!checkData[crc]){
                         // 异常 crc错了啊
                         // return;
@@ -2344,8 +2367,10 @@ Array.prototype.in_array = function (element) {
                             
                             let tempMidData = midData;
                             let newCrc = crcModelBusClacQuery(tempMidData,true)
+                            let newnewCrc=newCrc.substring(2,4)+newCrc.substring(0,2);
                             // 取crc校验如果不一致则失败 发送crc校验失败的响应值
-                            if (newCrc!=crc) {
+                            console.log(newCrc,crc)//52DF DF52 ios解析后校验位颠倒了
+                            if (newCrc!=crc && newnewCrc!=crc) {
                                 // 错误 应答
                                 let newData1 = "DA00" + crc + crcModelBusClacQuery("00" + crc,true)
                                 let message = {"method":"handleSendData","sendDt":newData1}
@@ -2357,9 +2382,14 @@ Array.prototype.in_array = function (element) {
                                 // 1、正确关闭 定时器
                                 // timer.cancel();
                                 // timer = null;
-                                // 2、发送
-                                upLoadDataFuc(tempData,'APP','MODEDATA_LONG');
-                                window.broastFromAndroid(tempData,checkPage[crc]);
+                                if(tempData.indexOf('DAD')==0){
+                                    upLoadDataFuc(tempData,'APP','MEMORY');
+                                    window.broastMemoryFromAndroid(tempData);
+                                }else{
+                                    // 2、发送
+                                    upLoadDataFuc(tempData,'APP','MODEDATA_LONG');
+                                    window.broastFromAndroid(tempData,checkPage[crc]);
+                                }
                                 delete(checkStatus[crc]);
                                 delete(checkData[crc]);
                                 delete(checkPage[crc]);
