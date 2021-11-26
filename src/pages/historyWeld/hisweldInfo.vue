@@ -56,7 +56,7 @@
                  <div class="m-l3"></div>
         </div>     
     </div>
-    <div class="btnli" v-if="!isModbusModal">
+    <div class="btnli" v-if="false">
           <div class="appBtn" type="primary" ghost @click="applyWeld">Application</div>
           <!-- <Button type="info" ghost class="info" @click="go('/memoryManage')">保存焊接参数</Button> -->
     </div>

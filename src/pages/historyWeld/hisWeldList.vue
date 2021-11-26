@@ -148,9 +148,10 @@ export default {
                 // if(!openTestFlag){
                 //    window.android.callSendDataToBle('newIndex','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue); 
                 // }
-                if(!this.isModbusModal){
-                    this.callSendDataToBleUtil('hisWeldList','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
-                }
+                // 20211126 本画面改版不再请求数据 取自网络
+                // if(!this.isModbusModal){
+                //     this.callSendDataToBleUtil('hisWeldList','DAFF'+invalue+this.crcModelBusClacQuery('FF'+invalue, true),invalue);
+                // }
                 this.$router.push({ path: '/hisWeldInfo', query: {name:this.chooseTypeName,type:this.chooseType,modelCrc:this.chooseTypeCrc}});
             } 
         },
