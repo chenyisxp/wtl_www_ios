@@ -12,15 +12,27 @@
             <div class="right"></div>
         </div>
         <div class="chooseBox">
-            <div class="tabBox time">
-                <span class="linner">TIME</span>
+            <div class="tabBox time" @click="hanleChoose('time')">
+                <span class="linner" style="padding-left:15px;">{{timeChooseName}}</span>
+                <div class="timeList" v-if="nowChoose=='time'">
+                    <div class="tlinner" v-for="(item,idx1) in timeListOptions" :key="idx1" :class="timeChoose==item.key?'actived':''" @click="handTimeChoose(item)">{{item.value}}</div>
+                    <!-- <div class="tlinner close">close</div> -->
+                </div>
             </div>
-            <div class="tabBox mode">
+            <div class="tabBox mode"  @click="hanleChoose('mode')">
                 <span class="shuxian"></span>
-                <span class="linner">MODE</span>
+                <span class="linner">{{modeChooseName}}</span>
+                <div class="timeList" v-if="nowChoose=='mode'">
+                    <div class="tlinner" v-for="(item,idx2) in modelListOptions" :key="idx2" :class="modelChoose==item.key?'actived':''" @click="handModeChoose(item)">{{item.value}}</div>
+                    <!-- <div class="tlinner close">close</div> -->
+                </div>
             </div>
         </div>
-        <span class="listName" v-if="weldMsgList.length!=0">List of recent welding history:</span>
+        <div class="line" style="height:1px;">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="listName" v-if="weldMsgList.length!=0">List of recent welding history:</div>
         <div class="modbusLi">
             <div class="li modbus"  @click="goModubusHisWeld(item)" v-for="(item,idx) in weldMsgList" :key="idx">
                 <div class="modbusTypename">
@@ -134,11 +146,62 @@ export default {
         chooseTypeName:'',
         nowConnectMachine:'',
         weldMsgList:[],
-        loginName:''
+        loginName:'',
+        timeListOptions:[
+            {key:1,value:'Today',chinese:'今天'},
+            {key:2,value:'Yesterday',chinese:'昨天'},
+            {key:3,value:'One days ago',chinese:'前一天'},
+            {key:4,value:'Two days ago',chinese:'前两天'},
+            {key:5,value:'Three days ago',chinese:'前三天'},
+            {key:6,value:'Four days ago',chinese:'前四天'},
+            {key:7,value:'Earlier',chinese:'更早'},
+        ],
+        modelListOptions:[
+            {key:'ALL',value:'ALL'},
+            {key:'MIGMAN',value:'MIGMAN'},
+            {key:'MIGSYN',value:'MIGSYN'},
+            {key:'TIGMAN',value:'TIGMAN'},
+            {key:'TIGSYN',value:'TIGSYN'},
+            {key:'MMA',value:'MMA'},
+            {key:'CUT',value:'CUT'},
+        ],
+        timeChoose:1,
+        modelChoose:'ALL',
+        nowChoose:'',
+        timeChooseName:'Today',
+        modeChooseName:'ALL',
+
      } 
   },
 
   methods: {
+        handTimeChoose(item){
+            this.$store.state.historyTimeInfo=item;
+    
+            this.timeChoose=item.key;
+            this.timeChooseName=item.value;
+            setTimeout(() => {
+                this.nowChoose='';
+            }, 200);
+            this.queryAppWeldList();
+        },
+        handModeChoose(item){
+            this.$store.state.historyModeInfo=item;
+            this.modelChoose=item.key;
+            this.modeChooseName=item.value;
+            setTimeout(() => {
+                this.nowChoose='';
+            }, 200);
+            this.queryAppWeldList();
+        },
+        hanleChoose(type){
+            //重复点击
+            if(this.nowChoose==type){
+                this.nowChoose='';
+                return;
+            }
+            this.nowChoose=type;
+        },
         handleLogin(){
             this.$router.push('/loginIndex');
         },
@@ -366,8 +429,12 @@ export default {
                 let param = {
                     BT_ADDRESS:this.btAddress || this.nowConnectAddress || '四合一地址',
                     APP_UUID:this.userUuid,
-                    EMAIL:this.loginName
+                    EMAIL:this.loginName,
+                    TIME_TYPE:this.timeChoose,
+                    MODEL_TYPE:this.modelChoose
                 };
+                this.isLoading=true;
+                
                 InterfaceService.queryAppWeldInfoList(param,(data)=>{
                     if(data.respData && data.respData.respCode=='0000'){
                         this.weldMsgList=data.respData.msgList;
@@ -376,14 +443,29 @@ export default {
                             element.FORMAT_COST_TM=element.COST_TM+'s';
                         });
                     }else{
-                        
+                        this.weldMsgList=[];
                     }
+                    this.isLoading=false;
                 },function(data){
+                    this.weldMsgList=[];
+                    this.isLoading=false;
                 });
             }
         }
   },
   mounted: function () {
+       
+        let historyTimeInfo = this.$store.state.historyTimeInfo || {};
+        if(historyTimeInfo.key){
+            this.timeChoose=historyTimeInfo.key;
+            this.timeChooseName=historyTimeInfo.value;
+        }
+        let historyModeInfo = this.$store.state.historyModeInfo || {};
+        if(historyModeInfo.key){
+            this.modeChoose=historyModeInfo.key;
+            this.modeChooseName=historyModeInfo.value;
+        }
+
         window['broastHistoryFromAndroid'] = (data) => {
         this.wtlLog('hisweldlist','broastHistoryFromAndroid='+data);
         
@@ -401,11 +483,34 @@ export default {
     }
    
     this.queryAppWeldList();
+    if(this.machineModel == 'PLASMA'){
+        this.modelListOptions=[
+            {key:'ALL',value:'ALL'},
+            {key:'MIGMAN',value:'MIGMAN'},
+            {key:'MIGSYN',value:'MIGSYN'},
+            {key:'TIGMAN',value:'TIGMAN'},
+            {key:'TIGSYN',value:'TIGSYN'},
+            {key:'MMA',value:'MMA'},
+            {key:'CUT',value:'CUT'}
+        ]
+    }else{
+        this.modelListOptions=[
+            {key:'ALL',value:'ALL'},
+            {key:'MIGMAN',value:'MIGMAN'},
+            {key:'MIGSYN',value:'MIGSYN'},
+            {key:'TIGMAN',value:'TIGMAN'},
+            {key:'TIGSYN',value:'TIGSYN'},
+            {key:'MMA',value:'MMA'}
+        ]
+    }
   },
   created () {
    
   },
   computed:{
+    machineModel(){
+        return this.$store.state.machineModel;
+    },
     envType(){
         return this.$store.state.envType;
     },
@@ -426,6 +531,7 @@ export default {
         return this.$store.state.netWorkStatus;
     }
   },destroyed(){
+    
     this.isLoading=false;
     clearTimeout(this.loadingTimer);
     window.removeEventListener('popstate', this.goBack, false);
@@ -517,7 +623,7 @@ export default {
         }
         .chooseBox{
             padding:1rem 0;
-            color: #9db8cb;
+            color: #fdfcff;
             font-size: 14px;
             .tabBox{
                 display: inline-block;
@@ -546,25 +652,28 @@ export default {
                         background-repeat: no-repeat;
                         background-size: 20px;
                         background-position: left center;
-                        
-                        top: -4px;
+                        top: 50%;
+                        right: 0;
+                        transform: translate(-50%, -50%);
                     }
-                    .linner{
-                        position: relative;
-                        display: inline-block;
-                        &::before{
+                    &::before{
                             position: absolute;
                             display: inline-block;
                             content: '';
-                            width: 20px;
-                            height: 20px;
+                            width: 25px;
+                            height: 25px;
                             background: url(../../assets/images/others/icon3.png);
                             background-repeat: no-repeat;
-                            background-size: 20px;
+                            background-size: 25px;
                             background-position: left center;
-                            top: -4px;
-                            left: -20px;
+                            top: 50%;
+                            left: 25px;
+                            transform: translate(-50%, -50%);
                         }
+                    .linner{
+                        position: relative;
+                        display: inline-block;
+                        
                     }
                 } 
                 &.mode{ 
@@ -580,31 +689,60 @@ export default {
                         background-repeat: no-repeat;
                         background-size: 20px;
                         background-position: left center;
-                        top: -4px;
+                        top: 50%;
+                        right: 0;
+                        transform: translate(-50%, -50%);
+                    }
+                    &::before{
+                        position: absolute;
+                        display: inline-block;
+                        content: '';
+                        width: 22px;
+                        height: 22px;
+                        background: url(../../assets/images/others/icon2.png);
+                        background-repeat: no-repeat;
+                        background-size: 22px;
+                        background-position: left center;
+                        top: 50%;
+                        left: 15px;
+                        transform: translate(-50%, -50%);
                     }
                     .linner{
                         position: relative;
                         display: inline-block;
-                        &::before{
-                            position: absolute;
-                            display: inline-block;
-                            content: '';
-                            width: 20px;
-                            height: 20px;
-                            background: url(../../assets/images/others/icon2.png);
-                            background-repeat: no-repeat;
-                            background-size: 20px;
-                            background-position: left center;
-                            top: -4px;
-                            left: -20px;
-                        }
                     }
                 }     
+                .timeList{
+                    position: absolute;
+                    width: 100%;
+                    top:30px;
+                    z-index: 1;
+                    .tlinner{
+                        text-align: center;
+                        background: #010101;
+                        padding: 10px 0;
+                        // padding-left: 25px;
+                        
+                        &:not(:last-child){
+                            border-bottom: 1px solid #2f4e59;    
+                        }
+                        &.close{
+                            text-align: center;
+                            padding: 5px 0;
+                            color: #fff;
+                        }
+                        &.actived{
+                            background: #2f4e59;
+                        }
+                    }
+                }
+
             }
         }
       .listName{
           color: #8ac5d6;
           padding-left: 20px;
+          margin-top: 20px;
           font-size: 14px;
       }
       .modbusLi{

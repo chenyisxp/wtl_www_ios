@@ -1146,6 +1146,13 @@ export default {
           this.arrChooseBtn=[0,2,4];
           this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}]
         }
+    },
+    modbusSendTimes(newVal, oldVal){
+       if(newVal<5){
+         this.isLoading=true
+       }else{
+          this.isLoading=false;
+       }
     }
   }
   ,destroyed(){

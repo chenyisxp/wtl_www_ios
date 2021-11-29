@@ -498,7 +498,7 @@ export default {
         this.$store.state.getConnectStatus='scaning';
         let address =this.$store.state.nowConnectAddress
         if(address){
-            this.globalSendMsgToIos("handleDisConnect",address,"")
+            this.globalSendMsgToIos("handleDisConnect",address,"");
             //开启定时器
             // this.timeInterval1 = setInterval(() => {
             //     this.globalSendMsgToIos("handleGetBleState","","");

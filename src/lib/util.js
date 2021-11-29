@@ -1853,6 +1853,7 @@ Array.prototype.in_array = function (element) {
                         store.state.modbusIosReceiveTime =store.state.modbusIosReceiveTime+1;
                         let firstHide = (data+"").substring(0,2);
                         if(firstHide == 'DA'){
+                            store.state.modbusSendTimes=7;
                             store.state.isModbusModal=false;
                             store.state.machineModel='OLD'
                             //记录四合一机器数据
@@ -1860,6 +1861,8 @@ Array.prototype.in_array = function (element) {
                             // window.modbusBroastFromApp(data);
                             // return;
                         }else{
+                            clearInterval(TimerTask);//清除四合一的旧的定时器！！会造成内存溢出
+                            store.state.modbusSendTimes=8;
                             store.state.isModbusModal=true;
                             // window.modbusBroastFromApp(data);
                         }
@@ -1906,8 +1909,11 @@ Array.prototype.in_array = function (element) {
                         modbusGlobalReceiveList=[];//清空 重置
                         let firstHide = (bleReponseData+"").substring(0,2);
                         if(firstHide != 'DA'){
+                            clearInterval(TimerTask);//清除四合一的旧的定时器！！会造成内存溢出
+                            store.state.modbusSendTimes=8;
                             store.state.isModbusModal=true;
                         }else{
+                            store.state.modbusSendTimes=7;
                             store.state.machineModel='OLD'
                             insertOldMachineInfo(bleReponseData);
                             store.state.isModbusModal=false;
@@ -2578,6 +2584,7 @@ Array.prototype.in_array = function (element) {
                     if(before6 == '0A0350'){
                         //通信成功
                         store.state.modbusSendTimes=5;
+                        clearInterval(TimerTask);//清除四合一的旧的定时器！！会造成内存溢出
                         store.state.isModbusModal=true;//是否是modbus协议模式
                     }else if(before4!='0A03'){
                         // Toast({
@@ -2839,6 +2846,7 @@ Array.prototype.in_array = function (element) {
                     return;
                 }
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
+                store.state.modbusSendTimes=store.state.modbusSendTimes+1;
                 if(store.state.modbusSendDataTimes>4){
                     //达到验证上线不需要再重复发送
                     return;
@@ -2856,6 +2864,7 @@ Array.prototype.in_array = function (element) {
             //更新指令：地址 功能码 数据起始地址高位  数据起始地址低位  数据高位  数据低位  crc16高位 crc16低位
             function modbusDataSendFuc(pageFrom,sendData,crc){
                 store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
+                store.state.modbusSendTimes =store.state.modbusSendTimes+1;
                 store.state.postDataList.push({type:'modbusDataSendFuc',data:sendData})
                 
                 if(store.state.modbusSendTimes==0 || !store.state.modbusSendTimes){
