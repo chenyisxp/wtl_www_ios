@@ -5,7 +5,21 @@
         {{nowConnectMachine}}
     </div> -->
     <Head :wantTo="'/newIndex'" :headName="'Histoty List'"></Head>
+    
     <div class="hislist" v-if="true">
+        <div class="line">
+            <div class="left"></div>
+            <div class="right"></div>
+        </div>
+        <div class="chooseBox">
+            <div class="tabBox time">
+                <span class="linner">TIME</span>
+            </div>
+            <div class="tabBox mode">
+                <span class="shuxian"></span>
+                <span class="linner">MODE</span>
+            </div>
+        </div>
         <span class="listName" v-if="weldMsgList.length!=0">List of recent welding history:</span>
         <div class="modbusLi">
             <div class="li modbus"  @click="goModubusHisWeld(item)" v-for="(item,idx) in weldMsgList" :key="idx">
@@ -420,7 +434,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .hisWeldList{
-  padding-top: 100px;
+  padding-top: 80px;
   width: 100%;
   height: 100vh;
   background: -webkit-linear-gradient(to top,#002c3a,#174d60);
@@ -477,7 +491,117 @@ export default {
         -webkit-border-image: -webkit-linear-gradient(to right,#2f4e59 , #8ac5d6 , #2f4e59)1 10 1; /* 控制边框颜色渐变 */
          border-image: linear-gradient(to right,#2f4e59 , #8ac5d6 , #2f4e59)1 10 1; /* 标准的必须写在最后 */
   }
-  .hislist{
+.hislist{
+    .line{
+            width: 100%;
+            height: 2px;;
+            // background:url(../assets/images/line.png) no-repeat; 
+            // background-position: center;
+            // margin-bottom: 20px;
+            .left{
+                float: left;
+                zoom: 1;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(to left, #083846 , #fdfcff);
+                background: -webkit-linear-gradient(left, #083846 , #fdfcff);
+            }
+            .right{
+                zoom: 1;
+                width: 50%;
+                height: 100%;
+                float: left;
+                background: linear-gradient(to right, #083846 , #fdfcff);
+                background: -webkit-linear-gradient(right, #083846 , #fdfcff);
+            }
+        }
+        .chooseBox{
+            padding:1rem 0;
+            color: #9db8cb;
+            font-size: 14px;
+            .tabBox{
+                display: inline-block;
+                width: 49%;
+                text-align: center;
+                .shuxian{
+                    height: 2rem;
+                    display: inline-block;
+                    width: 1px;
+                    background: #fff;
+                    position: absolute;
+                    left: -1px;
+                    top:-10px;
+                }
+                &.time{ 
+                    display: inline-block;
+                    position: relative;
+                    
+                    &::after{
+                        position: absolute;
+                        display: inline-block;
+                        content: '';
+                        width: 20px;
+                        height: 20px;
+                        background: url(../../assets/images/others/icon1.png);
+                        background-repeat: no-repeat;
+                        background-size: 20px;
+                        background-position: left center;
+                        
+                        top: -4px;
+                    }
+                    .linner{
+                        position: relative;
+                        display: inline-block;
+                        &::before{
+                            position: absolute;
+                            display: inline-block;
+                            content: '';
+                            width: 20px;
+                            height: 20px;
+                            background: url(../../assets/images/others/icon3.png);
+                            background-repeat: no-repeat;
+                            background-size: 20px;
+                            background-position: left center;
+                            top: -4px;
+                            left: -20px;
+                        }
+                    }
+                } 
+                &.mode{ 
+                    display: inline-block;
+                    position: relative;
+                    &::after{
+                        position: absolute;
+                        display: inline-block;
+                        content: '';
+                        width: 20px;
+                        height: 20px;
+                        background: url(../../assets/images/others/icon1.png);
+                        background-repeat: no-repeat;
+                        background-size: 20px;
+                        background-position: left center;
+                        top: -4px;
+                    }
+                    .linner{
+                        position: relative;
+                        display: inline-block;
+                        &::before{
+                            position: absolute;
+                            display: inline-block;
+                            content: '';
+                            width: 20px;
+                            height: 20px;
+                            background: url(../../assets/images/others/icon2.png);
+                            background-repeat: no-repeat;
+                            background-size: 20px;
+                            background-position: left center;
+                            top: -4px;
+                            left: -20px;
+                        }
+                    }
+                }     
+            }
+        }
       .listName{
           color: #8ac5d6;
           padding-left: 20px;
