@@ -32,7 +32,9 @@
             <div class="left"></div>
             <div class="right"></div>
         </div>
-        <div class="listName" v-if="weldMsgList.length!=0">List of recent welding history:</div>
+        <div class="listName" v-if="weldMsgList.length!=0">
+            Total duration:{{totalWeldTime}}s
+        </div>
         <div class="modbusLi">
             <div class="li modbus"  @click="goModubusHisWeld(item)" v-for="(item,idx) in weldMsgList" :key="idx">
                 <div class="modbusTypename">
@@ -170,6 +172,7 @@ export default {
         nowChoose:'',
         timeChooseName:'Today',
         modeChooseName:'ALL',
+        totalWeldTime:0
 
      } 
   },
@@ -434,13 +437,19 @@ export default {
                     MODEL_TYPE:this.modelChoose
                 };
                 this.isLoading=true;
-                
+                this.totalWeldTime=0;
+                let tempNum ='';
                 InterfaceService.queryAppWeldInfoList(param,(data)=>{
                     if(data.respData && data.respData.respCode=='0000'){
                         this.weldMsgList=data.respData.msgList;
                         this.weldMsgList.forEach(element => {
                             // element.FORMAT_COST_TM=this.formatSeconds(102000);
                             element.FORMAT_COST_TM=element.COST_TM+'s';
+                            tempNum = parseFloat(element.COST_TM);
+                            if(tempNum>0){
+                                this.totalWeldTime=this.totalWeldTime+tempNum
+                            }
+                           
                         });
                     }else{
                         this.weldMsgList=[];
