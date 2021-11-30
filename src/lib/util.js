@@ -1019,7 +1019,7 @@ Array.prototype.in_array = function (element) {
                     }
                     let byte0 =((Array(16).join(0) + parseInt(strArr[0],16).toString(2)).slice(-16)).replace(/(.{1})/g,'$1 ').replace(/(^\s*)|(\s*$)/g, "").split(' '); 
                     var byte1Bean ={};
-                    // console.log(byte0)
+                    console.log(byte0)
                         byte1Bean.isReadyFlag=`${byte0[5]}${byte0[6]}${byte0[7]}` == '011'?1:0,//7-9;
                         byte1Bean.weldStatus=byte0[15];//0:未焊接  1:在焊接
                         // alert(byte1Bean.weldStatus)
@@ -2849,12 +2849,12 @@ Array.prototype.in_array = function (element) {
                 if(store.state.getConnectStatus!='connected'){
                     return;
                 }
-                store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
-                store.state.modbusSendTimes=store.state.modbusSendTimes+1;
                 if(store.state.modbusSendDataTimes>4){
                     //达到验证上线不需要再重复发送
                     return;
                 }else{
+                    store.state.modbusSendDataTimes=store.state.modbusSendDataTimes+1;
+                    store.state.modbusSendTimes=store.state.modbusSendTimes+1;
                     console.log('callSendModbusSystemData'+store.state.modbusSendDataTimes,store.state.modbusSendDataTimes>4);
                     onlySendFuc(sendData+crc,pageFrom,crc);
                 }

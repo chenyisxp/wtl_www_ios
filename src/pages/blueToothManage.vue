@@ -260,7 +260,7 @@ export default {
             }
             
         }
-        self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine}});
+        self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,pageFrom:'/blueToothManage'}});
         
       },
       moreScan(){
@@ -301,7 +301,7 @@ export default {
         //         duration: 2000
         // });
         if(this.$store.state.nowConnectAddress == address && this.getConnectStatus=='connected'){
-            this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
+            this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
         }else{
             
             //提前记录名字把 
@@ -344,7 +344,7 @@ export default {
             self.$store.state.nowConnectMachine=bleName;//全局存储机器名字
             self.$store.state.nowConnectAddress =address;
             // alert(self.$store.state.nowConnectMachine); //!!!!!!注意blename取值
-            self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
+            self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
             return;
         }
         //2、老逻辑
@@ -368,7 +368,7 @@ export default {
                         // String address,String remarkInfo,String realAddress,String type
                         window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
                     }
-                    self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine}});
+                    self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,pageFrom:'/blueToothManage'}});
                 }
         }, 8000);
         
@@ -395,7 +395,7 @@ export default {
             self.$store.state.getConnectStatus='connected';
             self.isLoading=false;
             clearTimeout(self.connectFailedInfo)
-            self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine}});
+            self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,pageFrom:'/blueToothManage'}});
             return;
           }
          
@@ -851,7 +851,7 @@ export default {
                     // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
                     this.callSendModbusSystemData('0A0303E80028','DFC4','blueToothManage');//增加10个焊接时长 
                 }
-                this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
+                this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
             }
         }
         window['handleGetBleStateThenToNewIndex']= () => {
@@ -870,7 +870,7 @@ export default {
             }else{
                 //和注册的冲突
                 setTimeout(() => {
-                    this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress}});
+                    this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
                 }, 100);
             }
         }
@@ -1002,7 +1002,7 @@ export default {
                 }
                 clearTimeout(self.connectFailedInfo);
                 
-                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress}});
+                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
                
             }
             

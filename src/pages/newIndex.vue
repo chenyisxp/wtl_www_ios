@@ -875,22 +875,26 @@ export default {
     }
   },
   mounted: function () {
-    //等离子五合一
-    setTimeout(() => {
-      console.log(this.machineModel,this.nowConnectStatus)
-      if(this.nowConnectStatus == 'connected' ){
-          if(this.machineModel == 'PLASMA'){
-            this.arrChooseBtn=[0,2,4,5];
-            this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
+    this.pageFrom =this.$route.query.pageFrom;
+    if(this.pageFrom =='/blueToothManage'){
+        //等离子五合一
+        setTimeout(() => {
+          console.log(this.machineModel,this.nowConnectStatus)
+          if(this.nowConnectStatus == 'connected' ){
+              if(this.machineModel == 'PLASMA'){
+                this.arrChooseBtn=[0,2,4,5];
+                this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
+              }else{
+                this.arrChooseBtn=[0,2,4];
+                this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}]
+              }
           }else{
-            this.arrChooseBtn=[0,2,4];
-            this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}]
+              this.arrChooseBtn=[0,2,4,5];
+              this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
           }
-      }else{
-          this.arrChooseBtn=[0,2,4,5];
-          this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
-      }
-    }, 200);
+        }, 200);
+    }
+    
 
     //回到首页且不是焊接中清除请求
     if(this.weldingStatus!=1){
@@ -1134,6 +1138,8 @@ export default {
         this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}];
         //断开就重置
         this.$store.state.modbusIosReceiveTime =1;
+      }else{
+        this.nowConnectStatus=newVal;
       }
     },
     machineModel(newVal, oldVal){
@@ -1148,10 +1154,12 @@ export default {
         }
     },
     modbusSendTimes(newVal, oldVal){
-       if(newVal<5){
-         this.isLoading=true
-       }else{
-          this.isLoading=false;
+       if(this.nowConnectStatus=='connected'){
+          if(newVal<5){
+            this.isLoading=true
+          }else{
+              this.isLoading=false;
+          }
        }
     }
   }
