@@ -1886,11 +1886,13 @@ Array.prototype.in_array = function (element) {
             function insertOldMachineInfo(receiveBleData){
                  //记录四合一机器数据
                  let loginName = localStorage.getItem("wtl_login_email") || '';
+                //  alert(store.state.nowConnectMachine)
                  InterfaceService.addMachineInfo({
                      patch:'OLD4',
                      email:loginName,
+                     btName:store.state.nowConnectMachine || '未知蓝牙名',
                      btAddress:BASE_CONFIG.btAddress || '四合一地址',
-                     machineType:store.state.nowConnectMachine,
+                     machineType:store.state.machineModel,
                      content:receiveBleData,
                      app_uuid:store.state.userUuid,
                      uuid:store.state.userUuid
@@ -2196,6 +2198,7 @@ Array.prototype.in_array = function (element) {
                                         clearInterval(oldWeldIntervaler);
                                         uploadAppWeldInfoList({
                                             BT_ADDRESS: store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址',
+                                            APP_UUID:store.state.userUuid,
                                             MODEL_TYPE : oldWeldModel,
                                             WELD_CONTENT :(oldBeginWeldInfo+"").replace(/\s*/g,""),
                                             BEGIN_TM:oldBeginWeldTm,
@@ -2652,8 +2655,9 @@ Array.prototype.in_array = function (element) {
                                 InterfaceService.addMachineInfo({
                                     patch:patch,
                                     email:loginName,
+                                    btName:store.state.nowConnectMachine,
                                     btAddress:btAddress,
-                                    machineType:machineType,
+                                    machineType:store.state.machineModel,
                                     content:receiveBleData,
                                     app_uuid:store.state.userUuid,
                                     uuid:store.state.userUuid
@@ -3339,6 +3343,7 @@ Array.prototype.in_array = function (element) {
                         if(modbusIsBeginWeld==1){
                             uploadAppWeldInfoList({
                                 BT_ADDRESS: store.state.btAddress, 
+                                APP_UUID:store.state.userUuid,
                                 MODEL_TYPE : rstInfo.weldType,
                                 WELD_CONTENT : modbusBeginWeldInfo,
                                 BEGIN_TM:modbusBeginWeldTm,
@@ -3457,7 +3462,8 @@ Array.prototype.in_array = function (element) {
                     }else{
                         if(modbusIsBeginWeld==1){
                             uploadAppWeldInfoList({
-                                BT_ADDRESS: store.state.btAddress, 
+                                BT_ADDRESS: store.state.btAddress,
+                                APP_UUID:store.state.userUuid, 
                                 MODEL_TYPE : rstInfo.weldType,
                                 WELD_CONTENT : modbusBeginWeldInfo,
                                 BEGIN_TM:modbusBeginWeldTm,
@@ -3543,6 +3549,7 @@ Array.prototype.in_array = function (element) {
                         if(modbusIsBeginWeld==1){
                             uploadAppWeldInfoList({
                                 BT_ADDRESS: store.state.btAddress, 
+                                APP_UUID:store.state.userUuid,
                                 MODEL_TYPE : rstInfo.weldType,
                                 WELD_CONTENT : modbusBeginWeldInfo,
                                 BEGIN_TM:modbusBeginWeldTm,
@@ -3661,6 +3668,7 @@ Array.prototype.in_array = function (element) {
                         if(modbusIsBeginWeld==1){
                             uploadAppWeldInfoList({
                                 BT_ADDRESS: store.state.btAddress, 
+                                APP_UUID:store.state.userUuid,
                                 MODEL_TYPE : rstInfo.weldType,
                                 WELD_CONTENT : modbusBeginWeldInfo,
                                 BEGIN_TM:modbusBeginWeldTm,
@@ -3804,7 +3812,8 @@ Array.prototype.in_array = function (element) {
                 }else{
                     if(modbusIsBeginWeld==1){
                         uploadAppWeldInfoList({
-                            BT_ADDRESS: store.state.btAddress, 
+                            BT_ADDRESS: store.state.btAddress,
+                            APP_UUID:store.state.userUuid, 
                             MODEL_TYPE : rstInfo.weldType,
                             WELD_CONTENT : modbusBeginWeldInfo,
                             BEGIN_TM:modbusBeginWeldTm,

@@ -379,7 +379,7 @@ export default {
                if(self.envType=='env_ios'){
                     this.globalSendMsgToIos("handleConnect",address,"")
                }else{
-                    window.android.setBleConnect(address);
+                    window.android?window.android.setBleConnect(address):'';
                }
                
           }
@@ -638,7 +638,7 @@ export default {
     ifOpenBlueTooth(self){
         // let self =this;
         if(!self.blueToothFlag){
-            var rst = window.android.openBluetooth();
+            var rst = window.android?window.android.openBluetooth():'true';
             
             if(rst=='false'){
                 return false;
@@ -738,7 +738,7 @@ export default {
             }else{
                 lastBle = window.android?window.android.getLastConnectBleAddress():'';
             }
-            //  alert(lastBle)
+            // lastBle="pc模拟adress001||||pc模拟bName001"
             if(lastBle){
                 var arr = lastBle.split("||||");
                 var conbean={};
