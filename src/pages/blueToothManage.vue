@@ -1012,6 +1012,7 @@ export default {
      getConnectStatus(val, oldVal){
             let self =this;
             if(val =='connected'){
+                
                 // alert(val)
                 self.isLoading =false;
                 if(self.envType=='env_ios'){
@@ -1026,7 +1027,6 @@ export default {
                     self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
                 }
             }
-            
       }
   }
 }

@@ -52,7 +52,7 @@
                     </span>
                 </div>
             </div>
-            <div v-if="weldMsgList.length==0">
+            <div v-if="weldMsgList.length==0" style="padding-top:20px;">
                 
                 <div class="m_word login" v-if="!this.loginName" @click="handleLogin">Please log in first</div>
                 <div class="m_word" v-else-if="netWorkStatus.indexOf('online')>-1">No data</div>

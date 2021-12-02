@@ -57,7 +57,8 @@ var mayTooLongList=[
     // }
 ];
 var TimerTask ={};
-import { InterfaceService } from '../lib/service'
+// import { InterfaceService } from '../lib/service'
+import { InterfaceService } from '../services/api'
 export default {
   components: {
     Loading,
@@ -299,9 +300,31 @@ export default {
           default:
             break;
        }
+      },
+      sendBTConnnect(){
+        //断开
+              this.$store.state.nowBTEndConnectTm=new Date().getTime();
+              let COST_TM =Math.floor((this.$store.state.nowBTEndConnectTm - this.$store.state.nowBTBeginConnectTm)/1000);
+              let loginName = localStorage.getItem("wtl_login_email") || '';
+              let params ={
+                  BT_ADDRESS: this.$store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址',
+                  APP_UUID:this.$store.state.userUuid,
+                  EMAIL:loginName,
+                  BEGIN_RECORD_SECOND:this.$store.state.nowBTBeginConnectTm,
+                  END_RECORD_SECOND:this.$store.state.nowBTEndConnectTm,
+                  COST_TM:COST_TM
+              };
+              InterfaceService.insertMachineBluetoothConnect(params,(data)=>{
+                this.$store.state.nowBTRecondTimes=1
+              },function(data){
+                  
+              });  
+              //发送
+              this.$store.state.nowBTRecondTimes=1;
       }
   },
   mounted () {
+    console.log(InterfaceService)
     console.log('layout=====')
     var userAgent = navigator.userAgent.toLowerCase();
     if (/android/.test(userAgent )) {
@@ -429,12 +452,6 @@ export default {
   watch: {
     isConnectStatus (newVal, oldVal) {
       console.log('layout里蓝牙连接状态监听::'+this.$store.state.nowRouter+"||"+newVal)
-      // Toast({
-      //       message: 'nowRoute:'+this.$store.state.nowRouter,
-      //       position: 'middle',
-      //       iconClass: 'icon icon-success',
-      //       duration: 2500
-      //     });
       if(newVal!='connected'){
         //断开连接需要重置一些参数 可能是四合一 五合一切换使用
         this.$store.state.modbusSendDataTimes=0;
@@ -443,7 +460,14 @@ export default {
         this.$store.state.isModbusModal=false;
         clearInterval(this.$store.state.modbusCircleTimer);
         clearInterval(this.$store.state.weldingInterval)//否则每次进来会从累机
-
+        if(newVal=='ready'){
+          this.sendBTConnnect();
+        }
+      }else{
+        // if(self.$store.state.nowBTRecondTimes==1){
+            this.$store.state.nowBTBeginConnectTm=new Date().getTime();
+        //     self.$store.state.nowBTRecondTimes=2;
+        // }
       }
       //do something
       if(this.$store.state.nowRouter!='/blueToothManage' 
@@ -479,6 +503,13 @@ export default {
               setTimeout(() => {
                  if(this.GLOBAL_CONFIG.ENV_IOS_FLAG){
                     this.globalSendMsgToIos("handleStopScan","","");
+                    //根据之前判断是不是modbus协议模式
+                    let bleName = this.$store.state.nowConnectMachine || '';
+                    if(bleName.indexOf('WELD5')>-1){
+                        this.$store.state.isModbusModal=true;
+                    }else{
+                        this.$store.state.isModbusModal=false;
+                    }
                     this.globalSendMsgToIos("handleConnect",this.$store.state.nowConnectAddress,"")
                  }else{
                    window.android.setBleConnect(this.$store.state.nowConnectAddress);

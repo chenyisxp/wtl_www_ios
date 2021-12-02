@@ -184,6 +184,16 @@ let InterfaceService = {
         
     // },
 
+        getOverseasUpdateInfo:(callback)=>{
+            // ru.grovers.www
+            //com.wtl.wtlBlueTooth
+            axios.get("https://itunes.apple.com/lookup?bundleId=new.uk.co.parweld.www")
+                .then(response=>{
+                    if(response.status===200){
+                        typeof callback === 'function' && callback(response.data);
+                    }
+            }) 
+    }
 } 
 const interMap = [
     { method: 'checkNetWork', code: "ac000000" },//检查网络
@@ -202,6 +212,7 @@ const interMap = [
     { method: 'batchInsertMachineWeld', code: "ac020003" },//机器的焊接记录
     { method: 'batchInsertAppWeld', code: "ac020004" },//app的焊接记录
     { method: 'queryAppWeldInfoList', code: "ac020005" },//查询历史焊接记录
+    { method: 'insertMachineBluetoothConnect', code: "ac020006" },//查询历史焊接记录
     
 
 
