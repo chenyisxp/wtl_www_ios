@@ -1157,8 +1157,8 @@ export default {
        if(this.nowConnectStatus=='connected'){
           if(newVal<5){
             this.isLoading=true
-          }else{
-              this.isLoading=false;
+          }else if(newVal<8 && this.isLoading){
+            this.isLoading=false;
           }
        }
     }

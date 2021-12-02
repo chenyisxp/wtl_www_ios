@@ -174,7 +174,8 @@ export default {
         updateBlelistDB:[],//备注连接过的json数据
         lastBleConnectTimer:{},
         havedScanClick:true,//是否点击处理蓝牙后台自动扫描问题
-        timerInterval:{}
+        timerInterval:{},
+        nowOperateStatus:1,
 
      } 
   },
@@ -287,6 +288,12 @@ export default {
         // });
         BASE_CONFIG.btAddress=address;
         this.$store.state.clickBtAdress=address;
+        this.nowOperateStatus=1;//点击了可以跳转首页
+        if(bleName.indexOf('WELD5')>-1){
+            this.$store.state.isModbusModal=true;
+        }else{
+            this.$store.state.isModbusModal=false;
+        }
         if(this.envType=='env_ios'){
             this.setBleConnect_ios(address,bleName);
         }else{
@@ -301,6 +308,7 @@ export default {
         //         duration: 2000
         // });
         if(this.$store.state.nowConnectAddress == address && this.getConnectStatus=='connected'){
+            // Toast("6666222")
             this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
         }else{
             
@@ -344,6 +352,7 @@ export default {
             self.$store.state.nowConnectMachine=bleName;//全局存储机器名字
             self.$store.state.nowConnectAddress =address;
             // alert(self.$store.state.nowConnectMachine); //!!!!!!注意blename取值
+            // Toast("66663333")
             self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
             return;
         }
@@ -368,6 +377,7 @@ export default {
                         // String address,String remarkInfo,String realAddress,String type
                         window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
                     }
+                    // Toast("6666444")
                     self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,pageFrom:'/blueToothManage'}});
                 }
         }, 8000);
@@ -494,11 +504,19 @@ export default {
     },
     confrimScan(){
         //关闭弹层、断开扫描、开启扫描
+        this.nowOperateStatus=2;
         this.searchInFlag=false;
         this.$store.state.getConnectStatus='scaning';
-        let address =this.$store.state.nowConnectAddress
+        let address =this.$store.state.nowConnectAddress;
         if(address){
-            this.globalSendMsgToIos("handleDisConnect",address,"");
+            if(this.envType=='env_ios'){
+                
+                this.globalSendMsgToIos("handleDisConnect",address,"");
+            }else{
+                window.android?window.android.disconectAndroidBle():'';
+            }
+            
+            
             //开启定时器
             // this.timeInterval1 = setInterval(() => {
             //     this.globalSendMsgToIos("handleGetBleState","","");
@@ -851,6 +869,7 @@ export default {
                     // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
                     this.callSendModbusSystemData('0A0303E80028','DFC4','blueToothManage');//增加10个焊接时长 
                 }
+                // Toast("6666555")
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
             }
         }
@@ -870,6 +889,7 @@ export default {
             }else{
                 //和注册的冲突
                 setTimeout(() => {
+                    // Toast("6666777")
                     this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
                 }, 100);
             }
@@ -1001,9 +1021,10 @@ export default {
                     window.android.updateBleRemarkByAddress(self.$store.state.nowConnectAddress.replace(/:/g, "").replace(/\"/g, ""),self.$store.state.nowConnectMachine,self.$store.state.nowConnectAddress,0);
                 }
                 clearTimeout(self.connectFailedInfo);
-                
-                self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
-               
+                // Toast("6666888:"+self.nowOperateStatus)
+                if(self.nowOperateStatus==1){
+                    self.$router.push({path:'/newIndex',query:{bleName:self.$store.state.nowConnectMachine,address:self.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
+                }
             }
             
       }

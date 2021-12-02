@@ -428,7 +428,7 @@ export default {
     },
   watch: {
     isConnectStatus (newVal, oldVal) {
-      console.log('layout里蓝牙连接状态监听::'+this.$store.state.nowRouter)
+      console.log('layout里蓝牙连接状态监听::'+this.$store.state.nowRouter+"||"+newVal)
       // Toast({
       //       message: 'nowRoute:'+this.$store.state.nowRouter,
       //       position: 'middle',
