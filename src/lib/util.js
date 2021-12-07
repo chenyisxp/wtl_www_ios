@@ -1102,6 +1102,7 @@ Array.prototype.in_array = function (element) {
                     rstInfo.PRESSUREKEY=0;//机器上发不能改 气压值    
                     //模式是normal的时候推荐值是3.5BAR，50PSI
                     // 其他两个模式是4.2BAR，61PSI
+                    // 20211204说是grouping是3.5其他事4.2
                     // 切割模式：
                     // 1：Normal
                     // 2：Grid
@@ -1111,13 +1112,12 @@ Array.prototype.in_array = function (element) {
                     // 1：BAR
                     // 2：MPA
                     // 3：PSI
-                    if(rstInfo.modeKey>0){
+                    if(rstInfo.modeKey!=2){
                         if(rstInfo.PRESSUREKEY==0){
                             rstInfo.PRESSURSHOW='4.2BAR';
                         }else{
                             rstInfo.PRESSURSHOW='61PSI';
                         }
-                        
                     }else{
                         if(rstInfo.PRESSUREKEY==0){
                             rstInfo.PRESSURSHOW='3.5BAR';

@@ -121,8 +121,8 @@
     <!-- 测试入口 -->
     <!-- <div v-if="testModalDoorFlag"> -->
         <!-- <div class="testWay toLogin" @click="goToLogin">go to login<Icon type="ios-arrow-dropright-circle" /></div> -->
-        <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-        <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+        <!-- <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+        <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div> -->
         
     <!-- </div> -->
   </div>
@@ -131,7 +131,8 @@
 <script>
 import { MessageBox ,Popup,Toast ,Indicator } from 'mint-ui'
 import Loading from "@/components/base/Loading";
-import { BASE_CONFIG } from '../lib/config/config'
+import { BASE_CONFIG } from '../lib/config/config';
+import {InterfaceService} from '@/services/api';
 export default {
   name: '',
   components: {
@@ -279,6 +280,23 @@ export default {
         //     duration: 500
         // });
     },
+    sendBluetoothFuc(){
+        let nowBTEndConnectTm=new Date().getTime();
+        let loginName = localStorage.getItem("wtl_login_email") || '';
+        let params ={
+            BT_ADDRESS: BASE_CONFIG.btAddress || '四合一地址',
+            APP_UUID:this.$store.state.userUuid,
+            EMAIL:loginName,
+            BEGIN_RECORD_SECOND:nowBTEndConnectTm,
+            END_RECORD_SECOND:'',
+            COST_TM:''
+        };
+        InterfaceService.insertMachineBluetoothConnect(params,(data)=>{
+        
+        },function(data){
+            
+        });  
+    },
     setBleConnect(address,bleName){
         //  Toast({
         //         message: address,
@@ -315,6 +333,7 @@ export default {
             //提前记录名字把 
             this.$store.state.nowConnectMachine=bleName;//全局存储机器名字
             this.$store.state.nowConnectAddress =address;
+            this.sendBluetoothFuc();
            try {
                 
                 this.globalSendMsgToIos("handleConnect",address,"");
@@ -359,6 +378,7 @@ export default {
         //2、老逻辑
         self.$store.state.nowConnectMachine=bleName;//全局存储机器名字
         self.$store.state.nowConnectAddress =address;
+        self.sendBluetoothFuc();
         self.connectFailedInfo =setTimeout(() => {
                 if(self.$store.state.getConnectStatus !='connected'){
                     Toast({

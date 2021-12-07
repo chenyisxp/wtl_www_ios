@@ -156,7 +156,7 @@
                         <ul class="rulers" ref="rulerMySlider">
                                 <li class="r-li" v-for="(item,index) in disNumAtr"  :style="{height:item.height+'px'}">
                                     <span class="line" :style="{top:item.height+'px'}"></span>
-                                    <span :style="{top:(item.height-3)+'px'}">{{item.num}}</span>
+                                    <span :style="{top:(item.height-5)+'px'}">{{item.num}}</span>
                                 </li>
                         </ul>
                         <div class="r-begin"></div>
@@ -768,9 +768,16 @@ export default {
         
     },
     changeChecked(type,value,index){
-        console.log(type);
+        console.log(type,value);
         this.nowTypeList.forEach(element => {
             if(element.typeName==type){
+                if(type=='MODE'){
+                    if(value==2){
+                        this.inducanceValue='3.5BAR';
+                    }else{
+                        this.inducanceValue='4.2BAR';
+                    }
+                }
                 if(type=='MATERIAL'){
                     this.MIG_MATERIAL =value;
                 }

@@ -141,7 +141,7 @@
                         <ul class="rulers" ref="rulerMySlider">
                                 <li class="r-li" v-for="(item,index) in disNumAtr"   :style="{height:item.height+'px'}">
                                     <span class="line" :style="{top:item.height+'px'}"></span>
-                                    <span :style="{top:(item.height-3)+'px'}">{{item.num}}</span>
+                                    <span :style="{top:(item.height-5)+'px'}">{{item.num}}</span>
                                 </li>
                         </ul>
                         <div class="r-begin"></div>
@@ -2125,7 +2125,7 @@ export default {
         .enum{
              position: absolute;
             right: 35px;
-            bottom: -5px;
+            bottom: -8px;
         }
     }
     .cube-wrapper{

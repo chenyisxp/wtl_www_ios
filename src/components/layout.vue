@@ -460,6 +460,7 @@ export default {
         this.$store.state.isModbusModal=false;
         clearInterval(this.$store.state.modbusCircleTimer);
         clearInterval(this.$store.state.weldingInterval)//否则每次进来会从累机
+        //安卓的也需要清空
         if(newVal=='ready'){
           this.sendBTConnnect();
         }
@@ -470,12 +471,15 @@ export default {
         // }
       }
       //do something
+      let now1Router = '/develeperManage';
       if(this.$store.state.nowRouter!='/blueToothManage' 
           && this.$store.state.nowRouter!='/newIndex'
           && this.$store.state.nowRouter!='/'
           && this.$store.state.nowRouter!='/setmanage'
           && this.$store.state.nowRouter!='/testPage'
           && this.$store.state.nowRouter!='/develeperManage'
+          && now1Router.indexOf('login')==-1
+          && now1Router.indexOf('register')==-1
       ){
         if(newVal=='connected'){
           clearTimeout(this.layoutTimer);
@@ -519,7 +523,11 @@ export default {
           }
           //2、8秒后 还没连上 去 蓝牙页
           this.layoutTimer = setTimeout(() => {
-            this.$router.push('/blueToothManage');
+            // Toast('layoutTimer')
+            //有了登录体系后希望用户注册就不要跳转了
+            if(now1Router.indexOf('login')==-1 && now1Router.indexOf('register')==-1){
+              this.$router.push('/blueToothManage');
+            }
             this.displayType=0;
           }, 10000);
         }
