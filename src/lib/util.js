@@ -56,7 +56,7 @@ Array.prototype.in_array = function (element) {
             var oldWeldModel ='';//模式
             var oldWeldTimer={};
             var oldWeldIntervaler={};
-
+            var longTimerNoResponse={};//长时间未收到消息
             var oldGetData='';
 
             var checkDataModbus={};
@@ -2426,11 +2426,15 @@ Array.prototype.in_array = function (element) {
             //负责接收来自app的 新modbus版本ble信息 注意modbus的返回crc是反的 
             //安卓里是mWebView.loadUrl("javascript:modbusBroastFromApp('" + bleRespInfo.replaceAll(" ", "").toUpperCase() +"')");
             window['modbusBroastFromApp'] = (bleReponseOrignData)=>{
+                clearTimeout(longTimerNoResponse);
+                longTimerNoResponse=setTimeout(() => {
+                    window.closeLoading?window.closeLoading():'';
+                }, 8000);
                 bleReponseOrignData = (bleReponseOrignData +"").replace(/\s*/g,"");
                 bleReponseOrignData=bleReponseOrignData.toLocaleUpperCase();
                 //假如是四合一的安卓
                 if(store.state.modbusIosReceiveTime==1){
-                    ++store.state.modbusIosReceiveTime;
+                    // ++store.state.modbusIosReceiveTime;
                     let firstHide = (bleReponseOrignData+"").substring(0,2);
                     if(firstHide != 'DA'){
                         store.state.isModbusModal=true;
@@ -2445,7 +2449,7 @@ Array.prototype.in_array = function (element) {
                 modbusGlobalReceiveList.push(bleReponseOrignData);//存储起来避免太快丢失
                 console.log('modbusSendTimes:'+store.state.modbusSendTimes)
                 console.log('****bleReponseOrignData****:'+bleReponseOrignData)
-                console.log('****modbusGlobalReceiveList****:'+modbusGlobalReceiveList)
+                console.log('****modbusGlobalReceiveList****:'+modbusGlobalReceiveList) 
                 if(!modbusGlobalReceiveInterval){
                     modbusGlobalReceiveInterval=setInterval(() =>{
                         let beginIdx=0;
@@ -2456,6 +2460,7 @@ Array.prototype.in_array = function (element) {
                        let tempMidData ='';
                        let newCrc ='';
                        let reverseCrc='';
+                       let errorTimes=0;
                        for (let index = 0; index < modbusGlobalReceiveList.length; index++) {
                             const tempCenter = modbusGlobalReceiveList[index];
                             bleReponseData+=tempCenter;
@@ -2482,11 +2487,18 @@ Array.prototype.in_array = function (element) {
                                     modbusDataReceiveFuc(bleReponseData);
                                 }
                                 break;
+                            }else{
+                                //错误次数
+                                errorTimes++;
                             }
                        }
                        if(endIdx!='none'){
                         modbusGlobalReceiveList =modbusGlobalReceiveList.slice(endIdx+1,modbusGlobalReceiveList.length);
                        } 
+                    //    if(errorTimes>20){
+                    //     modbusGlobalReceiveList=[];//清空
+                    //    }
+
                     }, 500);
                 }
                 //间隔不到150ms是可以连续接收：节流、避免丢失
@@ -2847,6 +2859,8 @@ Array.prototype.in_array = function (element) {
             Vue.prototype.callSendModbusSystemData = (sendData,crc,pageFrom) =>{
                 // Toast('modbusSendDataTimes='+store.state.modbusSendDataTimes+":"+store.state.getConnectStatus)
                 if(store.state.getConnectStatus!='connected'){
+                    // store.state.modbusSendDataTimes=1;
+                    // store.state.modbusSendTimes=1;
                     return;
                 }
                 if(store.state.modbusSendDataTimes>4){

@@ -407,7 +407,7 @@ export default {
                //TODO 1、应该先关闭（是否可以判断是否连接着） 2、重新连接新的
                //window.android.closeBleConnect();
                if(self.envType=='env_ios'){
-                    this.globalSendMsgToIos("handleConnect",address,"")
+                    self.globalSendMsgToIos("handleConnect",address,"")
                }else{
                     window.android?window.android.setBleConnect(address):'';
                }
@@ -889,6 +889,7 @@ export default {
                     // this.callSendModbusSystemData('0A0303E80023','1885','blueToothManage');//增加五个焊接时长
                     this.callSendModbusSystemData('0A0303E80028','DFC4','blueToothManage');//增加10个焊接时长 
                 }
+                this.isLoading=false;
                 // Toast("6666555")
                 this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
             }
@@ -909,6 +910,7 @@ export default {
             }else{
                 //和注册的冲突
                 setTimeout(() => {
+                    this.isLoading=false;
                     // Toast("6666777")
                     this.$router.push({path:'/newIndex',query:{bleName:this.$store.state.nowConnectMachine,address:this.$store.state.nowConnectAddress,pageFrom:'/blueToothManage'}});
                 }, 100);

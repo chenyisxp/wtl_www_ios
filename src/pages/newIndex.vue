@@ -1003,7 +1003,11 @@ export default {
       if(that.GLOBAL_CONFIG.TESTFLAG){
         //测试模式模拟打开开关
         that.nowConnectStatus='connected';
-      } 
+      }
+      window['closeLoading'] = (data,pageFrom) => { 
+        this.isLoading=false;
+      }
+      
        window['broastFromAndroid'] = (data,pageFrom) => {
         //  Toast({
         //     message: 'newindex'+data+'||',
@@ -1160,6 +1164,8 @@ export default {
           }else if(newVal<8 && this.isLoading){
             this.isLoading=false;
           }
+       }else{
+         this.isLoading=false;
        }
     }
   }
