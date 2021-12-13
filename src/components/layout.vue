@@ -315,12 +315,12 @@ export default {
                   COST_TM:COST_TM
               };
               InterfaceService.insertMachineBluetoothConnect(params,(data)=>{
-                this.$store.state.nowBTRecondTimes=1
+                this.$store.state.nowBTRecondTimes=1;////重置
               },function(data){
-                  
+                  //发送
+                this.$store.state.nowBTRecondTimes=1;//重置
               });  
-              //发送
-              this.$store.state.nowBTRecondTimes=1;
+              
       }
   },
   mounted () {
@@ -461,12 +461,15 @@ export default {
         clearInterval(this.$store.state.modbusCircleTimer);
         clearInterval(this.$store.state.weldingInterval)//否则每次进来会从累机
         //安卓的也需要清空
-        if(newVal=='ready'){
-          this.sendBTConnnect();
-        }
+        // if(newVal=='ready'){
+          if(this.$store.state.nowBTRecondTimes==2){
+            this.sendBTConnnect();
+          }
+        // }
       }else{
         // if(self.$store.state.nowBTRecondTimes==1){
             this.$store.state.nowBTBeginConnectTm=new Date().getTime();
+            this.$store.state.nowBTRecondTimes=2;
         //     self.$store.state.nowBTRecondTimes=2;
         // }
       }

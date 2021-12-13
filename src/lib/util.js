@@ -1855,7 +1855,7 @@ Array.prototype.in_array = function (element) {
                         if(firstHide == 'DA'){
                             store.state.modbusSendTimes=7;
                             store.state.isModbusModal=false;
-                            store.state.machineModel='OLD'
+                            store.state.machineModel='OLD_ios'
                             //记录四合一机器数据
                             insertOldMachineInfo(data);
                             // window.modbusBroastFromApp(data);
@@ -1886,7 +1886,7 @@ Array.prototype.in_array = function (element) {
             function insertOldMachineInfo(receiveBleData){
                  //记录四合一机器数据
                     let loginName = localStorage.getItem("wtl_login_email") || '';
-                    if(this.GLOBAL_CONFIG.TESTFLAG){
+                    if(BASE_CONFIG.TESTFLAG){
                         return;
                     }
                 //  alert(store.state.nowConnectMachine)
@@ -1894,7 +1894,7 @@ Array.prototype.in_array = function (element) {
                      patch:'OLD4',
                      email:loginName,
                      btName:store.state.nowConnectMachine || '未知蓝牙名',
-                     btAddress:BASE_CONFIG.btAddress || '四合一地址',
+                     btAddress:store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址',
                      machineType:store.state.machineModel,
                      content:receiveBleData,
                      app_uuid:store.state.userUuid,
@@ -1919,11 +1919,12 @@ Array.prototype.in_array = function (element) {
                             store.state.isModbusModal=true;
                         }else{
                             store.state.modbusSendTimes=7;
-                            store.state.machineModel='OLD'
+                            store.state.machineModel='OLD001'
                             insertOldMachineInfo(bleReponseData);
                             store.state.isModbusModal=false;
                         }
                     }
+                    console.log("store.state.isModbusModal"+store.state.isModbusModal)
                     if(store.state.isModbusModal){
                         //简化统一处理
                         window.modbusBroastFromApp(bleReponseData);
@@ -2653,6 +2654,7 @@ Array.prototype.in_array = function (element) {
                                 let btAddress=recontent.substring(12,48);;//蓝牙地址
                                 // \u0050\u004c\u0041\u0053\u004d\u0041 504C41534D41 PLASMA
                                 let machineType=recontent.substring(48,idx);;//机器型号 \u0050\u004c\u0041\u0053\u004d\u0041
+                                // alert(machineType)
                                 if(machineType.indexOf('504C41534D41')>-1){
                                     store.state.machineModel = 'PLASMA';
                                 }else{
@@ -2667,9 +2669,11 @@ Array.prototype.in_array = function (element) {
                                 store.state.btAddress=btAddress;//放到store里
                                 //机器信息
                                 let loginName = localStorage.getItem("wtl_login_email") || '';
-                                if(this.GLOBAL_CONFIG.TESTFLAG){
+                                // alert("BASE_CONFIG.TESTFLAG:"+BASE_CONFIG.TESTFLAG)
+                                if(BASE_CONFIG.TESTFLAG){
                                     return;
                                 }
+                                // alert('addMachineInfo')
                                 InterfaceService.addMachineInfo({
                                     patch:patch,
                                     email:loginName,
@@ -2867,7 +2871,7 @@ Array.prototype.in_array = function (element) {
                     store.state.isModbusModal=false;
                     store.state.modbusSendDataTimes=6;
                     store.state.modbusSendTimes=6;
-                    store.state.machineModel='old';
+                    store.state.machineModel='oldtest';
                     return;
                 }
                 // Toast('modbusSendDataTimes='+store.state.modbusSendDataTimes+":"+store.state.getConnectStatus)
@@ -4034,7 +4038,7 @@ Array.prototype.in_array = function (element) {
                 
                 //网络状态 判断
                 if(store.state.netWorkStatus=='online'){
-                    if(this.GLOBAL_CONFIG.TESTFLAG){
+                    if(BASE_CONFIG.TESTFLAG){
                         return;
                     }
                     InterfaceService.batchInsertAppWeld(params,(data)=>{
@@ -4076,7 +4080,7 @@ Array.prototype.in_array = function (element) {
                 let pInfo ={
                     uuid:store.state.userUuid,
                     allData:sendData,
-                    btAddress:store.state.btAddress || BASE_CONFIG.btAddress || '四合一地址',
+                    btAddress:store.state.btAddress ||  BASE_CONFIG.btAddress || '四合一地址',
                     pageName:store.state.nowRouter,
                     type:type?type:'默认Type',
                     commonContent:params.weldTime
@@ -4084,7 +4088,7 @@ Array.prototype.in_array = function (element) {
                 //网络状态 判断
                 
                 if(store.state.netWorkStatus=='online'){
-                    if(!this.GLOBAL_CONFIG.TESTFLAG){
+                    if(!BASE_CONFIG.TESTFLAG){
                         InterfaceService.upLoadData(pInfo,(data)=>{
                         
                         },function(data){

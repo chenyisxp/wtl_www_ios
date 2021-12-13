@@ -341,6 +341,7 @@ export default {
         // });
         BASE_CONFIG.btAddress=address;
         this.$store.state.clickBtAdress=address;
+        // this.$store.state.btAddress=address;
         this.nowOperateStatus=1;//点击了可以跳转首页
         if(bleName.indexOf('WELD5')>-1){
             this.$store.state.isModbusModal=true;
