@@ -121,8 +121,8 @@
     <!-- 测试入口 -->
     <!-- <div v-if="testModalDoorFlag"> -->
         <!-- <div class="testWay toLogin" @click="goToLogin">go to login<Icon type="ios-arrow-dropright-circle" /></div> -->
-        <!-- <div class="testWay welding" @click="goWeldingExperiential">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
-        <div class="testWay" @click="goExperiential">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div> -->
+        <div class="testWay welding" @click="beforeExperientAction(1)">go to welding experiential.<Icon type="ios-arrow-dropright-circle" /></div>
+        <div class="testWay" @click="beforeExperientAction(2)">go to normal experiential.<Icon type="ios-arrow-dropright-circle" /></div>
         
     <!-- </div> -->
   </div>
@@ -226,8 +226,40 @@ export default {
             this.$router.push({path:'/loginIndex',query:{}});
       },
       //体验模式
+      beforeExperientAction(type){
+          let before = localStorage.getItem("wtl_ex_logined");;
+          if(before == 1){
+                localStorage.setItem("wtl_login_email","test@163.com")
+                localStorage.setItem("wtl_email","test@163.com");
+                if(type==1){
+                    this.goWeldingExperiential()
+                }else{
+                    this.goExperiential();
+                }
+                return
+          }
+          MessageBox.prompt('输入密码').then(({ value, action }) => {
+              console.log(value,action)
+              
+                if ( value=='wtl123' && action=='confirm') {
+                    localStorage.setItem("wtl_ex_logined",1);
+                    localStorage.setItem("wtl_login_email","test@163.com")
+                    localStorage.setItem("wtl_email","test@163.com");
+                    if(type==1){
+                        this.goWeldingExperiential()
+                    }else{
+                        this.goExperiential();
+                    }
+                }
+            });
+          
+      },
       goWeldingExperiential(){
-        this.$store.state.modbusSendDataTimes=0;
+        this.$store.state.machineModel='old';
+        this.$store.state.modbusSendDataTimes=5;
+        this.$store.state.isModbusModal=false;
+        this.$store.state.S_TESTFLAG=true;
+        
         this.GLOBAL_CONFIG.TESTFLAG=true;
         this.isLoading =false;
         this.$store.state.getConnectStatus='connected';
@@ -235,8 +267,11 @@ export default {
       },
       goExperiential(){
         let self =this;
-        self.$store.state.modbusSendDataTimes=0;
+        self.$store.state.machineModel='old';
+        self.$store.state.modbusSendDataTimes=5;
+        self.$store.state.isModbusModal=false;
         self.$store.state.routerOprete=1;
+        this.$store.state.S_TESTFLAG=true;
         clearInterval(self.$store.state.globalGetConnectStatus);
         self.GLOBAL_CONFIG.TESTFLAG=true;
         self.isLoading =false;

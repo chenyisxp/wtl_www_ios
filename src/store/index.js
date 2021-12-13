@@ -79,6 +79,7 @@ const state = {
     nowBTBeginConnectTm:'',//蓝牙开始连接的时间
     nowBTEndConnectTm:'',//蓝牙结束连接的时间
     nowBTRecondTimes:1,//标记是否需要传输给后台
+    S_TESTFLAG:false
 }
 
 const mutations = {

@@ -454,8 +454,8 @@ export default {
       console.log('layout里蓝牙连接状态监听::'+this.$store.state.nowRouter+"||"+newVal)
       if(newVal!='connected'){
         //断开连接需要重置一些参数 可能是四合一 五合一切换使用
-        this.$store.state.modbusSendDataTimes=0;
-        this.$store.state.modbusSendTimes=0;
+        this.$store.state.modbusSendDataTimes=1;
+        this.$store.state.modbusSendTimes=1;
         this.$store.state.modbusIosReceiveTime=1;
         this.$store.state.isModbusModal=false;
         clearInterval(this.$store.state.modbusCircleTimer);

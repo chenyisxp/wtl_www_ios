@@ -451,6 +451,20 @@ export default {
                             }
                            
                         });
+                        if(this.GLOBAL_CONFIG.TESTFLAG){
+                            this.weldMsgList.push({
+                                BEGIN_TM:'2021-10-11',
+                                FORMAT_COST_TM:'2021-10-11',
+                                MODEL_TYPE:'CUT',
+                                WELD_CONTENT:'DAE60A031603010000001400010002000000090000001400280014B4C55573'
+                            });
+                            this.weldMsgList.push({
+                                BEGIN_TM:'2021-10-11',
+                                FORMAT_COST_TM:'2021-10-11',
+                                MODEL_TYPE:'TIGSYN',
+                                WELD_CONTENT:'DAE30A0358160700410000005D002C00490031008200000051003A004A00490030000000020001000A0064000400C300C30002000000020000000A0006006400000000000000C8000A0064000000C8000A07D0000500C8000A00640000C2BF6571'
+                            });
+                        }
                     }else{
                         this.weldMsgList=[];
                     }

@@ -1885,7 +1885,10 @@ Array.prototype.in_array = function (element) {
             }
             function insertOldMachineInfo(receiveBleData){
                  //记录四合一机器数据
-                 let loginName = localStorage.getItem("wtl_login_email") || '';
+                    let loginName = localStorage.getItem("wtl_login_email") || '';
+                    if(this.GLOBAL_CONFIG.TESTFLAG){
+                        return;
+                    }
                 //  alert(store.state.nowConnectMachine)
                  InterfaceService.addMachineInfo({
                      patch:'OLD4',
@@ -2653,7 +2656,7 @@ Array.prototype.in_array = function (element) {
                                 if(machineType.indexOf('504C41534D41')>-1){
                                     store.state.machineModel = 'PLASMA';
                                 }else{
-                                    store.state.machineModel = 'OLD';
+                                    store.state.machineModel = 'OLD350';
                                 }
                                 let migTm = recontent.substring(clength-24,clength-20);;//不同模式细腻
                                 let tigAc = recontent.substring(clength-20,clength-16);;//不同模式细腻
@@ -2664,6 +2667,9 @@ Array.prototype.in_array = function (element) {
                                 store.state.btAddress=btAddress;//放到store里
                                 //机器信息
                                 let loginName = localStorage.getItem("wtl_login_email") || '';
+                                if(this.GLOBAL_CONFIG.TESTFLAG){
+                                    return;
+                                }
                                 InterfaceService.addMachineInfo({
                                     patch:patch,
                                     email:loginName,
@@ -2857,6 +2863,13 @@ Array.prototype.in_array = function (element) {
             //init 初始化请求
             //请求一个模式确认是不是modbus协议版本机器
             Vue.prototype.callSendModbusSystemData = (sendData,crc,pageFrom) =>{
+                if(BASE_CONFIG.TESTFLAG){
+                    store.state.isModbusModal=false;
+                    store.state.modbusSendDataTimes=6;
+                    store.state.modbusSendTimes=6;
+                    store.state.machineModel='old';
+                    return;
+                }
                 // Toast('modbusSendDataTimes='+store.state.modbusSendDataTimes+":"+store.state.getConnectStatus)
                 if(store.state.getConnectStatus!='connected'){
                     // store.state.modbusSendDataTimes=1;
@@ -4021,6 +4034,9 @@ Array.prototype.in_array = function (element) {
                 
                 //网络状态 判断
                 if(store.state.netWorkStatus=='online'){
+                    if(this.GLOBAL_CONFIG.TESTFLAG){
+                        return;
+                    }
                     InterfaceService.batchInsertAppWeld(params,(data)=>{
                         store.state.weldInfo3Days=[];
                         //清空localstorage
@@ -4068,11 +4084,14 @@ Array.prototype.in_array = function (element) {
                 //网络状态 判断
                 
                 if(store.state.netWorkStatus=='online'){
-                    InterfaceService.upLoadData(pInfo,(data)=>{
+                    if(!this.GLOBAL_CONFIG.TESTFLAG){
+                        InterfaceService.upLoadData(pInfo,(data)=>{
                         
-                    },function(data){
-                        
-                    });    
+                        },function(data){
+                            
+                        }); 
+                    }
+                       
                 }else if(type == 'weld_end'){
                     //假如是焊接时长 需记录本地三天数据
                     //取出旧的三个 pInfo 放到localstorage

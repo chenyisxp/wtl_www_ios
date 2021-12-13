@@ -19,6 +19,7 @@
         <div class="left"></div>
         <div class="right"></div>
     </div>
+    
     <div class="typechoose"  ref="newIndexRef">
           <div class="contain" :style="{height:this.conHeight}" 
          >
@@ -35,7 +36,7 @@
             <div class="c-img i-0" v-bind:class="classAtr[2].name"  @click.stop="newChangeFuc(4,1)">
                 <img src="../assets/images/weld_mma.png" :style="{height:this.imgHeight,width:this.imgWidth}">
             </div>
-            <div class="c-img i-0" v-bind:class="classAtr[3].name" v-if="nowConnectStatus!='connected' || (nowConnectStatus=='connected' && machineModel=='PLASMA')"  @click.stop="newChangeFuc(5,1)">
+            <div class="c-img i-0" v-bind:class="classAtr[3].name" v-if="S_TESTFLAG || nowConnectStatus!='connected' || (nowConnectStatus=='connected' && machineModel=='PLASMA')"  @click.stop="newChangeFuc(5,1)">
                 <img src="../assets/images/cut.png" :style="{height:this.imgHeight,width:this.imgWidth}">
             </div>
         </div>
@@ -516,7 +517,7 @@ export default {
           that.choose(2);
         }else if(that.reClacClass()==2){
           that.choose(4);
-        }else if(that.reClacClass()==4 && that.nowConnectStatus!='connected'){
+        }else if(that.reClacClass()==4 && (that.nowConnectStatus!='connected' || that.S_TESTFLAG)){
           // that.choose(0);
           that.choose(5);
         }
@@ -532,12 +533,12 @@ export default {
       }else if(  that.touchStartNum-e.changedTouches[0].pageX<-30){
         console.log('右滑'+nowChooseIndex,that.reClacClass())
         //右滑
-        if(that.reClacClass()==0 && that.nowConnectStatus!='connected'){
+        if(that.reClacClass()==0 && (that.nowConnectStatus!='connected' || that.S_TESTFLAG)){
           // that.choose(0);
           that.choose(5);
-        }else if(that.reClacClass()==0 && that.machineModel=='PLASMA'){
+        }else if(that.reClacClass()==0 && (that.machineModel=='PLASMA' ||  that.S_TESTFLAG)){
           that.choose(5);
-        }else if(that.reClacClass()==0 && that.machineModel!='PLASMA'){
+        }else if(that.reClacClass()==0 && (that.machineModel!='PLASMA' || that.S_TESTFLAG )){
           that.choose(4);
         }else if(that.reClacClass()==2){
           that.choose(0);
@@ -556,34 +557,38 @@ export default {
                 this.nowMainIndex =index;
                 //classAtr 数组每个index代表不同主页的id id=0在主位置
                 // this.classAtr=[{name:'cla_2',value:2},{name:'cla_0',value:1},{name:'cla_1',value:3}]
-                if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                if(this.S_TESTFLAG || this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
                   this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3},{name:'cla_3',value:4}] 
                 }else{
+                  //alert(22222)
                   this.classAtr=[{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_0',value:3}] 
                 }
             }
             if(index==2 || index==3){
                this.nowMainIndex =index;
-                if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                if(this.S_TESTFLAG || this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
                   this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0},{name:'cla_3',value:4}]
                 }else{
+                  //alert(22222)
                   this.classAtr=[{name:'cla_0',value:1},{name:'cla_1',value:2},{name:'cla_2',value:0}]
                 }
                
             }
              if(index==4){
               this.nowMainIndex =4;
-                if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+                if(this.S_TESTFLAG || this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
                   this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2},{name:'cla_3',value:4}]
                 }else{
+                  //alert(22222)
                   this.classAtr=[{name:'cla_2',value:1},{name:'cla_0',value:2},{name:'cla_1',value:2}]
                 }
             }
             if(index==5){
               this.nowMainIndex =5;
-              if(this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
+              if(this.S_TESTFLAG ||  this.nowConnectStatus != 'connected' || (this.nowConnectStatus == 'connected' && this.machineModel == 'PLASMA')){
                 this.classAtr=[{name:'cla_2',value:1},{name:'cla_3',value:2},{name:'cla_0',value:0},{name:'cla_1',value:3}]
               }else{
+                //alert(22222)
                 this.classAtr=[{name:'cla_2',value:1},{name:'cla_3',value:2},{name:'cla_0',value:0}]
               }
               
@@ -877,6 +882,9 @@ export default {
   mounted: function () {
     this.pageFrom =this.$route.query.pageFrom;
     if(this.pageFrom =='/blueToothManage'){
+        if(this.GLOBAL_CONFIG.TESTFLAG){
+          this.$store.state.machineModel = 'old';
+        }
         //等离子五合一
         setTimeout(() => {
           console.log(this.machineModel,this.nowConnectStatus)
@@ -891,6 +899,13 @@ export default {
           }else{
               this.arrChooseBtn=[0,2,4,5];
               this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
+          }
+          //测试模式
+          // alert(BASE_CONFIG.TESTFLAG)
+          if(this.S_TESTFLAG){
+            //alert(2222244)
+            this.arrChooseBtn=[0,2,4,5];
+            this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
           }
         }, 200);
     }
@@ -910,7 +925,7 @@ export default {
      //没有邮箱且没有点过不登录按钮 弹
      //没有邮箱且点过不登录按钮且超过使用次数5 弹
      // this.netWorkStatus =='online' && ((!wtlEmail && wtl_without_login!=1) || (!wtlEmail && wtl_without_login==1 && times>2))
-     if(this.netWorkStatus =='online' && !wtlEmail && wtl_without_login!=1){
+     if(!this.S_TESTFLAG &&  this.netWorkStatus =='online' && !wtlEmail && wtl_without_login!=1){
         // MessageBox.confirm('',{
         //   title:'提示',
         //   message:'是否登录',
@@ -1101,7 +1116,9 @@ export default {
     
   },
   computed:{
-    
+    S_TESTFLAG(){
+      return this.$store.state.S_TESTFLAG;
+    },
     netWorkStatus(){
       return this.$store.state.netWorkStatus;
     },
@@ -1139,6 +1156,7 @@ export default {
       this.nowConnectStatus=newVal;
       console.log('isConnectStatus',newVal)
       if(newVal!='connected'){
+        //alert(222225)
         this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}];
         //断开就重置
         this.$store.state.modbusIosReceiveTime =1;
@@ -1149,10 +1167,11 @@ export default {
     machineModel(newVal, oldVal){
         console.log(newVal)
         //等离子五合一
-        if(newVal == 'PLASMA'){
+        if(newVal == 'PLASMA' || this.S_TESTFLAG){
           this.arrChooseBtn=[0,2,4,5];
           this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2},{name:'cla_3',value:3}]
         }else{
+          //alert(22221)
           this.arrChooseBtn=[0,2,4];
           this.classAtr=[{name:'cla_0',value:0},{name:'cla_1',value:1},{name:'cla_2',value:2}]
         }
