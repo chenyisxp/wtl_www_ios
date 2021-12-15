@@ -1740,7 +1740,8 @@ export default {
         block:1995 //区间应该独立否则会影响到其他的max-min
       });
       this.keysRangeMap.set("ac_fre", {//50-250 交流频率
-        min: 50,
+        // min: 50,
+        min: 25,//20211215
         max: 250,
         nowValue: 190,
         unit: "Hz",
@@ -1749,7 +1750,8 @@ export default {
         block:200 //区间应该独立否则会影响到其他的max-min
       });
       this.keysRangeMap.set("ac_balance", {// 10-50 交流占空比
-        min: 10,
+        // min: 10,
+        min: 15,//20211215
         max: 50,
         nowValue: 30,
         // unit: "%",
@@ -1935,8 +1937,10 @@ export default {
     },
     clacTigMax_AC_FRE(base_cur,weld_cur){
       //20190615 单个上发没有了这两个参数 所以50~200
-      this.max_ac_fre=200;
-      this.min_ac_fre=50;
+      // this.max_ac_fre=200;
+      // this.min_ac_fre=50;
+      this.max_ac_fre=250;//20211515
+      this.min_ac_fre=25;//20211515
       return;
       if(base_cur>170 || weld_cur>170){
           this.max_ac_fre=100;
