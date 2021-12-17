@@ -3896,6 +3896,56 @@ Array.prototype.in_array = function (element) {
                 rstInfo.POST_GAS_VAL=parseInt(dataList[11],16);//post_gas 后送气时间
                 rstInfo.AC_FRE_VAL =parseInt(dataList[12],16);//ac_fre 交流频率
                 rstInfo.AC_DUTY_VAL =parseInt(dataList[13],16);//ac_balance 交流占空比
+                console.log(dataList)
+                if(dataList.length>47){
+                    // 前送气范围max		TIGMAN     PRE_GAS_MAX  28
+                    // 前送气范围min		TIGMAN     PRE_GAS_MIN  29
+                    // 引弧电流max		TIGMAN  
+                    // 引弧电流min		TIGMAN
+                    // 起弧电流,收弧电流max		TIGMAN  START_CUR_MAX   32
+                    // 起弧电流,收弧电流min		TIGMAN  START_CUR_MIN   33
+                    // 缓升时间,缓降时间max		TIGSYN,TIGMAN STOP_UP_MAX   34
+                    // 缓升时间,缓降时间min		TIGSYN,TIGMAN STOP_UP_MIN   35
+                    // 焊接电流max		TIGSYN,TIGMAN  WELD_CUR_MAX 36
+                    // 焊接电流min		TIGSYN,TIGMAN  WELD_CUR_MIN 37
+                    // 脉冲频率max		TIGMAN         PULSE_FRE_MAX    38
+                    // 脉冲频率min		TIGMAN         PULSE_FRE_MIN    39
+                    // 脉冲基值电流max		TIGMAN      BASE_CUR_MAX    40
+                    // 脉冲基值电流min		TIGMAN      BASE_CUR_MIN    41
+                    // 后送气时间max		TIGSYN,TIGMAN  POST_GAS_MAX 42
+                    // 后送气时间min		TIGSYN,TIGMAN  POST_GAS_MIN 43
+                    // 交流频率max		TIGMAN              AC_FRE_MAX  44
+                    // 交流频率min		TIGMAN              AC_FRE_MIN  45
+                    // 交流占空比max		TIGMAN          AC_DUTY_MAX 46
+                    // 交流占空比min		TIGMAN          AC_DUTY_MIN 47
+                    rstInfo.PRE_GAS_MAX =parseInt(dataList[28],16);
+                    rstInfo.PRE_GAS_MIN =parseInt(dataList[29],16);
+
+                    rstInfo.START_CUR_MAX =parseInt(dataList[32],16);
+                    rstInfo.START_CUR_MIN =parseInt(dataList[33],16);
+
+                    rstInfo.STOP_UP_MAX =parseInt(dataList[34],16);
+                    rstInfo.STOP_UP_MIN =parseInt(dataList[35],16);
+
+                    rstInfo.WELD_CUR_MAX =parseInt(dataList[36],16);
+                    rstInfo.WELD_CUR_MIN =parseInt(dataList[37],16);
+
+                    rstInfo.PULSE_FRE_MAX =parseInt(dataList[38],16);
+                    rstInfo.PULSE_FRE_MIN =parseInt(dataList[39],16);
+                    
+                    rstInfo.BASE_CUR_MAX =parseInt(dataList[40],16);
+                    rstInfo.BASE_CUR_MIN =parseInt(dataList[41],16);
+
+                    rstInfo.POST_GAS_MAX =parseInt(dataList[42],16);
+                    rstInfo.POST_GAS_MIN =parseInt(dataList[43],16);
+
+                    rstInfo.AC_FRE_MAX =parseInt(dataList[44],16);
+                    rstInfo.AC_FRE_MIN =parseInt(dataList[45],16);
+
+                    rstInfo.AC_DUTY_MAX =parseInt(dataList[46],16);
+                    rstInfo.AC_DUTY_MIN =parseInt(dataList[47],16);
+
+                }
                 //选中
                 //赋值开始  先默认第一个元素......
                 rstInfo.nowChooseIndex = "0";

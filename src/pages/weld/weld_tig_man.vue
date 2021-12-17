@@ -1762,8 +1762,7 @@ export default {
       });
 
     },
-    //根据传过来的值重新赋值
-    initKeysRangeMap(){
+    initKeysRangeMap201217备份(){
       this.keysRangeMap.get('start_cur_end').min=this.tigman_min_cur;
       this.keysRangeMap.get('start_cur_end').max=this.tigman_max_cur;
       this.keysRangeMap.get('peak_cur').min=this.tigman_min_cur;
@@ -1782,6 +1781,64 @@ export default {
       this.keysRangeMap.get('ac_fre').max=this.max_ac_fre;
       this.keysRangeMap.get('ac_fre').min=this.min_ac_fre;
       console.log(this.max_ac_fre)
+    },
+    //根据传过来的值重新赋值 老四合一规则
+    initKeysRangeMap(){
+      let tigman_min_cur = this.pfc_num!=0?10:30;
+      let tigman_max_cur = this.pfc_num!=0?200:140;
+      this.keysRangeMap.get('start_cur_end').min=tigman_min_cur;
+      this.keysRangeMap.get('start_cur_end').max=tigman_max_cur;
+      this.keysRangeMap.get('peak_cur').min=tigman_min_cur;
+      this.keysRangeMap.get('peak_cur').max=tigman_max_cur;
+
+      this.keysRangeMap.get('weld_cur').min=tigman_min_cur;
+      this.keysRangeMap.get('weld_cur').max=tigman_max_cur;
+    
+      this.keysRangeMap.get('base_cur').min=tigman_min_cur;
+      this.keysRangeMap.get('base_cur').max=tigman_max_cur;
+      
+      this.keysRangeMap.get('crater_cur').min=tigman_min_cur;
+      this.keysRangeMap.get('crater_cur').max=tigman_max_cur;
+      this.keysRangeMap.get('post_gas').min=1;
+      this.keysRangeMap.get('post_gas').max=10;
+      this.keysRangeMap.get('ac_fre').max=200;
+      this.keysRangeMap.get('ac_fre').min=25;
+    },
+    //根据传过来的值重新赋值 老四合一规则
+    initKeysRangeMapModbus(LIST){
+
+      this.keysRangeMap.get('pre_gas').max=LIST.PRE_GAS_MAX;
+      this.keysRangeMap.get('pre_gas').min=LIST.PRE_GAS_MIN;
+
+      this.keysRangeMap.get('start_cur_end').max=LIST.START_CUR_MAX;
+      this.keysRangeMap.get('start_cur_end').min=LIST.START_CUR_MIN;
+
+      this.keysRangeMap.get('slop_up').max=LIST.STOP_UP_MAX;
+      this.keysRangeMap.get('slop_up').min=LIST.STOP_UP_MIN;
+
+      this.keysRangeMap.get('weld_cur').max=LIST.WELD_CUR_MAX;
+      this.keysRangeMap.get('weld_cur').min=LIST.WELD_CUR_MIN;
+      
+      this.keysRangeMap.get('crater_cur').max=LIST.START_CUR_MAX;
+      this.keysRangeMap.get('crater_cur').min=LIST.START_CUR_MIN;
+      
+      this.keysRangeMap.get('post_gas').max=LIST.POST_GAS_MAX;
+      this.keysRangeMap.get('post_gas').min=LIST.POST_GAS_MIN;
+
+      this.keysRangeMap.get('base_cur').max=LIST.BASE_CUR_MAX;
+      this.keysRangeMap.get('base_cur').min=LIST.BASE_CUR_MIN;
+
+      // this.keysRangeMap.get('pulse_duty').max=LIST.AC_DUTY_MAX;
+      // this.keysRangeMap.get('pulse_duty').min=LIST.AC_DUTY_MIN;
+
+      this.keysRangeMap.get('pulse_fre').max=LIST.PULSE_FRE_MAX;
+      this.keysRangeMap.get('pulse_fre').min=LIST.PULSE_FRE_MIN;
+
+      this.keysRangeMap.get('ac_fre').max=LIST.AC_FRE_MAX;
+      this.keysRangeMap.get('ac_fre').min=LIST.AC_FRE_MIN;
+
+      this.keysRangeMap.get('ac_balance').max=LIST.AC_DUTY_MAX;
+      this.keysRangeMap.get('ac_balance').min=LIST.AC_DUTY_MIN;
     },
      //根据传过来的值重新赋值 modbus协议适合用
     oldKeysChangelistMap(list){
@@ -1903,7 +1960,7 @@ export default {
       }
     },
     //计算最小电流最大电流区间
-    clacTigManCur(){
+    clacTigManCur20211217备份(){
       //最大只看 pfc
       // alert(this.pfc_num)
       // alert(this.ac_dc_num)
@@ -2004,10 +2061,14 @@ export default {
         this.hf_lift_num=list.initBean.ifhf==1?list.initBean.ifhf:0;
         this.isReadyFlag =list.initBean.isReadyFlag;//是否焊接准备完毕
         this.ispulseOn =list.initBean.ifpulse;//1 pulse
-        this.clacTigManCur();
+        //非modbus老四合一用旧的规则20121217
         this.clacTigMax_AC_FRE(list.BASE_CUR_VAL,list.WELD_CUR_VAL);
         this.initKeysValueMap(list);
-        this.initKeysRangeMap();
+        if(!this.isModbusModal){
+          this.initKeysRangeMap();
+        }else{
+          this.initKeysRangeMapModbus(list);
+        }
         //关闭重新赋值??20190526开启之前为什么关闭，导致不能实时更新
         //modubs协议 20210730
         this.nowDCORACFLAG =list.initBean.polatrity;
