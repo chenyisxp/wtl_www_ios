@@ -1784,7 +1784,25 @@ export default {
     },
     //根据传过来的值重新赋值 老四合一规则
     initKeysRangeMap(){
-      let tigman_min_cur = this.pfc_num!=0?10:30;
+      //最小 ac和hf
+      let tigman_min_cur=30;
+      if(this.ac_dc_num==1){
+          if(this.hf_lift_num==1){
+            tigman_min_cur=10;
+          }else{
+            tigman_min_cur=10;
+          }
+      }else{
+        //ac hf_lift_num==1即off
+          if(this.hf_lift_num==1){
+            // this.tigman_min_cur=15;
+            // this.tigman_min_cur=30;//2019-07-29
+            tigman_min_cur=30;//2021-12-16
+          }else{
+            tigman_min_cur=30;
+          }
+      }
+      // let tigman_min_cur = this.pfc_num!=0?10:30;
       let tigman_max_cur = this.pfc_num!=0?200:140;
       this.keysRangeMap.get('start_cur_end').min=tigman_min_cur;
       this.keysRangeMap.get('start_cur_end').max=tigman_max_cur;
@@ -2087,7 +2105,7 @@ export default {
           if(!this.GLOBAL_CONFIG.TESTFLAG){//测试模式不走
               var result ='';
               if(this.envType=='env_ios'){
-                result=this.tigManChooseLineKey;
+                result=this.tigManChooseLineKey;//有可能是ac_fre、ac_duty导致动不了
               }else{
                 // pulse_duty
                 // result='pulse_duty'
@@ -2100,7 +2118,8 @@ export default {
                 this.beforeMainChartType =this.nowMainChartType;
                 this.isEditing=1;//记录不是第一次来了
                 if(result && result!='empty'){
-                  this.nowChooseLineKey=result;
+                  // this.nowChooseLineKey=result;//避免卡住不能选择 20211216
+                  this.nowChooseLineKey =this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
                 }else{
                   this.nowChooseLineKey =this.keyArr.indexOf('weld_cur')>-1?this.constant.weld_cur:this.keyArr[0];//默认选中 电流且不能切换了
                 }

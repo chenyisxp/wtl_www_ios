@@ -3918,26 +3918,26 @@ Array.prototype.in_array = function (element) {
                     // 交流频率min		TIGMAN              AC_FRE_MIN  45
                     // 交流占空比max		TIGMAN          AC_DUTY_MAX 46
                     // 交流占空比min		TIGMAN          AC_DUTY_MIN 47
-                    rstInfo.PRE_GAS_MAX =parseInt(dataList[28],16);
-                    rstInfo.PRE_GAS_MIN =parseInt(dataList[29],16);
+                    rstInfo.PRE_GAS_MAX =parseInt(dataList[28],16)/10;
+                    rstInfo.PRE_GAS_MIN =parseInt(dataList[29],16)/10;
 
                     rstInfo.START_CUR_MAX =parseInt(dataList[32],16);
                     rstInfo.START_CUR_MIN =parseInt(dataList[33],16);
 
-                    rstInfo.STOP_UP_MAX =parseInt(dataList[34],16);
-                    rstInfo.STOP_UP_MIN =parseInt(dataList[35],16);
+                    rstInfo.STOP_UP_MAX =parseInt(dataList[34],16)/10;
+                    rstInfo.STOP_UP_MIN =parseInt(dataList[35],16)/10;
 
                     rstInfo.WELD_CUR_MAX =parseInt(dataList[36],16);
                     rstInfo.WELD_CUR_MIN =parseInt(dataList[37],16);
 
-                    rstInfo.PULSE_FRE_MAX =parseInt(dataList[38],16);
-                    rstInfo.PULSE_FRE_MIN =parseInt(dataList[39],16);
+                    rstInfo.PULSE_FRE_MAX =parseInt(dataList[38],16)/10;
+                    rstInfo.PULSE_FRE_MIN =parseInt(dataList[39],16)/10;
                     
                     rstInfo.BASE_CUR_MAX =parseInt(dataList[40],16);
                     rstInfo.BASE_CUR_MIN =parseInt(dataList[41],16);
 
-                    rstInfo.POST_GAS_MAX =parseInt(dataList[42],16);
-                    rstInfo.POST_GAS_MIN =parseInt(dataList[43],16);
+                    rstInfo.POST_GAS_MAX =parseInt(dataList[42],16)/10;
+                    rstInfo.POST_GAS_MIN =parseInt(dataList[43],16)/10;
 
                     rstInfo.AC_FRE_MAX =parseInt(dataList[44],16);
                     rstInfo.AC_FRE_MIN =parseInt(dataList[45],16);

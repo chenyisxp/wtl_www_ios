@@ -13,7 +13,7 @@ let BASE_CONFIG = {
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
-    liulanqiConnect:false,//浏览器调试的时候 !!!!!!!!!!!
+    liulanqiConnect:true,//浏览器调试的时候 !!!!!!!!!!!
     ONLY_CONNECT_STATUS_TOAST:false,
     DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
     LOGFLAG:false,
