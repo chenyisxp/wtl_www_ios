@@ -62,6 +62,10 @@ export default {
             return;
         }
         localStorage.setItem("wtl_email",this.email);
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
         if(this.checkCode.toUpperCase() == this.checkCodeSvg.newCheckCode.toUpperCase()){
             if(!this.GLOBAL_CONFIG.TESTFLAG){
                 InterfaceService.queryUserInfo({email:this.email,uuid:this.userUuid},(data)=>{
@@ -73,8 +77,9 @@ export default {
                             Toast(BASE_CONFIG.errorMsgMap['当前邮箱还未注册'])
                         }
                     }
+                    Indicator.close();
                 },function(data){
-                
+                    Indicator.close();
                 });
             }else{
                 this.go('/resetPasswordStep2')
@@ -84,6 +89,10 @@ export default {
         }
     },
     nextFuc(){
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
         InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 this.go('/resetPasswordStep2')
@@ -97,7 +106,9 @@ export default {
             }else{
                 Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }
+            Indicator.close();
         },function(data){
+            Indicator.close();
         
         });
     },

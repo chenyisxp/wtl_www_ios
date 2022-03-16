@@ -4,7 +4,7 @@
     <!-- <div class="maginname">
         {{nowConnectMachine}}
     </div> -->
-    <Head :wantTo="'/newIndex'" :headName="'Histoty List'"></Head>
+    <Head :wantTo="'/newIndex'" :headName="'History List'"></Head>
     
     <div class="hislist" v-if="true">
         <div class="line">

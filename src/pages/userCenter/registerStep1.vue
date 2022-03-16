@@ -52,6 +52,10 @@ export default {
             return;
         }
         localStorage.setItem("wtl_email",this.email);
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
         if(this.checkCode.toUpperCase() == this.checkCodeSvg.newCheckCode.toUpperCase()){
             if(!this.GLOBAL_CONFIG.TESTFLAG){
                 InterfaceService.queryUserInfo({email:this.email,uuid:this.userUuid},(data)=>{
@@ -63,8 +67,9 @@ export default {
                             this.nextFuc();
                         }
                     }
+                    Indicator.close();
                 },function(data){
-                
+                    Indicator.close();
                 });
                 
             }else{
@@ -76,6 +81,10 @@ export default {
     },
     nextFuc(){
         //确认是否注册过
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
         InterfaceService.sendEmailCode({email:this.email,uuid:this.userUuid},(data)=>{
             if(data && data.respData && data.respData.respCode == '0000'){
                 Toast(BASE_CONFIG.errorMsgMap['邮件已发送请注意查收'])
@@ -92,8 +101,9 @@ export default {
             }else{
                 Toast(BASE_CONFIG.errorMsgMap['邮件验证码发送失败'])
             }
+            Indicator.close();
         },function(data){
-        
+            Indicator.close();
         });
     },
     go(url){

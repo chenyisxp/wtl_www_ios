@@ -528,7 +528,7 @@ export default {
           this.layoutTimer = setTimeout(() => {
             // Toast('layoutTimer')
             //有了登录体系后希望用户注册就不要跳转了
-            if(now1Router.indexOf('login')==-1 && now1Router.indexOf('register')==-1){
+            if(now1Router.indexOf('login')==-1 && now1Router.indexOf('register')==-1 && now1Router.indexOf('reset')==-1){
               this.$router.push('/blueToothManage');
             }
             this.displayType=0;
