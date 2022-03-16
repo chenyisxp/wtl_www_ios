@@ -96,7 +96,7 @@
                     </div>
                 </div>
                 <div class="inducance">
-                    <div class="showna">Inducance:<span :class="overInducanceFlag?'red':''">{{inducanceValue}}</span></div>
+                    <div class="showna">Inductance:<span :class="overInducanceFlag?'red':''">{{inducanceValue}}</span></div>
                 </div>
         </div>
    <div class="footers">
@@ -126,7 +126,7 @@
                     <div class="le">
                         <img v-if="nowtypename=='MATERIAL'" src="../../assets/images/blue_weld_icon_new_meterial.png"> 
                         <img v-if="nowtypename=='DIAMETER'" src="../../assets/images/blue_mig_weld_icon_new_diameter.png"> 
-                        <img v-if="nowtypename=='POLATRITY'" src="../../assets/images/weld_icon_polatrity.png"> 
+                        <img v-if="nowtypename=='POLARITY'" src="../../assets/images/weld_icon_polatrity.png"> 
                         <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
                         
                         <img v-if="nowtypename=='GAS'" src="../../assets/images/blue_weld_icon_new_gas.png"> 

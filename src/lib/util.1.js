@@ -20,7 +20,7 @@ Array.prototype.in_array = function (element) {
                    /** mma**/
                 mmaTypeList:[
                     {
-                        typeName:'POLATRITY',
+                        typeName:'POLARITY',
                         chooseKey:'AC',//默认选中
                         comList:[
                             {key:'AC',value:'AC'},{key:'DC',value:'DC'}
@@ -55,7 +55,7 @@ Array.prototype.in_array = function (element) {
                             {key:'2T',value:'2T'},{key:'4T',value:'4T'}
                         ]
                     },{
-                        typeName:'POLATRITY',
+                        typeName:'POLARITY',
                         chooseKey:'AC',//默认选中
                         comList:[
                             {key:'AC',value:'AC'},{key:'DC',value:'DC'}

@@ -18,7 +18,7 @@ let BASE_CONFIG = {
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
     liulanqiConnect:false,//浏览器调试的时候 !!!!!!!!!!!
     ONLY_CONNECT_STATUS_TOAST:false,
-    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
+    DEVELOPERMODEFLAG:true,//开发者模式本地完全不和安卓交互
     LOGFLAG:false,
     TESTFLAG : false,//测试开关
     TESTDEEPTH:0,//深度
@@ -105,7 +105,7 @@ let BASE_CONFIG = {
             diameter:'C0',
             material:'C1',
             thickness:'C2',
-            polatrity:'C3',
+            polarity:'C3',
             weld_cur_val:'C4',//后发现20210728
             slowDownTime:'C5',
             mode:'C6',
@@ -347,7 +347,7 @@ let BASE_CONFIG = {
         },
         // 'C3':{
         //     parentName:'tigsyn',
-        //     name:'polatrity',
+        //     name:'polarity',
         //     modbusAdr:''//
         // },
         'C4':{

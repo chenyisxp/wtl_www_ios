@@ -119,7 +119,7 @@
         <div class="title">
           <div class="le">
             <!-- <img src="../../assets/images/histroy.png"> -->
-             <img v-if="nowtypename=='POLATRITY'" src="../../assets/images/blue_acdc.png"> 
+             <img v-if="nowtypename=='POLARITY'" src="../../assets/images/blue_acdc.png"> 
              <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
              <img v-if="nowtypename=='Pluse'" src="../../assets/images/blue_weld_icon_new_pluse.png"> 
               <img v-if="nowtypename=='HF'" src="../../assets/images/blue_weld_icon_new_hf.png"> 
@@ -246,7 +246,7 @@ export default {
           ]
         },
         {
-          typeName: "POLATRITY",
+          typeName: "POLARITY",
           chooseKey: 0, //默认选中
           comList: [
             { id: 0, key: "AC", value: "AC" },
@@ -574,7 +574,7 @@ export default {
       this.nowTypeList.forEach(element => {
        
         if (element.typeName == type) {
-          if(type=='POLATRITY'){
+          if(type=='POLARITY'){
             this.ac_dc_num=value;
             this.clacTigManCur();
             this.initKeysRangeMap();
@@ -602,7 +602,7 @@ export default {
         // 
         var num =
                 this.nowChooseKeysMap.get('MODE')
-              +this.nowChooseKeysMap.get('POLATRITY')
+              +this.nowChooseKeysMap.get('POLARITY')
               +this.nowChooseKeysMap.get('HF')
               +this.nowChooseKeysMap.get('Pluse');
             //  num = (Array(4).join('0') + parseInt(num,2).toString(16)).slice(-4)
@@ -619,7 +619,7 @@ export default {
     getNowCanvasModel(){
        
         //1、是否是ac模式
-        if(this.nowChooseKeysMap.get('POLATRITY')==1){
+        if(this.nowChooseKeysMap.get('POLARITY')==1){
           this.nowDCORACFLAG=1;//关于ac模式 出现第二个canvas图的控制
           //第二个canvas
           this.build_AC_MapData();
@@ -1830,7 +1830,7 @@ export default {
     //000.给线条字段赋值
     //11、范围构建函数 初始化
     this.pfc_num =list.initBean.pfc==1?list.initBean.pfc:0;
-    this.ac_dc_num=list.initBean.polatrity==1?list.initBean.polatrity:0;
+    this.ac_dc_num=list.initBean.polarity==1?list.initBean.polarity:0;
     this.hf_lift_num=list.initBean.ifhf==1?list.initBean.ifhf:0;
     this.isReadyFlag =list.initBean.isReadyFlag;//是否焊接准备完毕
     this.clacTigManCur();
@@ -1843,7 +1843,7 @@ export default {
    //00.基本参数设置
     // this.nowDCORACFLAG ='0',//dc
     // this.nowModelTypeName = "4T_PULSE_DC";
-    this.nowDCORACFLAG =list.initBean.polatrity;
+    this.nowDCORACFLAG =list.initBean.polarity;
     this.nowModelTypeName =list.initBean.nowChooseModel;
     this.typeName = "TIGMAN";
     // this.nowTypeList = this.tigmanList;
@@ -2011,7 +2011,7 @@ export default {
         background-size: 40px;
         background-position: left center;
       }
-      .typename.POLATRITY{
+      .typename.POLARITY{
         background: url(../../assets/images/weld_icon_new_acdc.png) no-repeat;
         background-size: 40px;
         background-position: left center;

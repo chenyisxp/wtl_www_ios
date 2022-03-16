@@ -228,7 +228,7 @@ export default {
                         //params:min+max+nowpositionx+dffmin+difmax
                           //11、范围构建函数 初始化
                         this.pfc_num =list.initBean.pfc==1?list.initBean.unit:0;
-                        this.ac_dc_num=list.initBean.polatrity==1?list.initBean.polatrity:0;
+                        this.ac_dc_num=list.initBean.polarity==1?list.initBean.polarity:0;
                         this.hf_lift_num=list.initBean.ifhf==1?list.initBean.ifhf:0;
                         this.clacTigManCur();
                         this.min = this.tigman_min_cur;

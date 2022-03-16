@@ -105,7 +105,7 @@ Array.prototype.in_array = function (element) {
                 /** mma**/
                 mmaTypeList:[
                     {
-                        typeName:'POLATRITY',
+                        typeName:'POLARITY',
                         chooseKey:0,//默认选中
                         comList:[
                             {id:0,key:'AC',value:'AC'},{id:1,key:'DC',value:'DC'}
@@ -198,7 +198,7 @@ Array.prototype.in_array = function (element) {
                         ]
 
                     },{
-                        typeName:'POLATRITY',
+                        typeName:'POLARITY',
                         chooseKey:0,//默认选中
                         comList:[
                             {id:0,key:'AC',value:'AC'},{id:1,key:'DC',value:'DC'}
@@ -218,7 +218,7 @@ Array.prototype.in_array = function (element) {
                             {id:0,key:'2T',value:'2T'},{id:1,key:'4T',value:'4T'}
                         ]
                     },{
-                        typeName:'POLATRITY',
+                        typeName:'POLARITY',
                         chooseKey:0,//默认选中
                         comList:[
                             {id:0,key:'AC',value:'AC'},{id:1,key:'DC',value:'DC'}
@@ -380,8 +380,8 @@ Array.prototype.in_array = function (element) {
             //指令数组
             const MIGSYN_DIRECTIVE_MAP=new Map([['MODE','A0'],['MATERIAL','A1'],['GAS','A2'],['DIAMETER','A3'],['THICKNESS','A4'],['SPEED','A5'],['V_WELDING','A6'],['Getready','AE'],['Memory','AF']]);
             const MIGMAN_DIRECTIVE_MAP=new Map([['MODE','B0'],['SPEED','B1'],['V_WELDING','B2'],['Getready','BE'],['Memory','BF']]);
-            const TIGSYN_DIRECTIVE_MAP=new Map([['DIAMETER','C0'],['MATERIAL','C1'],['THICKNESS','C2'],['POLATRITY','C3'],['WELDCUR','C4'],['slowDownTime','C5'],['MODE','C6'],['Getready','CE'],['Memory','CF']]);
-            const MMA_DIRECTIVE_MAP = new Map([['POLATRITY','E0'],['ELECTRODE','E1'],['DIAMETER','E2'],['THICKNESS','E3'],['FORCE','E4'],['MMA_CURRENT','E5'],['Getready','EE'],['Memory','EF']]);
+            const TIGSYN_DIRECTIVE_MAP=new Map([['DIAMETER','C0'],['MATERIAL','C1'],['THICKNESS','C2'],['POLARITY','C3'],['WELDCUR','C4'],['slowDownTime','C5'],['MODE','C6'],['Getready','CE'],['Memory','CF']]);
+            const MMA_DIRECTIVE_MAP = new Map([['POLARITY','E0'],['ELECTRODE','E1'],['DIAMETER','E2'],['THICKNESS','E3'],['FORCE','E4'],['MMA_CURRENT','E5'],['Getready','EE'],['Memory','EF']]);
             const TIGMAN_DIRECTIVE_MAP =new Map([['TDCHFPULSE','D0'],['pre_gas','D1'],['start_cur_end','D2'], ['slop_up','D3'],['weld_cur','D4'],['base_cur','D5'],['pulse_fre','D6'],['pulse_duty','D7'],['slop_down','D8'],['crater_cur','D9'],['post_gas','DA'],['ac_fre','DB'],['ac_balance','DC'],['Getready','DE'],['Memory','DF']]);
             const CUT_DIRECTIVE_MAP =new Map([['MODE','F0'],['MATERIAL','F1'],['THICKNESS','F2'], ['WELDCUR','F3'], ['Getready','FD']]);
            //特殊指令数组 存储、历史等
@@ -613,8 +613,8 @@ Array.prototype.in_array = function (element) {
                                     case 'MODE':
                                         element.chooseKey=rstBean.mode;
                                         break;
-                                    case 'POLATRITY':// POLATRITY 20201024 不对应啊 所以值没改
-                                        element.chooseKey=rstBean.polatrity;
+                                    case 'POLARITY':// POLARITY 20201024 不对应啊 所以值没改
+                                        element.chooseKey=rstBean.polarity;
                                         break;
                                     case 'Pulse'://"Pulse" Pluse 20201024 不对应啊 所以值没改
                                        console.log(rstBean.ifpulse)
@@ -656,7 +656,7 @@ Array.prototype.in_array = function (element) {
                            var  arrthree= num16To2ArrSpecial03(arrayList[3]);
                            rstInfo.nowTypeList.forEach(element => {
                                 switch (element.typeName) {
-                                    case 'POLATRITY':
+                                    case 'POLARITY':
                                         element.chooseKey=byte1Bean.acdc;
                                         // alert(element.chooseKey)
                                         break;
@@ -721,8 +721,8 @@ Array.prototype.in_array = function (element) {
                             case 'MODE':
                                 element.chooseKey=rstBean.mode;
                                 break;
-                            case 'POLATRITY':
-                                element.chooseKey=rstBean.polatrity;
+                            case 'POLARITY':
+                                element.chooseKey=rstBean.polarity;
                                 break;
                             case 'Pulse':
                                 console.log(rstBean.ifpulse)
@@ -1294,7 +1294,7 @@ Array.prototype.in_array = function (element) {
                       bean.mode=secdArr[7];
                       bean.modeValue = bean.mode==1?'4T':'2T';
                     //1|acdc
-                        bean.polatrity=secdArr[6];
+                        bean.polarity=secdArr[6];
                     //2|hf
                         bean.ifhf =secdArr[5]
                     //3|pulse
@@ -3733,7 +3733,7 @@ Array.prototype.in_array = function (element) {
                 rstInfo.THINKNESS_VALUE=parseInt(dataList[7],16);
                 rstInfo.nowTypeList.forEach(element => {
                     switch (element.typeName) {
-                        case 'POLATRITY':
+                        case 'POLARITY':
                             //直流DC 交流AC
                             element.chooseKey=t0List[15]<2?t0List[15]:0;
                             // alert(element.chooseKey)
@@ -3806,7 +3806,7 @@ Array.prototype.in_array = function (element) {
                     isReadyFlag:`${byte0[4]}${byte0[5]}${byte0[6]}` == '001'?1:0,//9-11
                     ifhf:parseInt(byte0[13],2),
                     ifpulse:ifpulse,
-                    polatrity:parseInt(byte0[8]+byte0[9]+byte0[10],2),
+                    polarity:parseInt(byte0[8]+byte0[9]+byte0[10],2),
                     mode:mode,
                     nowChooseModel:modeValue+'_'+ifpulseValue+'_DC',//bean.nowChooseModel=bean.modeValue+'_'+bean.ifpulseValue+'_DC';
                     //焊接模式
@@ -3870,8 +3870,8 @@ Array.prototype.in_array = function (element) {
                         case 'MODE':
                             element.chooseKey =rstInfo.initBean.mode;//0:短焊    1:长焊
                             break;
-                        case 'POLATRITY':// POLATRITY 20201024 不对应啊 所以值没改
-                            element.chooseKey=rstInfo.initBean.polatrity;
+                        case 'POLARITY':// POLARITY 20201024 不对应啊 所以值没改
+                            element.chooseKey=rstInfo.initBean.polarity;
                             break;
                         case 'Pulse'://"Pulse" Pluse 20201024 不对应啊 所以值没改
                             element.chooseKey=rstInfo.initBean.ifpulse;//0:非脉冲   1:脉冲

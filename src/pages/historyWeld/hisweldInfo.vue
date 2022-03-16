@@ -613,7 +613,7 @@ export default {
           break;
       case 3://tig MAN
                this.nowModelTypeName =list.initBean.nowChooseModel;
-                this.nowDCORACFLAG =list.initBean.polatrity;
+                this.nowDCORACFLAG =list.initBean.polarity;
                 // this.buildTigManData(list);
                 // 2021-11-24 因为tigman只返回一个参数 所以只显示一个
                 this.buildTigManData20211124(list);

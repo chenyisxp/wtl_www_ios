@@ -127,7 +127,7 @@
         <div class="title">
           <div class="le">
             <!-- <img src="../../assets/images/histroy.png"> 20201024 POLATRITY 替换 POLARITY -->
-             <img v-if="nowtypename=='POLATRITY' || nowtypename=='POLATRITY'" src="../../assets/images/blue_acdc.png"> 
+             <img v-if="nowtypename=='POLATRITY' || nowtypename=='POLARITY'" src="../../assets/images/blue_acdc.png"> 
              <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
              <img v-if="nowtypename=='Pulse'" src="../../assets/images/blue_weld_icon_new_pluse.png"> 
               <img v-if="nowtypename=='HF'" src="../../assets/images/blue_weld_icon_new_hf.png"> 
@@ -159,7 +159,7 @@ import $ from 'jquery'
 import Loading from "@/components/base/Loading";
 import Head from "@/components/base/header";
 import weld_commonVue from './weld_common.vue';
- const TIGMAN_DIRECTIVE_MAP = new Map([['MODE','D0'],['POLATRITY','D1'],['POLATRITY','D1'],['HF','D2'],['Pulse','D3'],['BTNS','D4'],['PARAMVALUE','D5']]);
+ const TIGMAN_DIRECTIVE_MAP = new Map([['MODE','D0'],['POLARITY','D1'],['POLARITY','D1'],['HF','D2'],['Pulse','D3'],['BTNS','D4'],['PARAMVALUE','D5']]);
 export default {
   name: "",
   components: {
@@ -260,7 +260,7 @@ export default {
           ]
         },
         {
-          typeName: "POLATRITY",
+          typeName: "POLARITY",
           chooseKey: 0, //默认选中
           comList: [
             { id: 0, key: "AC", value: "AC" },
@@ -610,7 +610,7 @@ export default {
               //两个字节
               num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}${bitInfoList.tigmanCurrent}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}0${value}`);
               break;
-            case 'POLATRITY':
+            case 'POLARITY':
               //0:交流       1:直流 一个字节
               // 00000000000001000
               num =this.jinzhiChange2jinzhiFuc(`00${bitInfoList.tigUnit}${bitInfoList.tigIsWeiding}${bitInfoList.tigMode}${bitInfoList.tigsynWeldMode}00${value}${bitInfoList.tigmanGas}${bitInfoList.tigmanMc}${bitInfoList.tigmanPinglv}${bitInfoList.tigmanWeldMode}`);
@@ -645,7 +645,7 @@ export default {
     // getNowCanvasModel(){
        
     //     //1、是否是ac模式
-    //     if(this.nowChooseKeysMap.get('POLATRITY')==1){
+    //     if(this.nowChooseKeysMap.get('POLARITY')==1){
     //       this.nowDCORACFLAG=1;//关于ac模式 出现第二个canvas图的控制
     //       //第二个canvas
     //       this.build_AC_MapData();
@@ -2075,7 +2075,7 @@ export default {
         //000.给线条字段赋值
         //11、范围构建函数 初始化
         this.pfc_num =list.initBean.pfc==1?list.initBean.pfc:0;
-        this.ac_dc_num=list.initBean.polatrity==1?list.initBean.polatrity:0;
+        this.ac_dc_num=list.initBean.polarity==1?list.initBean.polarity:0;
         this.hf_lift_num=list.initBean.ifhf==1?list.initBean.ifhf:0;
         this.isReadyFlag =list.initBean.isReadyFlag;//是否焊接准备完毕
         this.ispulseOn =list.initBean.ifpulse;//1 pulse
@@ -2089,7 +2089,7 @@ export default {
         }
         //关闭重新赋值??20190526开启之前为什么关闭，导致不能实时更新
         //modubs协议 20210730
-        this.nowDCORACFLAG =list.initBean.polatrity;
+        this.nowDCORACFLAG =list.initBean.polarity;
         
         this.typeName = "TIGMAN";
          // if (this.witdhParam) {
@@ -2141,8 +2141,8 @@ export default {
       //00.基本参数设置
         // this.nowDCORACFLAG ='0',//dc
         // this.nowModelTypeName = "4T_PULSE_DC";
-        // alert(list.initBean.polatrity)
-        // this.nowDCORACFLAG =list.initBean.polatrity;
+        // alert(list.initBean.polarity)
+        // this.nowDCORACFLAG =list.initBean.polarity;
         
         // this.typeName = "TIGMAN";
         // this.nowTypeList = this.tigmanList;
@@ -2334,7 +2334,7 @@ export default {
             background-size: 40px;
             background-position: left center;
           }
-          .typename.POLATRITY{
+          .typename.POLARITY{
             background: url(../../assets/images/weld_icon_new_acdc.png) no-repeat;
             background-size: 40px;
             background-position: left center;

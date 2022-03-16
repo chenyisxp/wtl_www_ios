@@ -304,7 +304,7 @@ export default {
             break;
         case this.GLOBAL_CONFIG.callWeldTypeData.tigman.crcCode://tig MAN
                 this.nowModelTypeName =list.initBean.nowChooseModel;
-                this.nowDCORACFLAG =list.initBean.polatrity;
+                this.nowDCORACFLAG =list.initBean.polarity;
                 this.buildTigManData(list);
             break;
         case this.GLOBAL_CONFIG.callWeldTypeData.mma.crcCode:

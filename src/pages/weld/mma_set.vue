@@ -43,7 +43,7 @@ export default {
     return {
        currentNum: 90,//电流
        pushNum:5,//推力
-      setlist:[{key:'POLATRITY',value:'AC'},{key:'ELECTRODE',value:'60XX'},{key:'DIAMETER',value:'2.5MM'},{key:'THICKNESS',value:'0.6MM'}]
+      setlist:[{key:'POLARITY',value:'AC'},{key:'ELECTRODE',value:'60XX'},{key:'DIAMETER',value:'2.5MM'},{key:'THICKNESS',value:'0.6MM'}]
      } 
   },
 

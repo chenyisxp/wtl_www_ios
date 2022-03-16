@@ -109,7 +109,7 @@
                 </Card> -->
                 <div class="title">
                     <div class="le">
-                       <img v-if="nowtypename=='POLATRITY'" src="../../assets/images/blue_acdc.png"> 
+                       <img v-if="nowtypename=='POLARITY'" src="../../assets/images/blue_acdc.png"> 
                         <img v-if="nowtypename=='ELECTRODE'" src="../../assets/images/blue_weld_icon_new_elecode.png"> 
                         <img v-if="nowtypename=='DIAMETER'" src="../../assets/images/blue_mma_diameter.png"> 
                         <img v-if="nowtypename=='THICKNESS'" src="../../assets/images/blue_weld_icon_new_thinkness.png"> 
@@ -609,7 +609,7 @@ export default {
          if(modalType=='thinkness'){
             //厚度的特殊处理
             self.changeThinckChecked(self.nowtypename, self.actualNum,0);
-         }else if(self.nowtypename=='POLATRITY'){//ac时只有60xx
+         }else if(self.nowtypename=='POLARITY'){//ac时只有60xx
             //1、是否有必要更新
             //2、同时修改electrode
             self.buildMmaEletrode(self.nowtypename, self.nowChoose,0);
@@ -792,7 +792,7 @@ export default {
                             console.log(type)
                             // 0~1	焊接模式
                                 switch (type) {
-                                    case 'POLATRITY':
+                                    case 'POLARITY':
                                     //0:交流       1:直流
                                     let tempNum =this.jinzhiChange2jinzhiFuc(`0000000${bitInfoList.ichemm}${bitInfoList.iswelding}000${bitInfoList.unname}${bitInfoList.ifvrd}00${element.chooseKey}`);
                                     num= tempNum.substring(2,4)+tempNum.substring(0,2);//兼容旧的规则口径
@@ -1387,7 +1387,7 @@ export default {
             background-size: 40px;
             background-position: left center;
         }
-        .typename.POLATRITY{
+        .typename.POLARITY{
             background: url(../../assets/images/weld_icon_new_acdc.png) no-repeat;
             background-size: 40px;
             background-position: left center;

@@ -123,7 +123,7 @@
                     <div class="le">
                         <img v-if="nowtypename=='MATERIAL'" src="../../assets/images/cut_meterial.png"> 
                         <img v-if="nowtypename=='DIAMETER'" src="../../assets/images/blue_mig_weld_icon_new_diameter.png"> 
-                        <img v-if="nowtypename=='POLATRITY'" src="../../assets/images/weld_icon_polatrity.png"> 
+                        <img v-if="nowtypename=='POLARITY'" src="../../assets/images/weld_icon_polatrity.png"> 
                         <img v-if="nowtypename=='MODE'" src="../../assets/images/blue_weld_icon_new_mode.png"> 
                         
                         <img v-if="nowtypename=='GAS'" src="../../assets/images/cut_gas.png"> 
@@ -148,7 +148,7 @@
                             <img src="../../assets/images/cut_thinkness.png">
                         </div>
                         <div class="t-name">
-                            Thinkness
+                            Thickness
                         </div>
                     </div>
                     <div class="d-t-value">{{actualNum}}&nbsp;&nbsp;<span class="range">({{minTRange}}~{{maxTRange}})</span></div>

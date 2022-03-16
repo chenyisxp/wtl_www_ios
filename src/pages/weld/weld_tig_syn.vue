@@ -17,7 +17,7 @@
                                 @click="openModal(item.typeName,item.comList,item.chooseKey)"
                                 >
                                     <span style="padding-right:11px">{{bean.value}}</span>
-                                    <span style="padding-right:10px;" v-if="item.typeName!='POLATRITY'"><img src="../../assets/images/edit.png" ></span>
+                                    <span style="padding-right:10px;" v-if="item.typeName!='POLARITY'"><img src="../../assets/images/edit.png" ></span>
                                 </div>
                             </div>
                             <div class="btn" v-if="UnitFlag==1">
@@ -28,7 +28,7 @@
                                 @click="openModal(item.typeName,item.inchComList,item.chooseKey)"
                                 >
                                     <span style="padding-right:11px">{{bean.value}}</span>
-                                    <span style="padding-right:10px;" v-if="item.typeName!='POLATRITY'"><img src="../../assets/images/edit.png" ></span>
+                                    <span style="padding-right:10px;" v-if="item.typeName!='POLARITY'"><img src="../../assets/images/edit.png" ></span>
                                 </div>
                             </div>
                         </div>
@@ -510,7 +510,7 @@ export default {
         if(self.$store.state.weldingStatus==1){
             return;
         }
-        if(typename=='POLATRITY'){//不能修改
+        if(typename=='POLARITY'){//不能修改
             return;
         }
      
@@ -562,7 +562,7 @@ export default {
          if(modalType=='THICKNESS'){
             //厚度的特殊处理
             self.changeThinckChecked(self.nowtypename, self.actualNum,0);
-         }else if(self.nowtypename=='MATERIAL'){//材料切换由于POLATRITY要联动
+         }else if(self.nowtypename=='MATERIAL'){//材料切换由于POLARITY要联动
             //1、是否有必要更新
             //2、同时修改电压电流模式
             self.changeMetirialChecked(self.nowtypename, self.nowChoose,0);
@@ -770,14 +770,14 @@ export default {
             if(element.typeName==type){
                 //硬件逻辑已做处理 
                 // if(value!=1){//不是选铝改成dc
-                //     this.changeChecked('POLATRITY',1);
+                //     this.changeChecked('POLARITY',1);
                 // }else{
-                //     this.changeChecked('POLATRITY',0);
+                //     this.changeChecked('POLARITY',0);
                 // }
                 if(value!=1){//不是选铝改成dc
-                    this.onlyChangeCheckedNoSend('POLATRITY',1);
+                    this.onlyChangeCheckedNoSend('POLARITY',1);
                 }else{
-                    this.onlyChangeCheckedNoSend('POLATRITY',0);
+                    this.onlyChangeCheckedNoSend('POLARITY',0);
                 }
                 element.chooseKey=value;
                 //计算 查找 发送请求给ble告知 修改了
@@ -1155,13 +1155,13 @@ export default {
         //        this.changeMetirialChecked('MATERIAL' ,element.chooseKey, 0);
         //     }
         // });
-        //处理POLATRITY显示
+        //处理POLARITY显示
         this.nowTypeList.forEach(element => {
             if(element.typeName=='MATERIAL'){
                 if(element.chooseKey!=1){//不是选铝改成dc
-                    this.onlyChangeCheckedNoSend('POLATRITY',1);
+                    this.onlyChangeCheckedNoSend('POLARITY',1);
                 }else{
-                    this.onlyChangeCheckedNoSend('POLATRITY',0);
+                    this.onlyChangeCheckedNoSend('POLARITY',0);
                 }
             }
         });
@@ -1448,7 +1448,7 @@ export default {
             background-size: 40px;
             background-position: left center;
         }
-        .typename.POLATRITY{
+        .typename.POLARITY{
             background: url(../../assets/images/weld_icon_new_acdc.png) no-repeat;
             background-size: 40px;
             background-position: left center;
