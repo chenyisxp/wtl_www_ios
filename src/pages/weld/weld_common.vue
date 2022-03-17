@@ -1584,6 +1584,7 @@ export default {
         height: auto;
         width: 100%;
         margin-bottom: 50px;
+        padding-bottom: 50px;
         // align-self: flex-start;
     }
     // opacity: 0.1;

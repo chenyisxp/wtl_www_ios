@@ -1,24 +1,24 @@
 
 
 
-const ROOT_URL = 'http://127.0.0.1:3001';//本地
+// const ROOT_URL = 'http://127.0.0.1:3001';//本地
 // const ROOT_URL = 'http://47.242.175.65:3001';//sit
-// const ROOT_URL = 'http://api.shwtl.net';//sit
+const ROOT_URL = 'http://api.shwtl.net';//sit
 
 
 
 let BASE_CONFIG = {
     btAddress:'',//不知道为什么store传不进去
     // tenantID:'wtl',//商户号 打包不同app需改动pwd
-    // tenantID:'grover',//商户号 打包不同app需改动pwd
+    tenantID:'grover',//商户号 打包不同app需改动pwd
     // tenantID:'parweld',//商户号 打包不同app需改动pwd
-    tenantID:'kowax',//商户号 打包不同app需改动KOWAX
+    // tenantID:'kowax',//商户号 打包不同app需改动KOWAX
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
     liulanqiConnect:false,//浏览器调试的时候 !!!!!!!!!!!
     ONLY_CONNECT_STATUS_TOAST:false,
-    DEVELOPERMODEFLAG:true,//开发者模式本地完全不和安卓交互
+    DEVELOPERMODEFLAG:false,//开发者模式本地完全不和安卓交互
     LOGFLAG:false,
     TESTFLAG : false,//测试开关
     TESTDEEPTH:0,//深度

@@ -14,9 +14,9 @@
             <div class="company">Official website</div>
             <div class="company-link">
               <!-- <a @click="openWeb('http://www.wtl.com.cn/')">http://www.wtl.com.cn/</a> -->
-              <!-- <a @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a> -->
+              <a @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a>
               <!-- <a @click="openWeb('http://www.parweld.co.uk/')">http://www.parweld.co.uk/</a> -->
-              <a @click="openWeb('https://kowax.cz/')">https://kowax.cz/</a>
+              <!-- <a @click="openWeb('https://kowax.cz/')">https://kowax.cz/</a> -->
             </div>
           <!-- <div class="help">Help Message</div> -->
           <div class="helpDetail">

@@ -90,6 +90,7 @@ export default {
 <style scoped lang="scss">
 .header-container{
     height: auto;
+    min-height: 50px;
 }
     .header{
         z-index: 111111;
