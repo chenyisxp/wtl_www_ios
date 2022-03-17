@@ -563,7 +563,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .hisWeldList{
-  padding-top: 80px;
+  padding-top: 30px;
   width: 100%;
   height: 100vh;
   background: -webkit-linear-gradient(to top,#002c3a,#174d60);
