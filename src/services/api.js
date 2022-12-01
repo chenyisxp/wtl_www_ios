@@ -187,7 +187,12 @@ let InterfaceService = {
         getOverseasUpdateInfo:(callback)=>{
             // ru.grovers.www
             //com.wtl.wtlBlueTooth
-            axios.get("https://itunes.apple.com/lookup?bundleId=new.uk.co.parweld.www")
+            // new.uk.co.parweld.www
+            if(!BASE_CONFIG.bundleId){
+                console.log('版本查询问题')
+                return;
+            }
+            axios.get(`https://itunes.apple.com/lookup?bundleId=${BASE_CONFIG.bundleId}`)
                 .then(response=>{
                     if(response.status===200){
                         typeof callback === 'function' && callback(response.data);

@@ -13,10 +13,11 @@
             </RadioGroup> -->
             <div class="company">Official website</div>
             <div class="company-link">
-              <!-- <a @click="openWeb('http://www.wtl.com.cn/')">http://www.wtl.com.cn/</a> -->
-              <a @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a>
-              <!-- <a @click="openWeb('http://www.parweld.co.uk/')">http://www.parweld.co.uk/</a> -->
-              <!-- <a @click="openWeb('https://kowax.cz/')">https://kowax.cz/</a> -->
+              <!-- <a v-if="tenantID == 'wtl'" @click="openWeb('http://www.wtl.com.cn/')">http://www.wtl.com.cn/</a>
+              <a v-if="tenantID == 'wtl'" @click="openWeb('http://www.grovers.ru/')">http://www.grovers.ru/</a>
+              <a v-if="tenantID == 'wtl'" @click="openWeb('http://www.parweld.co.uk/')">http://www.parweld.co.uk/</a> -->
+              <!-- <a v-if="tenantID == 'wtl'" @click="openWeb('https://kowax.cz/')">https://kowax.cz/</a> -->
+              <a v-if="network" @click="openWeb(network)">{{network}}</a>
             </div>
           <!-- <div class="help">Help Message</div> -->
           <div class="helpDetail">
@@ -27,7 +28,8 @@
           </div>
           <div class="help" v-if="loginName">Login name:{{loginName || '未登录'}}</div>
           <div class="help" v-else>Not logged in</div>
-
+          <div class="help" style="margin-top:20px" @click="handleDelAccount">Account cancellation</div>
+          
           <!-- <div class="connnect">Wiring diagram</div>
           <div class="tabs">
                <div class="m-li">
@@ -57,12 +59,16 @@
 </template>
 
 <script>
-import { Toast } from 'mint-ui'
+import {
+    BASE_CONFIG
+} from '@/lib/config/config'
+import { Toast,MessageBox } from 'mint-ui'
 export default {
   name: "",
   components: {},
   data() {
     return {
+      network:BASE_CONFIG.network,
       loginName:'',
        nowchoose:'mm',
        chooseModel:4,
@@ -72,6 +78,22 @@ export default {
   },
 
   methods: {
+    handleDelAccount(){
+      // MessageBox();
+      MessageBox.confirm('',{
+        title: 'Notice',
+        message: 'Are you sure?',
+        confirmButtonText: 'confirm',
+        cancelButtonText: 'cancel',
+        showCancelButton: true
+      }).then(action => {
+        //confirm
+        this.loginName="";
+        localStorage.setItem("wtl_login_email","");
+        Toast("Logout succeeded")
+        console.log(action)
+      });
+    },
     handleLoginOut(){
       this.loginName="";
       localStorage.setItem("wtl_login_email","");

@@ -5,14 +5,62 @@
 // const ROOT_URL = 'http://47.242.175.65:3001';//sit
 const ROOT_URL = 'http://api.shwtl.net';//sit
 
+// tenantID:'wtl',//商户号 打包不同app需改动pwd
+// tenantID:'grover',//商户号 打包不同app需改动pwd
+// tenantID:'kowax',//商户号 打包不同app需改动KOWAX
+// tenantID = 'parweld',//商户号 打包不同app需改动pwd 英国
+let  tenantID = 'parweld';//商户号 打包不同app需改动pwd 英国
+// let bundleIdMap = {
+//     'wtl':''
+// }
 
+    // ru.grovers.www
+    //com.wtl.wtlBlueTooth
+    // new.uk.co.parweld.www
+    function getBundleId() {
+        let bundleId='';
+        switch (tenantID) {
+            case 'wtl':
+                bundleId= 'com.wtl.wtlBlueTooth';
+                break;
+            case 'grover':
+                bundleId= 'ru.grovers.www';
+                break;
+            case 'parweld':
+                bundleId= 'new.uk.co.parweld.www';
+                break;
+                
+            default:
+                break;
+        }
+        return bundleId;
+    }
+    function getNetWorkAddress() {
+        let network='';
+        switch (tenantID) {
+            case 'wtl':
+            network= 'http://www.wtl.com.cn/';
+                break;
+            case 'grover':
+            network= 'http://www.grovers.ru/';
+                break;
+            case 'parweld':
+            network= 'http://www.parweld.co.uk/';
+                break;
+            case 'kowax':
+            network= 'https://kowax.cz/';
+                break;
+            default:
+                break;
+        }
+        return network;
+    }
 
 let BASE_CONFIG = {
     btAddress:'',//不知道为什么store传不进去
-    // tenantID:'wtl',//商户号 打包不同app需改动pwd
-    tenantID:'grover',//商户号 打包不同app需改动pwd
-    // tenantID:'parweld',//商户号 打包不同app需改动pwd
-    // tenantID:'kowax',//商户号 打包不同app需改动KOWAX
+    tenantID:tenantID,
+    bundleId:getBundleId(),//ios的应用Id，查询最新版本
+    network:getNetWorkAddress(),//公司官网地址
     ROOT_URL:ROOT_URL,
     // 主服务地址
     SERVICE_ADDRESS : ROOT_URL + '/front/mainactivity',
@@ -24,7 +72,7 @@ let BASE_CONFIG = {
     TESTDEEPTH:0,//深度
     autoRouterTime:5000,//自动前往焊接中页面的时间：ms
     scaningDuring:15000,//扫描时间
-    ENV_IOS_FLAG : false,//true:ios、fasle:安卓环境 !!!!!!!!!!!!!!!!!!!!!!!!!!
+    ENV_IOS_FLAG : true,//true:ios、fasle:安卓环境 !!!!!!!!!!!!!!!!!!!!!!!!!!
     DirectStart:'DA',
     callWeldTypeData:{//注意utils中有独立crccode注意一起改
        migsyn:{data:'100000',crcCode:'0570',name:'MIG SYN',modelKey:'MIGSYN',url:'/weld_common?type=MIGSYN',newIndex:0},
